@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #142850;
+  --color-light-blue: #edf7fa;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1e293b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+    --color-navy: #bfdbfe;
+    --color-light-blue: #1e293b;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: inherit;
+}
+
+.text-navy {
+  color: var(--color-navy);
+}
+
+.bg-light-blue {
+  background-color: var(--color-light-blue);
+}
+
+.section-title {
+  @apply text-[2rem] font-bold text-navy mb-8;
+}
+
+.card-hover {
+  @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl;
+}
