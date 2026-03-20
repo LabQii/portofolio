@@ -46,12 +46,12 @@ export default function Navbar() {
           <div className="flex h-20 items-center justify-between">
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-2.5 text-[22px] font-bold tracking-tight text-navy group">
-                <div className="relative w-8 h-8 flex items-center justify-center bg-slate-50 rounded-lg p-1.5 border border-slate-100 group-hover:border-navy/20 transition-all">
+                <div className="relative w-10 h-10 flex items-center justify-center bg-slate-50 rounded-xl p-1.5 border border-slate-100 group-hover:border-navy/20 transition-all shadow-sm">
                   <Image
                     src="/images/logo-q.png"
                     alt="Labqii Tech Logo"
-                    width={24}
-                    height={24}
+                    width={32}
+                    height={32}
                     className="object-contain"
                   />
                 </div>
