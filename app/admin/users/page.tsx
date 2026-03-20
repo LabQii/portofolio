@@ -46,7 +46,6 @@ export default function UsersPage() {
       <div className="flex items-center justify-between mt-1 mb-1">
         <div>
           <h1 className="text-[22px] font-bold text-[#0f172a]">Manage Admins</h1>
-          <p className="text-[13px] text-[#64748b] mt-0.5">Manage users who have access to this dashboard.</p>
         </div>
         <Link
           href="/admin/users/new"

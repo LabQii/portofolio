@@ -46,6 +46,7 @@ model CV {
   id        String   @id @default(cuid())
   fileUrl   String
   fileName  String
+  isActive  Boolean  @default(false)
   updatedAt DateTime @updatedAt
 }
 

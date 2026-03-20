@@ -15,12 +15,11 @@ const labelCls = "block text-[11px] font-semibold text-[#64748b] uppercase track
 export default function TechStackAdminForm({ techStacks }: { techStacks: TechStackItem[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [activeTab, setActiveTab] = useState<"list" | "add">("list");
   const [editingTech, setEditingTech] = useState<TechStackItem | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [alert, setAlert] = useState<{ open: boolean; type: "success" | "error"; title: string }>({ open: false, type: "success", title: "" });
 
-  const handleEdit = (tech: TechStackItem) => { setEditingTech(tech); setPreview(tech.customLogoUrl); setActiveTab("add"); };
+  const handleEdit = (tech: TechStackItem) => { setEditingTech(tech); setPreview(tech.customLogoUrl); };
   const handleCancelEdit = () => { setEditingTech(null); setPreview(null); };
 
   const handleDelete = async (id: string, name: string) => {
@@ -42,7 +41,6 @@ export default function TechStackAdminForm({ techStacks }: { techStacks: TechSta
         handleCancelEdit();
         router.refresh();
         (e.target as HTMLFormElement).reset();
-        setActiveTab("list");
         setAlert({ open: true, type: "success", title: "Tech stack saved successfully!" });
       } else {
         setAlert({ open: true, type: "error", title: result.error || "Failed to save." });
@@ -54,25 +52,12 @@ export default function TechStackAdminForm({ techStacks }: { techStacks: TechSta
     <>
       <AdminAlert open={alert.open} type={alert.type} title={alert.title} onClose={() => setAlert(a => ({ ...a, open: false }))} />
 
-      {/* Tab bar */}
-      <div className="border-b border-[#f1f5f9] flex gap-6 mb-6">
-        {[{ key: "list", label: "Existing Stacks" }, { key: "add", label: editingTech ? "Edit Logo" : "Add New Logo" }].map(tab => (
-          <button
-            key={tab.key}
-            type="button"
-            onClick={() => { setActiveTab(tab.key as "list" | "add"); if (tab.key === "list") handleCancelEdit(); }}
-            className={`text-[15px] pb-3 border-b-2 transition-all -mb-px ${activeTab === tab.key ? "font-semibold text-[#0f172a] border-[#1e293b]" : "font-normal text-[#94a3b8] border-transparent hover:text-[#64748b]"}`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Existing Stacks tab */}
-      {activeTab === "list" && (
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        {/* Existing Stacks Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+          <h3 className="text-base font-bold text-slate-800 mb-4 px-2">Existing Stacks</h3>
           {techStacks.length === 0 ? (
-            <p className="text-[#94a3b8] text-sm italic py-8 text-center">No custom tech stacks yet. Add one!</p>
+            <p className="text-[#94a3b8] text-sm italic py-8 text-center">No custom tech stacks yet.</p>
           ) : (
             <div className="divide-y divide-[#f1f5f9]">
               {techStacks.map((tech) => (
@@ -87,7 +72,7 @@ export default function TechStackAdminForm({ techStacks }: { techStacks: TechSta
                     )}
                     <span className="text-[14px] font-medium text-[#0f172a]">{tech.name}</span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button type="button" onClick={() => handleEdit(tech)} className="text-[13px] font-medium text-[#1e293b] hover:underline">Edit</button>
                     <button type="button" onClick={() => handleDelete(tech.id, tech.name)} className="text-[13px] font-medium text-[#ef4444] hover:underline">Delete</button>
                   </div>
@@ -96,57 +81,71 @@ export default function TechStackAdminForm({ techStacks }: { techStacks: TechSta
             </div>
           )}
         </div>
-      )}
 
-      {/* Add / Edit Logo tab */}
-      {activeTab === "add" && (
-        <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
-          {editingTech && <input type="hidden" name="id" value={editingTech.id} />}
-
-          <div>
-            <label className={labelCls}>Tech Stack Name *</label>
-            <input
-              id="name"
-              name="name"
-              required
-              placeholder="e.g. React Native"
-              defaultValue={editingTech?.name ?? ""}
-              key={editingTech?.id ?? "new"}
-              disabled={!!editingTech}
-              className={cls}
-            />
-            {editingTech && <p className="text-[12px] text-[#94a3b8] mt-1.5">Name cannot be changed while editing.</p>}
+        {/* Add / Edit Logo Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+          <div className="flex items-center justify-between mb-6 px-2">
+            <h3 className="text-base font-bold text-slate-800">
+              {editingTech ? "Edit Logo" : "Add New Logo"}
+            </h3>
+            {editingTech && (
+              <button 
+                onClick={handleCancelEdit}
+                className="text-[12px] font-medium text-slate-500 hover:text-slate-800"
+              >
+                Cancel Edit
+              </button>
+            )}
           </div>
 
-          <div>
-            <label className={labelCls}>Upload Custom SVG / PNG</label>
-            <div
-              className="border-2 border-dashed border-[#cbd5e1] rounded-xl p-8 text-center cursor-pointer hover:border-[#1e293b] hover:bg-[#f8fafc] transition-all relative"
-              onClick={() => document.getElementById("logo-input")?.click()}
-            >
-              <input id="logo-input" name="logo" type="file" accept="image/png, image/svg+xml, image/webp, image/jpeg" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPreview(URL.createObjectURL(f)); }} className="hidden" />
-              {preview ? (
-                <div className="flex flex-col items-center gap-3">
-                  <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-[#e2e8f0] shadow-sm bg-white">
-                    <Image src={preview} alt="Logo preview" fill className="object-contain p-2" />
-                  </div>
-                  <span className="text-[13px] text-[#64748b]">Click to change image</span>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-2 text-[#94a3b8]">
-                  <Upload className="h-8 w-8" />
-                  <span className="text-sm">Click or drag to upload logo</span>
-                  <span className="text-xs">SVG, PNG, JPG, WebP</span>
-                </div>
-              )}
+          <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
+            {editingTech && <input type="hidden" name="id" value={editingTech.id} />}
+
+            <div>
+              <label className={labelCls}>Tech Stack Name *</label>
+              <input
+                id="name"
+                name="name"
+                required
+                placeholder="e.g. React Native"
+                defaultValue={editingTech?.name ?? ""}
+                key={editingTech?.id ?? "new"}
+                disabled={!!editingTech}
+                className={cls}
+              />
+              {editingTech && <p className="text-[12px] text-[#94a3b8] mt-1.5">Name cannot be changed while editing.</p>}
             </div>
-          </div>
 
-          <button type="submit" disabled={isPending} className="w-full h-[44px] bg-[#1e293b] text-white rounded-lg text-[14px] font-medium hover:bg-[#0f172a] disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isPending ? "Saving..." : (editingTech ? "Update Logo" : "Save Custom Logo")}
-          </button>
-        </form>
-      )}
+            <div>
+              <label className={labelCls}>Logo Image</label>
+              <div
+                className="border-2 border-dashed border-[#cbd5e1] rounded-xl p-8 text-center cursor-pointer hover:border-[#1e293b] hover:bg-[#f8fafc] transition-all relative"
+                onClick={() => document.getElementById("logo-input")?.click()}
+              >
+                <input id="logo-input" name="logo" type="file" accept="image/png, image/svg+xml, image/webp, image/jpeg" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPreview(URL.createObjectURL(f)); }} className="hidden" />
+                {preview ? (
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-[#e2e8f0] shadow-sm bg-white">
+                      <Image src={preview} alt="Logo preview" fill className="object-contain p-2" />
+                    </div>
+                    <span className="text-[13px] text-[#64748b]">Click to change image</span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-[#94a3b8]">
+                    <Upload className="h-8 w-8" />
+                    <span className="text-sm">Click to upload logo</span>
+                    <span className="text-xs">SVG, PNG, JPG, WebP</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <button type="submit" disabled={isPending} className="w-full h-[44px] bg-[#1e293b] text-white rounded-lg text-[14px] font-medium hover:bg-[#0f172a] disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
+              {isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isPending ? "Saving..." : (editingTech ? "Update Logo" : "Save Custom Logo")}
+            </button>
+          </form>
+        </div>
+      </div>
     </>
   );
 }

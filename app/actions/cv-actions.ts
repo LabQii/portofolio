@@ -16,11 +16,24 @@ export async function uploadCV(formData: FormData) {
   const buffer = Buffer.from(await file.arrayBuffer());
 
   try {
-    // Upload new CV to Cloudinary
+    // Sanitize filename for public_id
+    const sanitizedName = file.name
+      .replace(/\.[^/.]+$/, "") // Remove extension
+      .replace(/[^a-z0-t0-9]/gi, "_") // Replace non-alphanumeric with underscore
+      .toLowerCase();
+    
+    const timestamp = Date.now();
+    const publicId = `portfolio/cv/${sanitizedName}_${timestamp}`;
+
     const uploadResult = await new Promise<any>((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
-          { folder: "portfolio/cv", resource_type: "raw" },
+          { 
+            folder: "portfolio/cv", 
+            resource_type: "raw",
+            public_id: `${sanitizedName}_${timestamp}`,
+            content_disposition: `attachment; filename="${file.name}"`
+          },
           (err, result) => (err ? reject(err) : resolve(result))
         )
         .end(buffer);
@@ -28,35 +41,90 @@ export async function uploadCV(formData: FormData) {
 
     const fileUrl = uploadResult.secure_url;
 
-    const oldCV = await prisma.cV.findFirst({ orderBy: { updatedAt: "desc" } });
-    
-    // Attempt to delete old CV from Cloudinary if it exists and is from cloudinary
-    if (oldCV && oldCV.fileUrl.includes("cloudinary.com")) {
-      const parts = oldCV.fileUrl.split("/");
-      const filename = parts[parts.length - 1];
-      const publicId = `portfolio/cv/${filename}`;
-      try {
-        await cloudinary.uploader.destroy(publicId, { resource_type: "raw" });
-      } catch (e) {
-        // ignore deletion errors
-      }
-    }
+    // Set all existing CVs to inactive
+    await prisma.cV.updateMany({
+      where: {},
+      data: { isActive: false },
+    });
 
-    if (oldCV) {
-      await prisma.cV.update({
-        where: { id: oldCV.id },
-        data: { fileUrl, fileName: file.name },
-      });
-    } else {
-      await prisma.cV.create({
-        data: { fileUrl, fileName: file.name },
-      });
-    }
+    // Create the new CV and set it as active
+    await prisma.cV.create({
+      data: { fileUrl, fileName: file.name, isActive: true },
+    });
 
     revalidatePath("/admin/cv");
     revalidatePath("/");
     return { success: true, url: fileUrl };
   } catch (error: any) {
     return { success: false, error: error.message || "Failed to upload file to Cloudinary" };
+  }
+}
+
+export async function setActiveCV(id: string) {
+  try {
+    await prisma.cV.updateMany({
+      where: {},
+      data: { isActive: false },
+    });
+
+    await prisma.cV.update({
+      where: { id },
+      data: { isActive: true },
+    });
+
+    revalidatePath("/admin/cv");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: "Failed to set active CV" };
+  }
+}
+
+export async function deleteCV(id: string, fileUrl: string) {
+  try {
+    if (fileUrl.includes("cloudinary.com")) {
+      const parts = fileUrl.split("/");
+      const filename = parts[parts.length - 1];
+      const publicId = `portfolio/cv/${filename}`;
+      try {
+        await cloudinary.uploader.destroy(publicId, { resource_type: "raw" });
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    await prisma.cV.delete({
+      where: { id },
+    });
+
+    revalidatePath("/admin/cv");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: "Failed to delete CV" };
+  }
+}
+
+export async function renameCV(id: string, newName: string) {
+  try {
+    if (!newName.trim()) {
+      return { success: false, error: "Name cannot be empty" };
+    }
+    
+    // Ensure it has .pdf extension
+    let finalName = newName.trim();
+    if (!finalName.toLowerCase().endsWith(".pdf")) {
+      finalName += ".pdf";
+    }
+
+    await prisma.cV.update({
+      where: { id },
+      data: { fileName: finalName },
+    });
+
+    revalidatePath("/admin/cv");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: "Failed to rename CV" };
   }
 }

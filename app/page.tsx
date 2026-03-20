@@ -20,13 +20,13 @@ export default async function Home() {
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     }),
     prisma.cV.findFirst({
-      orderBy: { updatedAt: "desc" },
+      where: { isActive: true },
     }),
   ]);
 
   return (
     <div className="flex flex-col">
-      <Hero name={profile?.name} description={profile?.description} cvUrl={cv?.fileUrl} />
+      <Hero name={profile?.name} description={profile?.description} cvUrl={cv?.fileUrl} cvFileName={cv?.fileName} cvId={cv?.id} />
 
       {/* Activities (Recent Posts) Section */}
       <section className="py-16 md:py-24 relative overflow-hidden" id="recent-posts" style={{ background: "linear-gradient(160deg, #ffffff 0%, #f1f5f9 100%)" }}>

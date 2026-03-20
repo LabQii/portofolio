@@ -9,14 +9,16 @@ interface HeroProps {
   name?: string;
   description?: string;
   cvUrl?: string;
+  cvFileName?: string;
+  cvId?: string;
 }
 
-export default function Hero({ name, description, cvUrl }: HeroProps) {
+export default function Hero({ name, description, cvUrl, cvFileName, cvId }: HeroProps) {
   const defaultName = "Hi, I am Muhammad Iqbal Firmansyah";
   const defaultDesc = "Fullstack JavaScript Developer with hands-on experience in Google Apps Script automation and web application development for operational and business needs. He has a strong interest in Front-End Development and continuously improves his skills in Laravel and modern web technologies. Experienced in supporting internal systems, improving workflow efficiency, and mentoring learners in coding environments.";
 
   return (
-    <section className="relative overflow-hidden min-h-[90vh] flex items-center py-24 lg:py-0" style={{ background: "var(--gradient-hero)" }}>
+    <section className="relative overflow-hidden min-h-[90vh] flex items-center pt-12 pb-20 md:py-24 lg:py-0" style={{ background: "var(--gradient-hero)" }}>
       <div
         className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]"
         style={{ backgroundColor: "#1a3a5c" }}
@@ -48,7 +50,12 @@ export default function Hero({ name, description, cvUrl }: HeroProps) {
               className="flex flex-wrap items-center justify-center md:justify-start gap-4"
             >
               <Button size="lg" asChild className="bg-navy hover:bg-navy/90 text-white rounded-md px-8 py-6 text-lg font-semibold shadow-md hover:shadow-lg transition-all">
-                <a href={cvUrl || "#"} target={cvUrl ? "_blank" : undefined} rel="noopener noreferrer">
+                <a 
+                  href={cvId ? `/api/cv/download/${cvId}` : (cvUrl || "#")} 
+                  download={cvFileName || "CV.pdf"} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
                   Download CV
                 </a>
               </Button>
@@ -56,7 +63,7 @@ export default function Hero({ name, description, cvUrl }: HeroProps) {
           </div>
 
           {/* Right Area: Dev Portfolio Card */}
-          <div className="relative flex items-center justify-center flex-shrink-0 p-8 md:p-10 mt-10 md:mt-0">
+          <div className="relative flex items-center justify-center flex-shrink-0 p-8 md:p-10">
             {/* Decorative blob */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[420px] md:h-[420px] bg-blue-50/80 rounded-full -z-10 opacity-60"></div>
 

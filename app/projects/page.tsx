@@ -35,12 +35,11 @@ export default async function ProjectsPage({
           aria-hidden="true"
         ></div>
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-          <PublicBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Projects" }]} />
+          <PublicBreadcrumb pageName="Projects" />
           <AnimatedHeader
             title="My Projects"
             description="A collection of my work ranging from web applications to mobile apps and UI/UX design. Use the filters to explore specific categories."
           />
-
         </div>
       </div>
 

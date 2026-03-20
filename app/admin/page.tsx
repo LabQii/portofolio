@@ -14,7 +14,7 @@ export default async function AdminDashboard() {
   const [projectCount, postCount, cv, experienceCount, recentProjects, recentPosts] = await Promise.all([
     prisma.project.count(),
     prisma.post.count(),
-    prisma.cV.findFirst({ orderBy: { updatedAt: "desc" } }),
+    prisma.cV.findFirst({ where: { isActive: true } }),
     prisma.experience.count(),
     prisma.project.findMany({ take: 4, orderBy: { createdAt: "desc" } }),
     prisma.post.findMany({ take: 4, orderBy: { createdAt: "desc" } }),
@@ -22,13 +22,11 @@ export default async function AdminDashboard() {
 
   return (
     <div className="w-full max-w-[1400px] mx-auto p-4 sm:p-8 space-y-10 pb-20">
-      
+
       {/* Header Section */}
       <div>
         <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Dashboard" }]} />
-        <h4 className="text-[11px] font-bold tracking-widest text-slate-500 uppercase mb-2 mt-1">Executive Overview</h4>
-        <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Portfolio Admin</h1>
-        <p className="text-[15px] text-slate-500">Welcome back, <span className="font-semibold text-slate-700">{session.user?.email}</span></p>
+        <p className="text-[22px] text-slate-500">Welcome back, <span className="font-semibold text-slate-700">{session.user?.email}</span></p>
       </div>
 
 
