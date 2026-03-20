@@ -3,11 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2, Lock, AtSign, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,56 +33,86 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/20 px-4">
-      <Card className="w-full max-w-md shadow-xl">
-        <CardHeader className="text-center pb-2">
-          <div className="flex justify-center mb-4">
-            <div className="p-4 rounded-full bg-foreground text-background">
-              <Lock className="h-6 w-6" />
-            </div>
-          </div>
-          <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-          <CardDescription>Sign in to manage your portfolio</CardDescription>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
+      {/* Background Pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]"
+        style={{ backgroundColor: "#1a3a5c" }}
+      ></div>
+
+      {/* Login Card */}
+      <div className="w-full max-w-[440px] bg-white rounded-[32px] shadow-2xl shadow-slate-900/10 p-10 md:p-12 relative z-10">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-2">Admin Login</h1>
+          <p className="text-[15px] font-medium text-slate-500">Sign in to manage your portfolio</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Email Field */}
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-[11px] font-bold tracking-widest text-slate-600 uppercase">
+              Email Address
+            </label>
+            <div className="relative">
+              <input
                 id="email"
                 type="email"
-                placeholder="admin@example.com"
+                placeholder="name@labqii.tech"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="w-full bg-slate-50 hover:bg-slate-100/80 transition-colors border-0 h-[56px] px-5 rounded-xl text-slate-800 font-medium placeholder:text-slate-400 focus:ring-2 focus:ring-slate-200 outline-none"
               />
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                <AtSign className="w-5 h-5" />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
+          </div>
+
+          {/* Password Field */}
+          <div className="space-y-2">
+            <label htmlFor="password" className="block text-[11px] font-bold tracking-widest text-slate-600 uppercase">
+              Password
+            </label>
+            <div className="relative">
+              <input
                 id="password"
                 type="password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="w-full bg-slate-50 hover:bg-slate-100/80 transition-colors border-0 h-[56px] px-5 rounded-xl text-slate-800 font-medium placeholder:text-slate-400 tracking-widest focus:ring-2 focus:ring-slate-200 outline-none"
               />
-            </div>
-            {error && (
-              <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-md p-3 border border-red-200 dark:border-red-800">
-                {error}
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                <Lock className="w-5 h-5" />
               </div>
-            )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="text-[13px] font-medium text-rose-600 bg-rose-50 rounded-lg p-4">
+              {error}
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-[56px] bg-[#5b677a] hover:bg-[#4a5463] text-white rounded-xl text-base font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
               {loading ? (
-                <><Loader2 className="h-4 w-4 animate-spin" /> Signing in...</>
+                <><Loader2 className="w-5 h-5 animate-spin" /> Signing in...</>
               ) : (
-                "Sign In"
+                <>Sign In <ArrowRight className="w-5 h-5" /></>
               )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

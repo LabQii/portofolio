@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ChevronUp } from "lucide-react";
 
 export default function BackToTop() {
@@ -12,6 +13,8 @@ export default function BackToTop() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const pathname = usePathname();
+  if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
   if (!visible) return null;
 
   return (

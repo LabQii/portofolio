@@ -1,7 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
-import AdminHeader from "@/components/admin/admin-header";
 import TechStackAdminForm from "@/components/admin/tech-stack-form";
 import { getTechStacks } from "@/app/actions/tech-stack-actions";
 
@@ -12,19 +11,15 @@ export default async function TechStacksAdminPage() {
   const techStacks = await getTechStacks();
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <AdminHeader title="Manage Tech Stacks" backHref="/admin" />
-      
-      <main className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy">Custom Tech Stack Logos</h1>
-          <p className="text-slate-600 mt-2">
-            Upload custom SVG or PNG logos for specific technologies. If a tech stack isn't found here, it will gracefully fallback to the Simple Icons library or an initial letter badge.
-          </p>
-        </div>
-
+    <div className="p-6 md:p-8">
+      <div className="mb-6">
+        <h1 className="text-[22px] font-bold text-[#0f172a]">Manage Tech Stacks</h1>
+        <p className="text-[13px] text-[#64748b] mt-1">Upload custom SVG or PNG logos for specific technologies.</p>
+      </div>
+      <div className="max-w-[700px] bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-6">
         <TechStackAdminForm techStacks={techStacks} />
-      </main>
+      </div>
     </div>
   );
 }
+

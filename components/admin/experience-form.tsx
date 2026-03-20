@@ -2,11 +2,8 @@
 
 import { useState, useTransition, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Loader2, X } from "lucide-react";
+import AdminAlert from "./admin-alert";
 
 type Experience = {
   id: string; category: string; period: string; title: string;
@@ -14,16 +11,9 @@ type Experience = {
   featured: boolean; order: number; createdAt: Date; updatedAt: Date;
 };
 
-const CATEGORIES = [
-  "Work",
-  "Internship",
-  "Organization",
-  "Event Committee",
-  "Research & Leadership",
-  "Volunteer",
-  "Freelance",
-  "Mentorship",
-];
+const CATEGORIES = ["Work", "Internship", "Organization", "Event Committee", "Research & Leadership", "Volunteer", "Freelance", "Mentorship"];
+const cls = "w-full border border-[#e2e8f0] rounded-lg px-[14px] py-[10px] text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#1e293b] focus:shadow-[0_0_0_3px_rgba(30,41,59,0.08)] transition-all bg-white";
+const label = "block text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] mb-1.5";
 
 interface ExperienceFormProps {
   experience?: Experience;
@@ -34,135 +24,110 @@ interface ExperienceFormProps {
 export default function ExperienceForm({ experience, action, submitLabel = "Save Experience" }: ExperienceFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState("");
   const [tags, setTags] = useState<string[]>(experience?.tags ?? []);
   const [tagInput, setTagInput] = useState("");
+  const [featured, setFeatured] = useState(experience?.featured ?? false);
+  const [alert, setAlert] = useState<{ open: boolean; type: "success" | "error"; title: string }>({ open: false, type: "success", title: "" });
 
   const addTag = () => {
     const val = tagInput.trim();
-    if (val && !tags.includes(val) && tags.length < 6) {
-      setTags((prev) => [...prev, val]);
-      setTagInput("");
-    }
+    if (val && !tags.includes(val) && tags.length < 6) { setTags((p) => [...p, val]); setTagInput(""); }
   };
-
-  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      addTag();
-    }
-  };
-
-  const removeTag = (tag: string) => setTags((prev) => prev.filter((t) => t !== tag));
+  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addTag(); } };
+  const removeTag = (tag: string) => setTags((p) => p.filter((t) => t !== tag));
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    // Inject tags as comma-separated
     formData.set("tags", tags.join(","));
-    setError("");
+    formData.set("featured", featured ? "on" : "");
     startTransition(async () => {
       const result = await action(formData);
-      if (result.success) {
-        router.push("/admin/experiences");
-        router.refresh();
-      } else {
-        setError(result.error ?? "Something went wrong. Please try again.");
-      }
+      if (result.success) { router.push("/admin/experiences"); router.refresh(); }
+      else { setAlert({ open: true, type: "error", title: result.error ?? "Something went wrong." }); }
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Title + Organization */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="title">Title *</Label>
-          <Input id="title" name="title" defaultValue={experience?.title} required placeholder="e.g. Team Lead" />
+    <>
+      <AdminAlert open={alert.open} type={alert.type} title={alert.title} onClose={() => setAlert(a => ({ ...a, open: false }))} />
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Title + Organization */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div><label className={label}>Title *</label><input id="title" name="title" defaultValue={experience?.title} required placeholder="e.g. Team Lead" className={cls} /></div>
+          <div><label className={label}>Organization *</label><input id="organization" name="organization" defaultValue={experience?.organization} required placeholder="e.g. PKM-KC BINUS" className={cls} /></div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="organization">Organization *</Label>
-          <Input id="organization" name="organization" defaultValue={experience?.organization} required placeholder="e.g. PKM-KC BINUS University" />
-        </div>
-      </div>
 
-      {/* Category + Period */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="category">Category *</Label>
-          <select
-            id="category"
-            name="category"
-            defaultValue={experience?.category ?? "Organization"}
-            required
-            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          >
-            {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
+        {/* Category + Period */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label className={label}>Category *</label>
+            <select id="category" name="category" defaultValue={experience?.category ?? "Organization"} required className={cls}>
+              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className={label}>Period *</label>
+            <input id="period" name="period" defaultValue={experience?.period} required placeholder="e.g. Jun 2024 – Oct 2024" className={cls} />
+            <p className="text-[12px] text-[#94a3b8] mt-1.5">You can write a range or a single year.</p>
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="period">Period *</Label>
-          <Input id="period" name="period" defaultValue={experience?.period} required placeholder="e.g. Jun 2024 – Oct 2024" />
-          <p className="text-xs text-muted-foreground">You can write a range or a single year.</p>
+
+        {/* Description */}
+        <div>
+          <label className={label}>Description *</label>
+          <textarea id="description" name="description" defaultValue={experience?.description} required rows={5} placeholder="Describe your role and achievements..." className={`${cls} resize-vertical min-h-[140px]`} />
         </div>
-      </div>
 
-      {/* Description */}
-      <div className="space-y-2">
-        <Label htmlFor="description">Description *</Label>
-        <Textarea id="description" name="description" defaultValue={experience?.description} required rows={5} placeholder="Describe your role and achievements..." />
-      </div>
-
-      {/* Tags */}
-      <div className="space-y-2">
-        <Label>Tags</Label>
-        <div className="flex flex-wrap gap-2 mb-2">
-          {tags.map((tag) => (
-            <span key={tag} className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-medium">
-              {tag}
-              <button type="button" onClick={() => removeTag(tag)} className="hover:text-red-500 transition-colors ml-0.5">
-                <X className="h-3 w-3" />
-              </button>
-            </span>
-          ))}
+        {/* Tags pill input */}
+        <div>
+          <label className={label}>Tags <span className="normal-case font-normal text-[#94a3b8]">(max 6)</span></label>
+          <div className="border border-[#e2e8f0] rounded-lg px-3 py-2 min-h-[44px] flex flex-wrap gap-2 items-center focus-within:border-[#1e293b] focus-within:shadow-[0_0_0_3px_rgba(30,41,59,0.08)] transition-all">
+            {tags.map((tag) => (
+              <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#f1f5f9] rounded-full text-[12px] font-medium text-[#0f172a]">
+                {tag}<button type="button" onClick={() => removeTag(tag)} className="text-[#94a3b8] hover:text-[#ef4444]"><X className="h-3 w-3" /></button>
+              </span>
+            ))}
+            <input
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={handleTagKeyDown}
+              onBlur={addTag}
+              disabled={tags.length >= 6}
+              placeholder={tags.length === 0 ? "Type and press Enter..." : tags.length >= 6 ? "Max 6 tags" : ""}
+              className="flex-1 min-w-[120px] border-0 outline-none text-[14px] bg-transparent placeholder:text-[#94a3b8] disabled:opacity-50"
+            />
+          </div>
         </div>
-        <Input
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={handleTagKeyDown}
-          onBlur={addTag}
-          placeholder="Type a tag and press Enter or comma  (max 6)"
-          disabled={tags.length >= 6}
-        />
-      </div>
 
-      {/* Order + Featured */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="order">Order</Label>
-          <Input id="order" name="order" type="number" min={0} defaultValue={experience?.order ?? 0} />
-          <p className="text-xs text-muted-foreground">Lower number = shown first.</p>
+        {/* Order + Featured toggle */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label className={label}>Order</label>
+            <input id="order" name="order" type="number" min={0} defaultValue={experience?.order ?? 0} className={cls} />
+            <p className="text-[12px] text-[#94a3b8] mt-1.5">Lower number = shown first.</p>
+          </div>
+          <div className="flex flex-col justify-end pb-2">
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <div
+                className={`w-10 h-5 rounded-full relative transition-colors cursor-pointer ${featured ? "bg-[#1e293b]" : "bg-slate-200"}`}
+                onClick={() => setFeatured(!featured)}
+              >
+                <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${featured ? "translate-x-5" : ""}`} />
+              </div>
+              <span className="text-[14px] font-medium text-[#0f172a]">Mark as featured</span>
+            </label>
+          </div>
         </div>
-        <div className="flex items-center gap-3 pt-8">
-          <input
-            id="featured"
-            name="featured"
-            type="checkbox"
-            defaultChecked={experience?.featured ?? false}
-            className="h-4 w-4 rounded border-gray-300 accent-navy cursor-pointer"
-          />
-          <Label htmlFor="featured" className="cursor-pointer">Mark as featured (shown prominently)</Label>
+
+        {/* Actions */}
+        <div className="flex justify-end gap-3 pt-2">
+          <button type="button" onClick={() => router.push("/admin/experiences")} className="px-5 py-[10px] text-[14px] font-medium text-[#64748b] bg-white border border-[#e2e8f0] rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+          <button type="submit" disabled={isPending} className="px-5 py-[10px] text-[14px] font-medium text-white bg-[#1e293b] hover:bg-[#0f172a] rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2">
+            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isPending ? "Saving..." : submitLabel}
+          </button>
         </div>
-      </div>
-
-      {error && <p className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">{error}</p>}
-
-      <div className="flex gap-3 pt-2">
-        <Button type="submit" disabled={isPending} className="min-w-36">
-          {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Saving...</> : submitLabel}
-        </Button>
-        <Button type="button" variant="outline" onClick={() => router.push("/admin/experiences")}>Cancel</Button>
-      </div>
-    </form>
+      </form>
+    </>
   );
 }

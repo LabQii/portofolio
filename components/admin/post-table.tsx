@@ -1,8 +1,6 @@
 "use client";
 
 import { deletePost } from "@/app/actions/post-actions";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -21,43 +19,44 @@ export default function AdminPostTable({ posts }: { posts: Post[] }) {
 
   if (posts.length === 0) {
     return (
-      <div className="text-center py-24 border rounded-xl border-dashed bg-background">
-        <p className="text-muted-foreground mb-4">No posts yet.</p>
-        <Button asChild><Link href="/admin/posts/new">Add your first post</Link></Button>
+      <div className="text-center py-24 border-2 border-dashed border-[#e2e8f0] rounded-xl bg-white">
+        <p className="text-[#64748b] mb-4 text-sm">No posts yet.</p>
+        <Link href="/admin/posts/new" className="px-4 py-2 text-sm font-medium text-white bg-[#1e293b] rounded-lg">Add your first post</Link>
       </div>
     );
   }
 
   return (
-    <div className="border rounded-xl overflow-hidden bg-background shadow-sm">
+    <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)]">
       <table className="w-full text-sm">
-        <thead className="border-b bg-muted/50">
-          <tr>
-            <th className="text-left font-semibold px-4 py-3">Title</th>
-            <th className="text-left font-semibold px-4 py-3 hidden md:table-cell">Category</th>
-            <th className="text-left font-semibold px-4 py-3 hidden lg:table-cell">Created</th>
-            <th className="text-right font-semibold px-4 py-3">Actions</th>
+        <thead>
+          <tr className="bg-[#f8fafc] border-b border-[#e2e8f0]">
+            <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3">Title</th>
+            <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3 hidden md:table-cell">Category</th>
+            <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3 hidden lg:table-cell">Created</th>
+            <th className="text-right text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
           {posts.map((post) => (
-            <tr key={post.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
-              <td className="px-4 py-3 font-medium"><span className="line-clamp-1">{post.title}</span></td>
-              <td className="px-4 py-3 hidden md:table-cell"><Badge variant="outline">{post.category}</Badge></td>
-              <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">{formatDate(post.createdAt)}</td>
-              <td className="px-4 py-3">
-                <div className="flex items-center justify-end gap-2">
-                  <Button variant="ghost" size="icon" asChild>
-                    <Link href={`/admin/posts/${post.id}/edit`}><Edit className="h-4 w-4" /></Link>
-                  </Button>
-                  <Button
-                    variant="ghost" size="icon"
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+            <tr key={post.id} className="border-b border-[#f1f5f9] last:border-0 hover:bg-[#f8fafc] transition-colors">
+              <td className="px-4 py-[14px] font-medium text-[#0f172a]"><span className="line-clamp-1">{post.title}</span></td>
+              <td className="px-4 py-[14px] hidden md:table-cell">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">{post.category}</span>
+              </td>
+              <td className="px-4 py-[14px] text-[#64748b] text-xs hidden lg:table-cell">{formatDate(post.createdAt)}</td>
+              <td className="px-4 py-[14px]">
+                <div className="flex items-center justify-end gap-1">
+                  <Link href={`/admin/posts/${post.id}/edit`} className="p-1.5 rounded-lg text-[#64748b] hover:text-[#0f172a] hover:bg-slate-100 transition-colors">
+                    <Edit className="h-4 w-4" />
+                  </Link>
+                  <button
+                    className="p-1.5 rounded-lg text-[#94a3b8] hover:text-[#ef4444] hover:bg-red-50 transition-colors disabled:opacity-40"
                     disabled={deletingId === post.id}
                     onClick={() => handleDelete(post.id)}
                   >
                     <Trash2 className="h-4 w-4" />
-                  </Button>
+                  </button>
                 </div>
               </td>
             </tr>

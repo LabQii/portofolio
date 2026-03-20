@@ -78,7 +78,8 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
                       ${post.imageFit === 'contain' ? 'object-contain' : 'object-cover'}
                       ${post.imagePosition === 'center' ? 'object-center' :
                         post.imagePosition === 'bottom' ? 'object-bottom' : 'object-top'}
-                      transition-transform duration-500 hover:scale-[1.03]
+                      transition-all duration-500 hover:scale-[1.03]
+                      ${isActive ? 'grayscale-0' : 'grayscale'}
                     `}
                     sizes="(max-width: 768px) 100vw, 65vw"
                   />

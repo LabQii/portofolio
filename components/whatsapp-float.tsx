@@ -1,8 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function WhatsAppFloat() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
+
   return (
     <a
       href="https://wa.me/6285177440699?text=Hello%20Iqbal%2C%20I%20checked%20out%20your%20portfolio%20and%20would%20love%20to%20connect!"

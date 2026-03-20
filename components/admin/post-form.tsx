@@ -2,15 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Upload } from "lucide-react";
 import Image from "next/image";
 import type { Post } from "@prisma/client";
+import AdminAlert from "./admin-alert";
 
 const CATEGORIES = ["Event", "Achievement", "Experience", "Certification", "Other"];
+const cls = "w-full border border-[#e2e8f0] rounded-lg px-[14px] py-[10px] text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#1e293b] focus:shadow-[0_0_0_3px_rgba(30,41,59,0.08)] transition-all bg-white";
+const label = "block text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] mb-1.5";
 
 interface PostFormProps {
   post?: Post;
@@ -22,11 +21,11 @@ export default function PostForm({ post, action, submitLabel = "Save Post" }: Po
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [thumbnail, setThumbnail] = useState<string | null>(post?.thumbnail ?? null);
-  const [error, setError] = useState("");
+  const [alert, setAlert] = useState<{ open: boolean; type: "success" | "error"; title: string }>({ open: false, type: "success", title: "" });
 
   const generateSlug = (e: React.ChangeEvent<HTMLInputElement>) => {
     const slug = e.target.value.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
-    const slugInput = document.getElementById("slug") as HTMLInputElement;
+    const slugInput = document.getElementById("post-slug") as HTMLInputElement;
     if (slugInput) slugInput.value = slug;
   };
 
@@ -35,76 +34,68 @@ export default function PostForm({ post, action, submitLabel = "Save Post" }: Po
     const formData = new FormData(e.currentTarget);
     startTransition(async () => {
       const result = await action(formData);
-      if (result.success) {
-        router.push("/admin/posts");
-        router.refresh();
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
+      if (result.success) { router.push("/admin/posts"); router.refresh(); }
+      else { setAlert({ open: true, type: "error", title: "Something went wrong. Please try again." }); }
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="title">Title *</Label>
-          <Input id="title" name="title" defaultValue={post?.title} onChange={generateSlug} required placeholder="Post title" />
+    <>
+      <AdminAlert open={alert.open} type={alert.type} title={alert.title} onClose={() => setAlert(a => ({ ...a, open: false }))} />
+      <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
+        {/* Title + Slug */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div><label className={label}>Title *</label><input id="post-title" name="title" defaultValue={post?.title} onChange={generateSlug} required placeholder="Post title" className={cls} /></div>
+          <div><label className={label}>Slug *</label><input id="post-slug" name="slug" defaultValue={post?.slug} required className={cls} /></div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="slug">Slug *</Label>
-          <Input id="slug" name="slug" defaultValue={post?.slug} required />
-        </div>
-      </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="description">Description *</Label>
-        <Textarea id="description" name="description" defaultValue={post?.description} required rows={3} placeholder="Brief summary of this post..." />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="category">Category *</Label>
-          <select id="category" name="category" defaultValue={post?.category ?? "Event"} required className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
-            {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
+        {/* Description */}
+        <div>
+          <label className={label}>Description *</label>
+          <textarea id="description" name="description" defaultValue={post?.description} required rows={4} placeholder="Brief summary of this post..." className={`${cls} resize-vertical`} />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="eventName">Event Name</Label>
-          <Input id="eventName" name="eventName" defaultValue={post?.eventName ?? ""} placeholder="e.g. DICODING CYCLE 6" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="teamName">Team Name</Label>
-          <Input id="teamName" name="teamName" defaultValue={post?.teamName ?? ""} placeholder="e.g. THREE HEARTS, ONE MISSION" />
-        </div>
-      </div>
 
-      {/* Thumbnail */}
-      <div className="space-y-2">
-        <Label htmlFor="thumbnail">Thumbnail</Label>
-        <div className="border-2 border-dashed border-muted-foreground/30 rounded-xl p-6 text-center hover:border-blue-400 transition-colors cursor-pointer relative">
-          <input id="thumbnail" name="thumbnail" type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) setThumbnail(URL.createObjectURL(f)); }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-          {thumbnail ? (
-            <div className="relative aspect-video rounded-lg overflow-hidden">
-              <Image src={thumbnail} alt="Thumbnail preview" fill className="object-cover" />
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-2 text-muted-foreground">
-              <Upload className="h-8 w-8" />
-              <span className="text-sm">Click or drag to upload thumbnail</span>
-            </div>
-          )}
+        {/* Category + Event + Team */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div>
+            <label className={label}>Category *</label>
+            <select id="category" name="category" defaultValue={post?.category ?? "Event"} required className={cls}>
+              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div><label className={label}>Event Name</label><input id="eventName" name="eventName" defaultValue={post?.eventName ?? ""} placeholder="e.g. DICODING CYCLE 6" className={cls} /></div>
+          <div><label className={label}>Team Name</label><input id="teamName" name="teamName" defaultValue={post?.teamName ?? ""} placeholder="e.g. THREE HEARTS" className={cls} /></div>
         </div>
-      </div>
 
-      {error && <p className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">{error}</p>}
+        {/* Thumbnail */}
+        <div>
+          <label className={label}>Thumbnail</label>
+          <div className="border-2 border-dashed border-[#cbd5e1] rounded-xl overflow-hidden hover:border-[#1e293b] hover:bg-[#f8fafc] transition-all cursor-pointer relative group">
+            <input id="thumbnail" name="thumbnail" type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) setThumbnail(URL.createObjectURL(f)); }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+            {thumbnail ? (
+              <div className="relative aspect-video">
+                <Image src={thumbnail} alt="Thumbnail preview" fill className="object-cover" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                  <span className="text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-3 py-1.5 rounded-lg">Change Image</span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-2 text-[#94a3b8] py-10">
+                <Upload className="h-8 w-8" />
+                <span className="text-sm">Click or drag to upload thumbnail</span>
+              </div>
+            )}
+          </div>
+        </div>
 
-      <div className="flex gap-3 pt-4">
-        <Button type="submit" disabled={isPending} className="min-w-32">
-          {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Saving...</> : submitLabel}
-        </Button>
-        <Button type="button" variant="outline" onClick={() => router.push("/admin/posts")}>Cancel</Button>
-      </div>
-    </form>
+        {/* Actions */}
+        <div className="flex justify-end gap-3 pt-2">
+          <button type="button" onClick={() => router.push("/admin/posts")} className="px-5 py-[10px] text-[14px] font-medium text-[#64748b] bg-white border border-[#e2e8f0] rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+          <button type="submit" disabled={isPending} className="px-5 py-[10px] text-[14px] font-medium text-white bg-[#1e293b] hover:bg-[#0f172a] rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2">
+            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isPending ? "Saving..." : submitLabel}
+          </button>
+        </div>
+      </form>
+    </>
   );
 }

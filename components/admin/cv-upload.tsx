@@ -2,8 +2,7 @@
 
 import { useState, useTransition, useRef } from "react";
 import { uploadCV } from "@/app/actions/cv-actions";
-import { Button } from "@/components/ui/button";
-import { Upload, FileText, CheckCircle, Loader2, AlertCircle } from "lucide-react";
+import { Upload, FileText, CheckCircle, Loader2, AlertCircle, Download } from "lucide-react";
 
 export default function CVUploadClient({ currentCV }: { currentCV: { fileUrl: string; fileName: string; updatedAt: Date } | null }) {
   const [isPending, startTransition] = useTransition();
@@ -36,15 +35,21 @@ export default function CVUploadClient({ currentCV }: { currentCV: { fileUrl: st
     <div className="space-y-6">
       {/* Current CV */}
       {currentCV && (
-        <div className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
-          <FileText className="h-8 w-8 text-green-600 dark:text-green-400 flex-shrink-0" />
+        <div className="flex items-center gap-4 p-4 bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl">
+          <FileText className="h-6 w-6 text-[#16a34a] flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-green-800 dark:text-green-300">Current CV</p>
-            <p className="text-sm text-green-700 dark:text-green-400 truncate">{currentCV.fileName}</p>
+            <p className="text-[13px] font-semibold text-[#15803d] mb-0.5">Current CV</p>
+            <p className="text-[13px] text-[#16a34a] truncate">{currentCV.fileName}</p>
           </div>
-          <Button variant="outline" size="sm" asChild>
-            <a href={currentCV.fileUrl} target="_blank" rel="noopener noreferrer">Download</a>
-          </Button>
+          <a
+            href={currentCV.fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#16a34a] text-[#16a34a] text-[13px] font-medium hover:bg-green-50 transition-colors"
+          >
+            <Download className="h-4 w-4" />
+            Download
+          </a>
         </div>
       )}
 
@@ -54,34 +59,42 @@ export default function CVUploadClient({ currentCV }: { currentCV: { fileUrl: st
         onDragLeave={() => setDragOver(false)}
         onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
         onClick={() => inputRef.current?.click()}
-        className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${dragOver ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-muted-foreground/30 hover:border-blue-400 hover:bg-muted/30"}`}
+        className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
+          dragOver
+            ? "border-[#1e293b] bg-[#f8fafc]"
+            : "border-[#cbd5e1] hover:border-[#1e293b] hover:bg-[#f8fafc]"
+        }`}
       >
         <input ref={inputRef} type="file" accept=".pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
-        <Upload className={`h-12 w-12 mx-auto mb-4 ${dragOver ? "text-blue-500" : "text-muted-foreground/50"}`} />
+        <Upload className={`h-10 w-10 mx-auto mb-3 ${dragOver ? "text-[#1e293b]" : "text-[#94a3b8]"}`} />
         {selectedFile ? (
           <div>
-            <p className="font-semibold text-foreground">{selectedFile.name}</p>
-            <p className="text-sm text-muted-foreground mt-1">{(selectedFile.size / 1024).toFixed(0)} KB — Click to change</p>
+            <p className="font-semibold text-[#0f172a] text-sm">{selectedFile.name}</p>
+            <p className="text-xs text-[#64748b] mt-1">{(selectedFile.size / 1024).toFixed(0)} KB — Click to change</p>
           </div>
         ) : (
           <div>
-            <p className="font-semibold">Drag & drop your CV here</p>
-            <p className="text-sm text-muted-foreground mt-1">or click to browse — PDF only</p>
+            <p className="font-semibold text-[#0f172a] text-sm">Drag & drop your CV here</p>
+            <p className="text-xs text-[#64748b] mt-1">or click to browse — PDF only</p>
           </div>
         )}
       </div>
 
       {/* Result */}
       {result && (
-        <div className={`flex items-center gap-3 p-4 rounded-xl border ${result.success ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300" : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300"}`}>
-          {result.success ? <CheckCircle className="h-5 w-5 flex-shrink-0" /> : <AlertCircle className="h-5 w-5 flex-shrink-0" />}
-          <span className="text-sm font-medium">{result.success ? "CV uploaded successfully!" : result.error}</span>
+        <div className={`flex items-center gap-3 p-4 rounded-xl border ${result.success ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-700"}`}>
+          {result.success ? <CheckCircle className="h-4 w-4 flex-shrink-0" /> : <AlertCircle className="h-4 w-4 flex-shrink-0" />}
+          <span className="text-[13px] font-medium">{result.success ? "CV uploaded successfully!" : result.error}</span>
         </div>
       )}
 
-      <Button onClick={handleSubmit} disabled={!selectedFile || isPending} size="lg" className="w-full">
-        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Uploading...</> : "Upload CV"}
-      </Button>
+      <button
+        onClick={handleSubmit}
+        disabled={!selectedFile || isPending}
+        className="w-full h-[44px] bg-[#1e293b] text-white rounded-lg text-[14px] font-medium hover:bg-[#0f172a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+      >
+        {isPending ? <><Loader2 className="h-4 w-4 animate-spin" />Uploading...</> : "Upload CV"}
+      </button>
     </div>
   );
 }
