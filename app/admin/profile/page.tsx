@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { updateProfile, getProfile } from "@/app/actions/profile";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import AdminBreadcrumb from "@/components/admin/admin-breadcrumb";
 
 export default function EditProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -49,10 +50,10 @@ export default function EditProfilePage() {
 
   return (
     <div className="p-6 md:p-8">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-[#0f172a]">Manage Profile</h1>
-        <p className="text-[13px] text-[#64748b] mt-1">Update your hero heading and bio shown on the public site.</p>
-      </div>
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Manage Profile" }]} />
+      <h1 className="text-[22px] font-bold text-[#0f172a] mt-1 mb-1">Manage Profile</h1>
+      <p className="text-[13px] text-[#64748b] mb-1">Update your hero heading and bio shown on the public site.</p>
+      <hr className="border-[#f1f5f9] mb-6" />
 
       <div className="max-w-[680px] bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-8">
         <h2 className="text-[16px] font-semibold text-[#0f172a] mb-6">Edit Profile Information</h2>

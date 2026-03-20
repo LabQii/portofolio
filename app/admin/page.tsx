@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Folder, FileText, Briefcase, FileClock, Plus, Upload, User, Users, Pencil, Trash2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import AdminBreadcrumb from "@/components/admin/admin-breadcrumb";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
@@ -24,10 +25,12 @@ export default async function AdminDashboard() {
       
       {/* Header Section */}
       <div>
-        <h4 className="text-[11px] font-bold tracking-widest text-slate-500 uppercase mb-2">Executive Overview</h4>
+        <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Dashboard" }]} />
+        <h4 className="text-[11px] font-bold tracking-widest text-slate-500 uppercase mb-2 mt-1">Executive Overview</h4>
         <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Portfolio Admin</h1>
         <p className="text-[15px] text-slate-500">Welcome back, <span className="font-semibold text-slate-700">{session.user?.email}</span></p>
       </div>
+
 
       {/* Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

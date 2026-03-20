@@ -5,6 +5,7 @@ import { getAdmins, deleteAdmin } from "@/app/actions/admin";
 import { Loader2, Plus, Trash2, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import AdminBreadcrumb from "@/components/admin/admin-breadcrumb";
 
 type Admin = { id: string; email: string };
 
@@ -41,9 +42,10 @@ export default function UsersPage() {
 
   return (
     <div className="p-6 md:p-8">
-      <div className="flex items-center justify-between mb-6">
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Manage Admins" }]} />
+      <div className="flex items-center justify-between mt-1 mb-1">
         <div>
-          <h1 className="text-xl font-semibold text-[#0f172a]">Manage Admins</h1>
+          <h1 className="text-[22px] font-bold text-[#0f172a]">Manage Admins</h1>
           <p className="text-[13px] text-[#64748b] mt-0.5">Manage users who have access to this dashboard.</p>
         </div>
         <Link
@@ -54,6 +56,7 @@ export default function UsersPage() {
           Invite Admin
         </Link>
       </div>
+      <hr className="border-[#f1f5f9] mb-6" />
 
       <div className="max-w-[700px] bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] overflow-hidden">
         {isLoading ? (
