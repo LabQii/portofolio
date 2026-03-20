@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const navItems = [
   { name: "Profile", href: "/" },
@@ -44,8 +45,17 @@ export default function Navbar() {
         <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             <div className="flex items-center">
-              <Link href="/" className="text-[22px] font-bold tracking-tight text-navy">
-                Labqii Tech
+              <Link href="/" className="flex items-center gap-2.5 text-[22px] font-bold tracking-tight text-navy group">
+                <div className="relative w-8 h-8 flex items-center justify-center bg-slate-50 rounded-lg p-1.5 border border-slate-100 group-hover:border-navy/20 transition-all">
+                  <Image 
+                    src="/images/icon.jpg" 
+                    alt="Labqii Tech Logo" 
+                    width={24} 
+                    height={24} 
+                    className="object-contain"
+                  />
+                </div>
+                <span>Labqii Tech</span>
               </Link>
             </div>
 

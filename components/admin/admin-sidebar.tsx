@@ -25,8 +25,8 @@ export default function AdminSidebar() {
       {/* Profile Card */}
       <div className="px-4 py-5 border-b border-[#e2e8f0]">
         <div className="flex items-center gap-3">
-          <div className="relative w-9 h-9 rounded-full overflow-hidden border border-[#e2e8f0] shrink-0">
-            <Image src="/images/profile/foto-profile.jpg" alt="Profile" fill className="object-cover" />
+          <div className="relative w-9 h-9 rounded-full overflow-hidden border border-[#e2e8f0] bg-slate-50 shrink-0 flex items-center justify-center p-1.5">
+            <Image src="/images/icon.jpg" alt="Profile" fill className="object-contain" />
           </div>
           <div className="flex flex-col min-w-0">
             <span className="text-[13px] font-semibold text-[#0f172a] truncate">Iqbal</span>

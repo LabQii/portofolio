@@ -17,6 +17,9 @@ const font = Poppins({
 export const metadata: Metadata = {
   title: "M Iqbal Firmansyah | Portfolio",
   description: "Clean, minimal, and professional portfolio of M Iqbal Firmansyah - Web Developer & UI Designer.",
+  icons: {
+    icon: "/images/icon.jpg",
+  },
 };
 
 export default function RootLayout({

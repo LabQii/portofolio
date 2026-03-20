@@ -3,12 +3,22 @@
 import Link from "next/link";
 import { Bell } from "lucide-react";
 import AdminSignOut from "./sign-out-button";
+import Image from "next/image";
 
 export default function AdminNavbar() {
   return (
     <header className="h-[64px] bg-white border-b border-[#e2e8f0] flex items-center justify-between px-6 shrink-0 relative z-20">
-      <Link href="/admin" className="text-[18px] font-bold tracking-tight text-[#0f172a]">
-        Labqii Tech
+      <Link href="/admin" className="flex items-center gap-2.5 text-[18px] font-bold tracking-tight text-[#0f172a] group">
+        <div className="relative w-8 h-8 flex items-center justify-center bg-slate-50 rounded-lg p-1.5 border border-slate-100 group-hover:border-[#0f172a]/20 transition-all">
+          <Image 
+            src="/images/icon.jpg" 
+            alt="Logo" 
+            width={20} 
+            height={20} 
+            className="object-contain"
+          />
+        </div>
+        <span>Labqii Tech</span>
       </Link>
 
       <div className="flex items-center gap-3">
