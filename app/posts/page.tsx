@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import PostCard from "@/components/post-card";
 import AnimatedHeader from "@/components/animated-header";
+import PublicBreadcrumb from "@/components/public-breadcrumb";
 
 export default async function PostsPage() {
   const posts = await prisma.post.findMany({
@@ -16,12 +17,14 @@ export default async function PostsPage() {
           aria-hidden="true"
         ></div>
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <PublicBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Activities" }]} />
           <AnimatedHeader
             title="Writing"
             description="Sharing my thoughts, experiences, and learnings about web development, design, and technology."
           />
         </div>
       </div>
+
 
       <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 mt-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

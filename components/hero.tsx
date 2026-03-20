@@ -22,7 +22,7 @@ export default function Hero({ name, description, cvUrl }: HeroProps) {
         style={{ backgroundColor: "#1a3a5c" }}
       ></div>
       <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12">
 
           <div className="w-full md:max-w-[60%] lg:max-w-[50%] text-center md:text-left relative z-10">
             <motion.h1

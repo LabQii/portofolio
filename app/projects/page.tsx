@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import CategoryTabs from "@/components/category-tabs";
 import AnimatedHeader from "@/components/animated-header";
+import PublicBreadcrumb from "@/components/public-breadcrumb";
 
 export default async function ProjectsPage({
   searchParams,
@@ -34,10 +35,12 @@ export default async function ProjectsPage({
           aria-hidden="true"
         ></div>
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <PublicBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Projects" }]} />
           <AnimatedHeader
             title="My Projects"
             description="A collection of my work ranging from web applications to mobile apps and UI/UX design. Use the filters to explore specific categories."
           />
+
         </div>
       </div>
 
