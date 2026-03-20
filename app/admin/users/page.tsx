@@ -61,8 +61,8 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-light-blue py-12">
-      <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-12" style={{ background: "var(--gradient-page)" }}>
+      <div className="w-full mx-auto max-w-[896px] px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-navy">Manage Admins</h1>
           <Button asChild className="bg-navy hover:bg-navy/90">

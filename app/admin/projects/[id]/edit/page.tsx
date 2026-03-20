@@ -23,7 +23,7 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
         <Link href="/admin/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Projects</Link>
         <h1 className="text-xl font-bold mt-1">Edit Project</h1>
       </header>
-      <main className="container mx-auto px-6 py-8 max-w-3xl">
+      <main className="w-full mx-auto px-6 py-8 max-w-[768px]">
         <div className="bg-background rounded-xl border p-8 shadow-sm">
           <ProjectForm project={project} action={action} submitLabel="Update Project" />
         </div>

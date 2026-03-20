@@ -24,7 +24,7 @@ export default async function AdminProjectsPage() {
           <Link href="/admin/projects/new"><Plus className="h-4 w-4 mr-1" /> Add Project</Link>
         </Button>
       </header>
-      <main className="container mx-auto px-6 py-8 max-w-6xl">
+      <main className="w-full mx-auto px-6 py-8 max-w-[1152px]">
         <AdminProjectTable projects={projects} />
       </main>
     </div>

@@ -33,11 +33,13 @@ model Post {
   description String
   thumbnail   String
   category    String
-  teamName    String?
-  eventName   String?
-  publishedAt DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  teamName      String?
+  eventName     String?
+  imageFit      String?
+  imagePosition String?
+  publishedAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model CV {
@@ -58,4 +60,24 @@ model Profile {
   name        String
   description String   @db.Text
   updatedAt   DateTime @updatedAt
+}
+
+model TechStack {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  customLogoUrl String?
+}
+
+model Experience {
+  id           String   @id @default(cuid())
+  category     String
+  period       String
+  title        String
+  organization String
+  description  String   @db.Text
+  tags         String[]
+  featured     Boolean  @default(false)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

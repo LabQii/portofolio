@@ -8,21 +8,52 @@
 :root {
   --background: #ffffff;
   --foreground: #1e293b;
+  
+  /* Replace existing light blue */
+  --color-light-blue: #e8eef5;
+  
+  /* Add new gradient tokens */
+  --color-bg-hero: #f8fafc;
+  --color-bg-section: #e8eef5;
+  --color-bg-section-deep: #d4dfe8;
+  --color-bg-subtle: #f1f5f9;
+  
+  /* Gradient definitions */
+  --gradient-hero: linear-gradient(135deg, #f8fafc 0%, #e8eef5 100%);
+  --gradient-section: linear-gradient(150deg, #e8eef5 0%, #d4dfe8 100%);
+  --gradient-page: linear-gradient(180deg, #f8fafc 0%, #e8eef5 50%, #d4dfe8 100%);
+  --gradient-navy-fade: linear-gradient(to top, var(--color-navy) 0%, color-mix(in srgb, var(--color-navy) 15%, transparent) 60%, transparent 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f172a;
-    --foreground: #f1f5f9;
-    --color-navy: #bfdbfe;
-    --color-light-blue: #1e293b;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: inherit;
+}
+
+/* Explicit layout constraints to enforce MacBook M1-like centered width on massive monitors */
+.max-w-7xl { max-width: 1280px !important; }
+.max-w-6xl { max-width: 1152px !important; }
+.max-w-5xl { max-width: 1024px !important; }
+.max-w-4xl { max-width: 896px !important; }
+.max-w-3xl { max-width: 768px !important; }
+.mx-auto { margin-left: auto !important; margin-right: auto !important; }
+
+/* Decorative Batik Overlay */
+.batik-overlay {
+  background-image: url('/images/batik-pattern.jpg');
+  background-size: 400px 400px;
+  background-repeat: repeat;
+  -webkit-mask-image: url('/images/batik-pattern.jpg');
+  mask-image: url('/images/batik-pattern.jpg');
+  -webkit-mask-size: 400px 400px;
+  mask-size: 400px 400px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
 }
 
 .text-navy {
@@ -39,4 +70,32 @@ body {
 
 .card-hover {
   @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, #f1f5f9 4%, #e2e8f0 25%, #f1f5f9 36%);
+  background-size: 1000px 100%;
+}
+
+.dark .animate-shimmer {
+  background: linear-gradient(to right, #1e293b 4%, #334155 25%, #1e293b 36%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

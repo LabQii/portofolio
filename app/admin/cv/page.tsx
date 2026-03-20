@@ -17,7 +17,7 @@ export default async function AdminCVPage() {
         <Link href="/admin" className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Dashboard</Link>
         <h1 className="text-xl font-bold mt-1">CV Management</h1>
       </header>
-      <main className="container mx-auto px-6 py-8 max-w-xl">
+      <main className="w-full mx-auto px-6 py-8 max-w-[576px]">
         <div className="bg-background rounded-xl border p-8 shadow-sm">
           <h2 className="text-lg font-semibold mb-2">Upload New CV</h2>
           <p className="text-sm text-muted-foreground mb-6">

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { supabase } from "@/lib/supabase";
+import cloudinary from "@/lib/cloudinary";
 import { revalidatePath } from "next/cache";
 
 export async function uploadCV(formData: FormData) {
@@ -14,41 +14,49 @@ export async function uploadCV(formData: FormData) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const fileName = `cv-${Date.now()}.pdf`;
 
-  // Remove old CV from storage
-  const oldCV = await prisma.cV.findFirst({ orderBy: { updatedAt: "desc" } });
-  if (oldCV) {
-    const oldFileName = oldCV.fileUrl.split("/").pop();
-    if (oldFileName) {
-      await supabase.storage.from("cv-files").remove([oldFileName]);
+  try {
+    // Upload new CV to Cloudinary
+    const uploadResult = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          { folder: "portfolio/cv", resource_type: "raw" },
+          (err, result) => (err ? reject(err) : resolve(result))
+        )
+        .end(buffer);
+    });
+
+    const fileUrl = uploadResult.secure_url;
+
+    const oldCV = await prisma.cV.findFirst({ orderBy: { updatedAt: "desc" } });
+    
+    // Attempt to delete old CV from Cloudinary if it exists and is from cloudinary
+    if (oldCV && oldCV.fileUrl.includes("cloudinary.com")) {
+      const parts = oldCV.fileUrl.split("/");
+      const filename = parts[parts.length - 1];
+      const publicId = `portfolio/cv/${filename}`;
+      try {
+        await cloudinary.uploader.destroy(publicId, { resource_type: "raw" });
+      } catch (e) {
+        // ignore deletion errors
+      }
     }
+
+    if (oldCV) {
+      await prisma.cV.update({
+        where: { id: oldCV.id },
+        data: { fileUrl, fileName: file.name },
+      });
+    } else {
+      await prisma.cV.create({
+        data: { fileUrl, fileName: file.name },
+      });
+    }
+
+    revalidatePath("/admin/cv");
+    revalidatePath("/");
+    return { success: true, url: fileUrl };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Failed to upload file to Cloudinary" };
   }
-
-  // Upload new CV to Supabase Storage
-  const { data, error } = await supabase.storage
-    .from("cv-files")
-    .upload(fileName, buffer, { contentType: "application/pdf", upsert: true });
-
-  if (error) {
-    return { success: false, error: error.message };
-  }
-
-  const { data: urlData } = supabase.storage.from("cv-files").getPublicUrl(fileName);
-
-  // Upsert CV record (only keep one)
-  if (oldCV) {
-    await prisma.cV.update({
-      where: { id: oldCV.id },
-      data: { fileUrl: urlData.publicUrl, fileName: file.name },
-    });
-  } else {
-    await prisma.cV.create({
-      data: { fileUrl: urlData.publicUrl, fileName: file.name },
-    });
-  }
-
-  revalidatePath("/admin/cv");
-  revalidatePath("/");
-  return { success: true, url: urlData.publicUrl };
 }

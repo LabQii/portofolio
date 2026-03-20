@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import PostCard from "@/components/post-card";
+import AnimatedHeader from "@/components/animated-header";
 
 export default async function PostsPage() {
   const posts = await prisma.post.findMany({
@@ -7,27 +8,30 @@ export default async function PostsPage() {
   });
 
   return (
-    <div className="bg-light-blue min-h-screen pb-24">
-      <div className="bg-white border-b border-slate-100 py-16">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl md:text-[52px] font-bold text-navy leading-[1.15] mb-6">Writing</h1>
-            <p className="text-slate-600 text-lg md:text-[20px] leading-[1.7]">
-              Sharing my thoughts, experiences, and learnings about web development, design, and technology.
-            </p>
-          </div>
+    <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>
+      <div className="border-b border-slate-100/60 py-16 relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
+        <div 
+          className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]" 
+          style={{ backgroundColor: "#1a3a5c" }}
+          aria-hidden="true"
+        ></div>
+        <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <AnimatedHeader
+            title="Writing"
+            description="Sharing my thoughts, experiences, and learnings about web development, design, and technology."
+          />
         </div>
       </div>
 
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12">
+      <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 mt-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.length > 0 ? (
-            posts.map((post) => (
-              <PostCard key={post.id} post={post} />
+            posts.map((post, index) => (
+              <PostCard key={post.id} post={post} index={index} />
             ))
           ) : (
             <div className="col-span-full py-24 text-center bg-white rounded-2xl border border-slate-100 shadow-sm">
-              <p className="text-slate-500 italic">I haven't posted anything yet. Check back soon!</p>
+              <p className="text-slate-500 italic">I haven&apos;t posted anything yet. Check back soon!</p>
             </div>
           )}
         </div>

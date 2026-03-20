@@ -24,7 +24,7 @@ export default async function AdminPostsPage() {
           <Link href="/admin/posts/new"><Plus className="h-4 w-4 mr-1" /> Add Post</Link>
         </Button>
       </header>
-      <main className="container mx-auto px-6 py-8 max-w-6xl">
+      <main className="w-full mx-auto px-6 py-8 max-w-[1152px]">
         <AdminPostTable posts={posts} />
       </main>
     </div>

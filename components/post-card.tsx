@@ -6,17 +6,17 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 
-export default function PostCard({ post }: { post: any }) {
+export default function PostCard({ post, index = 0 }: { post: any; index?: number }) {
   const isNew = post.createdAt && (new Date().getTime() - new Date(post.createdAt).getTime()) / (1000 * 3600 * 24) <= 30;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      whileHover={{ y: -8 }}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col group relative"
+      transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
+      whileHover={{ y: -4, transition: { duration: 0.3, ease: "easeOut" } }}
+      className="bg-[#f4f7fa] border border-[#dde4ec] rounded-2xl overflow-hidden shadow-md shadow-slate-700/10 hover:shadow-2xl hover:shadow-slate-700/30 transition-shadow h-full flex flex-col group relative"
     >
       <Link href={`/posts/${post.slug}`} className="flex flex-col h-full block">
         <div className="relative w-full aspect-[16/10] overflow-hidden bg-slate-100">
@@ -29,7 +29,7 @@ export default function PostCard({ post }: { post: any }) {
             src={post.thumbnail}
             alt={post.title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         </div>
         <div className="p-6 md:p-8 flex flex-col flex-grow">

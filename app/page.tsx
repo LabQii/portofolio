@@ -1,69 +1,76 @@
 import Hero from "@/components/hero";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import ProjectCard from "@/components/project-card";
-import PostCard from "@/components/post-card";
+import RecentPostsCarousel from "@/components/recent-posts-carousel";
+import AnimatedSectionHeader from "@/components/animated-section-header";
+import ExperienceTimeline from "@/components/experience-timeline";
 
 export default async function Home() {
-  const [profile, featuredProjects, recentPosts] = await Promise.all([
+  const [profile, featuredProjects, recentPosts, customTechLogos, experiences, cv] = await Promise.all([
     prisma.profile.findFirst(),
     prisma.project.findMany({
-      take: 5,
+      where: { featured: true },
       orderBy: { createdAt: "desc" },
     }),
     prisma.post.findMany({
-      take: 2,
       orderBy: { createdAt: "desc" },
+    }),
+    prisma.techStack.findMany(),
+    prisma.experience.findMany({
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    }),
+    prisma.cV.findFirst({
+      orderBy: { updatedAt: "desc" },
     }),
   ]);
 
   return (
     <div className="flex flex-col">
-      <Hero name={profile?.name} description={profile?.description} />
+      <Hero name={profile?.name} description={profile?.description} cvUrl={cv?.fileUrl} />
 
-      {/* Recent Posts Section */}
-      <section className="bg-light-blue py-16 md:py-24" id="recent-posts">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-[2.5rem] md:text-[40px] font-bold text-navy leading-[1.2] mb-0">Recent Posts</h2>
-            <Button variant="secondary" className="text-navy bg-slate-50 hover:bg-slate-100 rounded-xl px-5 h-10" asChild>
-              <Link href="/posts" className="flex items-center gap-2 group">
-                <span className="font-medium text-base">View all</span> <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {recentPosts.length > 0 ? (
-              recentPosts.map((post) => <PostCard key={post.id} post={post} />)
-            ) : (
-              <p className="text-muted-foreground italic">No posts yet. Check back soon!</p>
-            )}
+      {/* Activities (Recent Posts) Section */}
+      <section className="py-16 md:py-24 relative overflow-hidden" id="recent-posts" style={{ background: "linear-gradient(160deg, #ffffff 0%, #f1f5f9 100%)" }}>
+
+        <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <AnimatedSectionHeader title="Activities" href="/posts" />
+          <div className="mt-10">
+            <RecentPostsCarousel posts={recentPosts} />
           </div>
         </div>
       </section>
 
-      {/* Featured Work Section */}
-      <section className="bg-white py-16 md:py-24">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-[2.5rem] md:text-[40px] font-bold text-navy leading-[1.2] mb-0">Featured Work</h2>
-            <Button variant="secondary" className="text-navy bg-slate-50 hover:bg-slate-100 rounded-xl px-5 h-10" asChild>
-              <Link href="/projects" className="flex items-center gap-2 group">
-                <span className="font-medium text-base">View all</span> <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
+      {/* Recent Projects Section */}
+      <section className="py-16 md:py-24 relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
+        <div
+          className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]"
+          style={{ backgroundColor: "#1a3a5c" }}
+          aria-hidden="true"
+        ></div>
+        <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <AnimatedSectionHeader title="Projects" href="/projects" />
           <div className="flex flex-col gap-8">
             {featuredProjects.length > 0 ? (
-              featuredProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+              featuredProjects.map((project, index) => (
+                <ProjectCard key={project.id} project={project} customTechLogos={customTechLogos} index={index} />
               ))
             ) : (
               <p className="text-muted-foreground italic">No featured projects yet.</p>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* Experience Section */}
+      <section
+        id="experience"
+        className="py-16 md:py-24 relative overflow-hidden"
+        style={{ background: "linear-gradient(160deg, #ffffff 0%, #f1f5f9 100%)" }}
+      >
+        <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="mb-12">
+            <h2 className="text-[2.5rem] font-bold text-navy">Experience</h2>
+          </div>
+          <ExperienceTimeline experiences={experiences} />
         </div>
       </section>
     </div>

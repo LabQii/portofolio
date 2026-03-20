@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FolderOpen, FileText, FileUp, Plus, User, Users } from "lucide-react";
+import { FolderOpen, FileText, FileUp, Plus, User, Users, Image as ImageIcon, Briefcase } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import AdminSignOut from "@/components/admin/sign-out-button";
 import Image from "next/image";
@@ -14,23 +14,25 @@ export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
-  const [projectCount, postCount, cv] = await Promise.all([
+  const [projectCount, postCount, cv, experienceCount] = await Promise.all([
     prisma.project.count(),
     prisma.post.count(),
     prisma.cV.findFirst({ orderBy: { updatedAt: "desc" } }),
+    prisma.experience.count(),
   ]);
 
   const stats = [
     { label: "Total Projects", value: projectCount, icon: FolderOpen, href: "/admin/projects" },
     { label: "Total Posts", value: postCount, icon: FileText, href: "/admin/posts" },
+    { label: "Experiences", value: experienceCount, icon: Briefcase, href: "/admin/experiences" },
     { label: "CV Updated", value: cv ? formatDate(cv.updatedAt) : "Never", icon: FileUp, href: "/admin/cv" },
   ];
 
   return (
-    <div className="min-h-screen bg-light-blue">
+    <div className="min-h-screen" style={{ background: "var(--gradient-page)" }}>
       {/* Admin Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10 w-full py-4">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+        <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="relative w-10 h-10 rounded-full overflow-hidden border border-slate-200 shadow-sm bg-slate-100 flex-shrink-0">
               <Image 
@@ -54,11 +56,11 @@ export default async function AdminDashboard() {
         </div>
       </header>
 
-      <main className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+      <main className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-12">
         <h2 className="text-2xl font-bold mb-8 text-navy">Dashboard Overview</h2>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
           {stats.map((stat) => (
             <Link key={stat.label} href={stat.href}>
               <Card className="hover:shadow-md transition-shadow cursor-pointer">
@@ -100,6 +102,16 @@ export default async function AdminDashboard() {
           <Button asChild variant="outline" className="h-20 flex-col gap-2 text-base">
             <Link href="/admin/users">
               <Users className="h-5 w-5" /> Manage Admins
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="h-20 flex-col gap-2 text-base border-blue-200 bg-blue-50/50 hover:bg-blue-100 text-blue-700">
+            <Link href="/admin/tech-stacks">
+              <ImageIcon className="h-5 w-5" /> Tech Logos
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="h-20 flex-col gap-2 text-base border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100 text-emerald-700">
+            <Link href="/admin/experiences">
+              <Briefcase className="h-5 w-5" /> Experiences
             </Link>
           </Button>
         </div>

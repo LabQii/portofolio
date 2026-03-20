@@ -3,43 +3,30 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Code2, Database, Layout, Smartphone, Server, Paintbrush, Globe, Braces, Terminal } from "lucide-react";
-
 import { motion } from "framer-motion";
+import { getTechLogoDetails } from "@/lib/tech-icons";
+import TechLogoImage from "@/components/tech-logo-image";
+import { useState } from "react";
 
-// Helper function to map tech stack names to icons and colors
-const getTechIconInfo = (tech: string) => {
-  const t = tech.toLowerCase();
-
-  if (t.includes('react') || t.includes('next')) {
-    return { icon: <Braces className="w-3.5 h-3.5" />, bg: "bg-blue-50/80", text: "text-blue-600", dot: "bg-blue-400" };
-  } else if (t.includes('node') || t.includes('express')) {
-    return { icon: <Server className="w-3.5 h-3.5" />, bg: "bg-green-50/80", text: "text-green-600", dot: "bg-green-400" };
-  } else if (t.includes('tailwind') || t.includes('css')) {
-    return { icon: <Paintbrush className="w-3.5 h-3.5" />, bg: "bg-cyan-50/80", text: "text-cyan-600", dot: "bg-cyan-400" };
-  } else if (t.includes('ai') || t.includes('openai') || t.includes('gpt')) {
-    return { icon: <Globe className="w-3.5 h-3.5" />, bg: "bg-purple-50/80", text: "text-purple-600", dot: "bg-purple-400" };
-  } else if (t.includes('database') || t.includes('sql') || t.includes('prisma') || t.includes('mongo')) {
-    return { icon: <Database className="w-3.5 h-3.5" />, bg: "bg-orange-50/80", text: "text-orange-600", dot: "bg-orange-400" };
-  } else if (t.includes('android') || t.includes('mobile') || t.includes('kotlin')) {
-    return { icon: <Smartphone className="w-3.5 h-3.5" />, bg: "bg-emerald-50/80", text: "text-emerald-600", dot: "bg-emerald-400" };
-  } else if (t.includes('ui') || t.includes('ux') || t.includes('figma')) {
-    return { icon: <Layout className="w-3.5 h-3.5" />, bg: "bg-pink-50/80", text: "text-pink-600", dot: "bg-pink-400" };
-  } else {
-    return { icon: <Terminal className="w-3.5 h-3.5" />, bg: "bg-slate-50", text: "text-slate-600", dot: "bg-slate-400" };
-  }
-};
-
-export default function ProjectCard({ project }: { project: any }) {
+export default function ProjectCard({
+  project,
+  customTechLogos = [],
+  index = 0
+}: {
+  project: any;
+  customTechLogos?: any[];
+  index?: number;
+}) {
   const isNew = project.createdAt && (new Date().getTime() - new Date(project.createdAt).getTime()) / (1000 * 3600 * 24) <= 30;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="group border-b border-slate-100 pb-10 last:border-0 last:pb-0 pt-4 relative"
+      transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
+      whileHover={{ y: -4, transition: { duration: 0.3, ease: "easeOut" } }}
+      className="group border border-[#dde4ec] relative shadow-md shadow-slate-700/10 hover:shadow-2xl hover:shadow-slate-700/30 rounded-2xl p-6 md:p-8 transition-shadow bg-[#f4f7fa]"
     >
       <Link href={`/projects/${project.slug}`} className="flex flex-col md:flex-row gap-6 md:gap-10 items-start block">
         <div className="w-full md:w-[45%] flex-shrink-0 relative">
@@ -48,12 +35,12 @@ export default function ProjectCard({ project }: { project: any }) {
               New
             </Badge>
           )}
-          <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-slate-100 shadow-sm transition-transform duration-300 group-hover:shadow-md">
+          <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-slate-100 shadow-sm transition-transform duration-300">
             <Image
               src={project.thumbnail}
               alt={project.title}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             />
           </div>
         </div>
@@ -71,20 +58,30 @@ export default function ProjectCard({ project }: { project: any }) {
             {/* Displaying tags or tech stack minimally as requested */}
             <div className="flex flex-wrap gap-2">
               {project.techStack.slice(0, 4).map((tech: string, i: number) => {
-                const { icon } = getTechIconInfo(tech);
-                const colors = [
-                  "bg-blue-50 border-blue-200/60 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800/30 dark:text-blue-300",
-                  "bg-emerald-50 border-emerald-200/60 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800/30 dark:text-emerald-300",
-                  "bg-violet-50 border-violet-200/60 text-violet-700 dark:bg-violet-900/20 dark:border-violet-800/30 dark:text-violet-300",
-                  "bg-amber-50 border-amber-200/60 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800/30 dark:text-amber-300",
-                  "bg-rose-50 border-rose-200/60 text-rose-700 dark:bg-rose-900/20 dark:border-rose-800/30 dark:text-rose-300"
-                ];
-                const colorClass = colors[i % colors.length];
+                const logoDetails = getTechLogoDetails(tech, customTechLogos);
+
                 return (
-                  <div key={tech} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[13px] font-semibold shadow-sm transition-colors ${colorClass}`}>
-                    {icon}
+                  <motion.div
+                    key={tech}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center gap-1.5 px-3 py-1 rounded-lg border text-[13px] font-semibold shadow-sm transition-colors bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300 cursor-default"
+                  >
+                    {logoDetails.type === 'initial' ? (
+                      <div className="w-4 h-4 rounded bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">
+                        {logoDetails.initial}
+                      </div>
+                    ) : (
+                      <div className="relative w-4 h-4">
+                        <TechLogoImage
+                          src={logoDetails.url}
+                          alt={tech}
+                          initial={tech.charAt(0).toUpperCase()}
+                        />
+                      </div>
+                    )}
                     <span>{tech}</span>
-                  </div>
+                  </motion.div>
                 );
               })}
               {project.techStack.length > 4 && (
@@ -95,7 +92,7 @@ export default function ProjectCard({ project }: { project: any }) {
             </div>
           </div>
 
-          <p className="text-slate-600 text-[18px] leading-[1.7]">
+          <p className="text-slate-600 text-[18px] leading-[1.7] line-clamp-3">
             {project.description}
           </p>
         </div>
