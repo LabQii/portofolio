@@ -17,7 +17,11 @@ const navItems = [
   { name: "CV Manager", href: "/admin/cv", icon: FileUp },
 ];
 
-export default function AdminSidebar() {
+interface AdminSidebarProps {
+  profileImage?: string | null;
+}
+
+export default function AdminSidebar({ profileImage }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -26,7 +30,12 @@ export default function AdminSidebar() {
       <div className="px-4 py-5 border-b border-[#e2e8f0]">
         <div className="flex items-center gap-3">
           <div className="relative w-11 h-11 rounded-xl overflow-hidden border border-[#e2e8f0] bg-slate-50 shrink-0 flex items-center justify-center p-2 shadow-sm">
-            <Image src="/images/logo-q.png" alt="Profile" fill className="object-contain" />
+            <Image 
+              src={profileImage || "/images/logo-q.png"} 
+              alt="Profile" 
+              fill 
+              className={cn("object-cover", !profileImage && "object-contain opacity-80")} 
+            />
           </div>
           <div className="flex flex-col min-w-0">
             <span className="text-[13px] font-semibold text-[#0f172a] truncate">Iqbal</span>
