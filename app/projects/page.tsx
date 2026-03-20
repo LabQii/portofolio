@@ -5,6 +5,7 @@ import Link from "next/link";
 import CategoryTabs from "@/components/category-tabs";
 import AnimatedHeader from "@/components/animated-header";
 import PublicBreadcrumb from "@/components/public-breadcrumb";
+import { getProfile } from "@/app/actions/profile";
 
 export default async function ProjectsPage({
   searchParams,
@@ -13,7 +14,7 @@ export default async function ProjectsPage({
 }) {
   const { category, tag } = await searchParams;
 
-  const [projects, customTechLogos] = await Promise.all([
+  const [projects, customTechLogos, profile] = await Promise.all([
     prisma.project.findMany({
       where: {
         ...(category ? { category } : {}),
@@ -22,6 +23,7 @@ export default async function ProjectsPage({
       orderBy: { createdAt: "desc" },
     }),
     prisma.techStack.findMany(),
+    getProfile(),
   ]);
 
   const allCategories = ["Website", "UI/UX", "Assignment", "Android"];
@@ -36,9 +38,9 @@ export default async function ProjectsPage({
         ></div>
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <PublicBreadcrumb pageName="Projects" />
-          <AnimatedHeader
-            title="My Projects"
-            description="A collection of my work ranging from web applications to mobile apps and UI/UX design. Use the filters to explore specific categories."
+          <AnimatedHeader 
+            title={profile?.projectsTitle || ""} 
+            description={profile?.projectsDescription || ""} 
           />
         </div>
       </div>

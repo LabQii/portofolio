@@ -8,7 +8,14 @@ export async function getProfile() {
   return profile;
 }
 
-export async function updateProfile(data: { name: string; description: string }) {
+export async function updateProfile(data: { 
+  name: string; 
+  description: string;
+  projectsTitle?: string;
+  projectsDescription?: string;
+  activitiesTitle?: string;
+  activitiesDescription?: string;
+}) {
   try {
     const existing = await prisma.profile.findFirst();
     
@@ -25,6 +32,8 @@ export async function updateProfile(data: { name: string; description: string })
     
     revalidatePath("/");
     revalidatePath("/admin/profile");
+    revalidatePath("/projects");
+    revalidatePath("/posts");
     return { success: true };
   } catch (error) {
     console.error("Failed to update profile:", error);

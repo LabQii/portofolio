@@ -60,6 +60,15 @@ model Profile {
   id          String   @id @default(cuid())
   name        String
   description String   @db.Text
+  
+  // Projects page settings
+  projectsTitle       String?
+  projectsDescription String? @db.Text
+  
+  // Activities page settings
+  activitiesTitle       String?
+  activitiesDescription String? @db.Text
+  
   updatedAt   DateTime @updatedAt
 }
 

@@ -2,11 +2,15 @@ import { prisma } from "@/lib/prisma";
 import PostCard from "@/components/post-card";
 import AnimatedHeader from "@/components/animated-header";
 import PublicBreadcrumb from "@/components/public-breadcrumb";
+import { getProfile } from "@/app/actions/profile";
 
 export default async function PostsPage() {
-  const posts = await prisma.post.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const [posts, profile] = await Promise.all([
+    prisma.post.findMany({
+      orderBy: { createdAt: "desc" },
+    }),
+    getProfile(),
+  ]);
 
   return (
     <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>
@@ -18,9 +22,9 @@ export default async function PostsPage() {
         ></div>
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <PublicBreadcrumb pageName="Activities" />
-          <AnimatedHeader
-            title="Writing"
-            description="Sharing my thoughts, experiences, and learnings about web development, design, and technology."
+          <AnimatedHeader 
+            title={profile?.activitiesTitle || ""} 
+            description={profile?.activitiesDescription || ""} 
           />
         </div>
       </div>
