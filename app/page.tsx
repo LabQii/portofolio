@@ -5,8 +5,10 @@ import RecentPostsCarousel from "@/components/recent-posts-carousel";
 import AnimatedSectionHeader from "@/components/animated-section-header";
 import ExperienceTimeline from "@/components/experience-timeline";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
-  const [profile, featuredProjects, recentPosts, customTechLogos, experiences, cv] = await Promise.all([
+  const [profile, featuredProjects, recentPosts, customTechLogos, experiences, cv, activeProfileImage] = await Promise.all([
     prisma.profile.findFirst(),
     prisma.project.findMany({
       where: { featured: true },
@@ -22,11 +24,26 @@ export default async function Home() {
     prisma.cV.findFirst({
       where: { isActive: true },
     }),
+    // Robust raw SQL: Prioritize Active, then most recent created
+    prisma.$queryRaw<any[]>`
+      SELECT url FROM "ProfileImage" 
+      ORDER BY 
+        CASE WHEN "isActive" = true THEN 0 ELSE 1 END, 
+        "createdAt" DESC 
+      LIMIT 1
+    `.then(rows => rows[0] || null),
   ]);
 
   return (
     <div className="flex flex-col">
-      <Hero name={profile?.name} description={profile?.description} cvUrl={cv?.fileUrl} cvFileName={cv?.fileName} cvId={cv?.id} />
+      <Hero 
+        name={profile?.name} 
+        description={profile?.description} 
+        cvUrl={cv?.fileUrl} 
+        cvFileName={cv?.fileName} 
+        cvId={cv?.id}
+        profileImageUrl={activeProfileImage?.url}
+      />
 
       {/* Activities (Recent Posts) Section */}
       <section className="py-16 md:py-24 relative overflow-hidden" id="recent-posts" style={{ background: "linear-gradient(160deg, #ffffff 0%, #f1f5f9 100%)" }}>

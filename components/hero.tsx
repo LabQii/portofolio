@@ -11,14 +11,15 @@ interface HeroProps {
   cvUrl?: string;
   cvFileName?: string;
   cvId?: string;
+  profileImageUrl?: string;
 }
 
-export default function Hero({ name, description, cvUrl, cvFileName, cvId }: HeroProps) {
+export default function Hero({ name, description, cvUrl, cvFileName, cvId, profileImageUrl }: HeroProps) {
   const defaultName = "Hi, I am Muhammad Iqbal Firmansyah";
   const defaultDesc = "Fullstack JavaScript Developer with hands-on experience in Google Apps Script automation and web application development for operational and business needs. He has a strong interest in Front-End Development and continuously improves his skills in Laravel and modern web technologies. Experienced in supporting internal systems, improving workflow efficiency, and mentoring learners in coding environments.";
 
   return (
-    <section className="relative overflow-hidden min-h-[90vh] flex items-center pt-20 pb-20 md:pt-24 md:pb-24 lg:py-0" style={{ background: "var(--gradient-hero)" }}>
+    <section className="relative overflow-hidden min-h-[calc(100vh-80px)] flex items-center pt-12 pb-20 md:py-24 lg:py-0" style={{ background: "var(--gradient-hero)" }}>
       <div
         className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]"
         style={{ backgroundColor: "#1a3a5c" }}
@@ -50,10 +51,10 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId }: Her
               className="flex flex-wrap items-center justify-center md:justify-start gap-4"
             >
               <Button size="lg" asChild className="bg-navy hover:bg-navy/90 text-white rounded-md px-8 py-6 text-lg font-semibold shadow-md hover:shadow-lg transition-all">
-                <a 
-                  href={cvId ? `/api/cv/download/${cvId}` : (cvUrl || "#")} 
-                  download={cvFileName || "CV.pdf"} 
-                  target="_blank" 
+                <a
+                  href={cvId ? `/api/cv/download/${cvId}` : (cvUrl || "#")}
+                  download={cvFileName || "CV.pdf"}
+                  target="_blank"
                   rel="noopener noreferrer"
                 >
                   Download CV
@@ -77,8 +78,8 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId }: Her
               {/* Photo Area */}
               <div className="absolute inset-0 bg-slate-100 rounded-[24px] shadow-xl overflow-hidden">
                 <Image
-                  src="/images/profile/foto-profile-nobg5.png"
-                  alt="M Iqbal Firmansyah"
+                  src={profileImageUrl || ""}
+                  alt={name || "Profile Image"}
                   fill
                   className="object-cover object-top"
                   sizes="(max-width: 768px) 300px, 340px"

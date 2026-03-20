@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { updateProfile, getProfile } from "@/app/actions/profile";
-import { Loader2 } from "lucide-react";
+import { getProfileImages, uploadProfileImage, deleteProfileImage, setActiveProfileImage } from "@/app/actions/profile-image";
+import { Loader2, Image as ImageIcon, Plus, Check, Trash2, Upload, X, AlertCircle } from "lucide-react";
+import { useRef } from "react";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import AdminBreadcrumb from "@/components/admin/admin-breadcrumb";
 import { useToast } from "@/components/ui/toast";
@@ -17,31 +20,106 @@ export default function EditProfilePage() {
   const [projectsDescription, setProjectsDescription] = useState("");
   const [activitiesTitle, setActivitiesTitle] = useState("");
   const [activitiesDescription, setActivitiesDescription] = useState("");
+  const [profileImages, setProfileImages] = useState<any[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
     async function loadProfile() {
       try {
-        const data = await getProfile();
-        if (data) {
-          setName(data.name);
-          setDescription(data.description);
-          setProjectsTitle(data.projectsTitle || "");
-          setProjectsDescription(data.projectsDescription || "");
-          setActivitiesTitle(data.activitiesTitle || "");
-          setActivitiesDescription(data.activitiesDescription || "");
+        const [profileData, imagesData] = await Promise.all([
+          getProfile(),
+          getProfileImages()
+        ]);
+        
+        if (profileData) {
+          setName(profileData.name);
+          setDescription(profileData.description);
+          setProjectsTitle(profileData.projectsTitle || "");
+          setProjectsDescription(profileData.projectsDescription || "");
+          setActivitiesTitle(profileData.activitiesTitle || "");
+          setActivitiesDescription(profileData.activitiesDescription || "");
         } else {
           setName("Hi, I am Muhammad Iqbal Firmansyah");
           setDescription("Fullstack JavaScript Developer...");
         }
+        
+        setProfileImages(imagesData);
       } catch (error) {
-        console.error("Failed to load profile:", error);
+        console.error("Failed to load profile or images:", error);
       } finally {
         setIsFetching(false);
       }
     }
     loadProfile();
   }, []);
+
+  async function handleAddImage(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedFile) return;
+    
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      
+      const result = await uploadProfileImage(formData);
+      if (result.success) {
+        setSelectedFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        const images = await getProfileImages();
+        setProfileImages(images);
+        success("Image uploaded to Cloudinary successfully!");
+      } else {
+        toastError(result.error || "Failed to upload image");
+      }
+    } catch {
+      toastError("An error occurred while uploading");
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  async function handleSetItemActive(id: string) {
+    try {
+      const result = await setActiveProfileImage(id);
+      if (result.success) {
+        const images = await getProfileImages();
+        setProfileImages(images);
+        success("Profile image set as active!");
+        router.refresh();
+      } else {
+        toastError("Failed to set active image");
+      }
+    } catch {
+      toastError("An error occurred");
+    }
+  }
+
+  async function handleConfirmDelete() {
+    if (!itemToDelete) return;
+    try {
+      const result = await deleteProfileImage(itemToDelete);
+      if (result.success) {
+        setProfileImages(prev => prev.filter(img => img.id !== itemToDelete));
+        success("Image deleted successfully!");
+        router.refresh();
+      } else {
+        toastError("Failed to delete image");
+      }
+    } catch {
+      toastError("An error occurred");
+    } finally {
+      setItemToDelete(null);
+    }
+  }
+
+  async function handleDeleteImage(id: string) {
+    setItemToDelete(id);
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -200,6 +278,172 @@ export default function EditProfilePage() {
               </div>
             </div>
           </div>
+
+          {/* New Card: Profile Image Management */}
+          <div className="bg-white rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)] p-[28px_32px] flex flex-col h-full mt-6">
+            <div className="border-l-[3px] border-[#1e293b] pl-3 mb-5 flex justify-between items-center">
+              <h3 className="text-[15px] font-semibold text-[#0f172a]">
+                Manage Profile Photos
+              </h3>
+            </div>
+            <div className="border-b border-[#f1f5f9] mb-5"></div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Left Side: Upload Form */}
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="block text-[12px] font-medium text-[#64748b] tracking-[0.03em] uppercase">
+                    Upload New Photo
+                  </label>
+                  
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className={cn(
+                      "border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-3",
+                      selectedFile 
+                        ? "border-[#1e293b] bg-slate-50" 
+                        : "border-[#e2e8f0] hover:border-[#1e293b] hover:bg-slate-50"
+                    )}
+                  >
+                    <input 
+                      type="file" 
+                      ref={fileInputRef}
+                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <div className={cn(
+                      "w-12 h-12 rounded-full flex items-center justify-center transition-colors",
+                      selectedFile ? "bg-navy text-white" : "bg-slate-100 text-slate-400"
+                    )}>
+                      <Upload className="h-6 w-6" />
+                    </div>
+                    {selectedFile ? (
+                      <div>
+                        <p className="text-[14px] font-semibold text-[#0f172a]">{selectedFile.name}</p>
+                        <p className="text-[12px] text-slate-400 mt-1">Ready to upload • {(selectedFile.size / 1024).toFixed(0)} KB</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-[14px] font-semibold text-[#0f172a]">Click to select photo</p>
+                        <p className="text-[12px] text-slate-400 mt-1">JPG, PNG or WEBP (max 10MB)</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {selectedFile && (
+                  <button
+                    type="button"
+                    onClick={handleAddImage}
+                    disabled={isUploading}
+                    className="w-full bg-[#1e293b] text-white py-3 rounded-lg text-[14px] font-semibold hover:bg-[#0f172a] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isUploading ? (
+                      <><Loader2 className="h-4 w-4 animate-spin" /> Uploading...</>
+                    ) : (
+                      "Start Upload"
+                    )}
+                  </button>
+                )}
+              </div>
+
+              {/* Right Side: Simple List */}
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                <label className="block text-[12px] font-medium text-[#64748b] tracking-[0.03em] mb-2 uppercase">
+                  EXISTING PHOTOS ({profileImages.length})
+                </label>
+                
+                {profileImages.length === 0 ? (
+                  <div className="text-center py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                    <ImageIcon className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                    <p className="text-[13px] text-slate-400">No photos uploaded yet.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2.5">
+                    {profileImages.map((img) => (
+                      <div 
+                        key={img.id} 
+                        className={cn(
+                          "flex items-center gap-3 p-3 rounded-xl border transition-all",
+                          img.isActive 
+                            ? "bg-emerald-50 border-emerald-100 ring-1 ring-emerald-200" 
+                            : "bg-white border-slate-100 hover:border-slate-200"
+                        )}
+                      >
+                        <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 border border-white shadow-sm">
+                          <img src={img.url} alt="Profile" className="w-full h-full object-cover" />
+                        </div>
+                        
+                        <div className="flex-1 min-w-0">
+                          {img.isActive && (
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase tracking-wider mb-1">
+                              <Check className="w-2.5 h-2.5" /> Active
+                            </span>
+                          )}
+                          <p className="text-[11px] text-slate-400 truncate max-w-[150px]">{img.url}</p>
+                        </div>
+
+                        <div className="flex gap-1.5">
+                          {!img.isActive && (
+                            <button
+                              type="button"
+                              onClick={() => handleSetItemActive(img.id)}
+                              className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-100/50 rounded-lg transition-colors"
+                              title="Set as Active"
+                            >
+                              <Check className="w-4 h-4" />
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteImage(img.id)}
+                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Elegant Delete Confirmation Modal */}
+          {itemToDelete && (
+            <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[400px] overflow-hidden animate-in zoom-in-95 duration-200">
+                <div className="p-6 text-center">
+                  <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AlertCircle className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">Delete Photo?</h3>
+                  <p className="text-slate-500 text-sm mb-6">
+                    This action cannot be undone. This photo will be permanently removed from your profile.
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setItemToDelete(null)}
+                      className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleConfirmDelete}
+                      className="flex-1 py-2.5 rounded-xl bg-red-500 text-white font-semibold text-sm hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
+                    >
+                      Delete Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Bottom Action Bar */}
           <div className="mt-4 bg-white rounded-[16px] shadow-sm border border-slate-100 p-6 flex items-center justify-between">

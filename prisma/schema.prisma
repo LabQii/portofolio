@@ -50,6 +50,14 @@ model CV {
   updatedAt DateTime @updatedAt
 }
 
+model ProfileImage {
+  id        String   @id @default(cuid())
+  url       String
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Admin {
   id       String @id @default(cuid())
   email    String @unique

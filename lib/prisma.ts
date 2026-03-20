@@ -10,6 +10,7 @@ function createPrismaClient() {
   return new PrismaClient({ adapter });
 }
 
+// Prisma singleton to prevent connection leaks
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
