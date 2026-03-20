@@ -17,7 +17,14 @@ export default function WhatsAppFloat() {
       title="Chat with me on WhatsApp"
     >
       <div className="relative w-[42px] h-[42px]">
-        <Image src="/images/whatsapp-icon.png" alt="WhatsApp" fill className="object-contain" />
+        <Image
+          src="/images/whatsapp-icon.png"
+          alt="WhatsApp"
+          fill
+          className="object-contain"
+          loading="eager"
+          sizes="(max-width: 768px) 100vw, 33vw"
+        />
       </div>
     </a>
   );

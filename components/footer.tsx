@@ -1,22 +1,89 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Github, Linkedin, Instagram, Facebook } from "lucide-react";
+import { Github, Linkedin, Instagram, Facebook, Loader2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useState, useTransition } from "react";
+import { useToast } from "@/components/ui/toast";
 
 const socialLinks = [
-  { name: "GitHub", href: "https://github.com", icon: Github },
-  { name: "Facebook", href: "https://facebook.com", icon: Facebook },
-  { name: "Instagram", href: "https://instagram.com", icon: Instagram },
-  { name: "LinkedIn", href: "https://linkedin.com", icon: Linkedin },
+  { name: "GitHub", href: "https://github.com/LabQii", icon: Github, color: "hover:bg-[#24292e]" },
+  { name: "Facebook", href: "https://www.facebook.com/share/1CMSrW3JzB/", icon: Facebook, color: "hover:bg-[#1877f2]" },
+  { name: "Instagram", href: "https://www.instagram.com/iqbaallfir", icon: Instagram, color: "hover:bg-[#e4405f]" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/in/labqii", icon: Linkedin, color: "hover:bg-[#0a66c2]" },
 ];
 
 export default function Footer() {
   const pathname = usePathname();
+  const { success, error: toastError, info } = useToast();
+  const [isPending, startTransition] = useTransition();
+  const [errors, setErrors] = useState<Record<string, boolean>>({});
+
   if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
+
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      message: formData.get("message") as string,
+    };
+
+    const newErrors: Record<string, boolean> = {};
+    if (!data.name.trim()) {
+      newErrors.name = true;
+      toastError("Field Nama tidak boleh kosong");
+    }
+    if (!data.email.trim()) {
+      newErrors.email = true;
+      toastError("Field Email tidak boleh kosong");
+    } else if (!validateEmail(data.email)) {
+      newErrors.email = true;
+      toastError("Format email tidak valid");
+    }
+    if (!data.message.trim()) {
+      newErrors.message = true;
+      toastError("Field Pesan tidak boleh kosong");
+    }
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    startTransition(async () => {
+      try {
+        // REPLACE 'mqaebrda' with your actual Formspree Form ID
+        const response = await fetch("https://formspree.io/f/mqaebrda", {
+          method: "POST",
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          success("Pesan berhasil dikirim! Kami akan segera membalas.", { duration: 4000 });
+          form.reset();
+        } else {
+          toastError("Gagal mengirim pesan, coba lagi.", { autoDismiss: false });
+        }
+      } catch (error) {
+        toastError("Gagal mengirim pesan, coba lagi.", { autoDismiss: false });
+      }
+    });
+  };
 
   return (
     <footer className="border-t border-slate-200 relative overflow-hidden" id="contact" style={{ background: "var(--gradient-hero)" }}>
@@ -37,14 +104,14 @@ export default function Footer() {
             <p className="text-slate-600 text-lg mb-8">
               Satisfied with me? Please contact me
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mb-10">
               {socialLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-black text-white p-2.5 rounded hover:bg-black/80 transition-colors"
+                  className={`bg-[#0f172a] text-white p-2.5 rounded transition-all transform hover:scale-110 ${link.color}`}
                 >
                   <link.icon className="h-6 w-6 stroke-[1.5]" />
                   <span className="sr-only">{link.name}</span>
@@ -58,13 +125,14 @@ export default function Footer() {
             <h3 className="text-[1.25rem] font-medium text-slate-800 mb-6">
               Contact me, let's make magic together
             </h3>
-            <form className="space-y-4">
+            <form onSubmit={handleContactSubmit} className="space-y-4">
               <div>
                 <Label htmlFor="name" className="sr-only">Name</Label>
                 <Input 
                   id="name" 
+                  name="name"
                   placeholder="Name" 
-                  className="bg-white border-slate-300 focus-visible:ring-navy/20 text-base h-12"
+                  className={`bg-white border-slate-300 focus-visible:ring-navy/20 text-base h-12 transition-colors ${errors.name ? "border-red-500 bg-red-50/10" : ""}`}
                 />
               </div>
               <div>
@@ -72,20 +140,33 @@ export default function Footer() {
                 <Input 
                   type="email" 
                   id="email" 
+                  name="email"
                   placeholder="Email" 
-                  className="bg-white border-slate-300 focus-visible:ring-navy/20 text-base h-12"
+                  className={`bg-white border-slate-300 focus-visible:ring-navy/20 text-base h-12 transition-colors ${errors.email ? "border-red-500 bg-red-50/10" : ""}`}
                 />
               </div>
               <div>
                 <Label htmlFor="message" className="sr-only">Message</Label>
                 <Textarea 
                   id="message" 
+                  name="message"
                   placeholder="Message" 
-                  className="bg-white border-slate-300 focus-visible:ring-navy/20 resize-none min-h-[120px] text-base"
+                  className={`bg-white border-slate-300 focus-visible:ring-navy/20 resize-none min-h-[120px] text-base transition-colors ${errors.message ? "border-red-500 bg-red-50/10" : ""}`}
                 />
               </div>
-              <Button type="submit" className="bg-navy hover:bg-navy/90 text-white min-w-[120px] rounded h-11 text-base font-semibold">
-                Send
+              <Button 
+                type="submit" 
+                disabled={isPending}
+                className="bg-navy hover:bg-navy/90 text-white min-w-[140px] rounded h-11 text-base font-semibold flex items-center justify-center gap-2"
+              >
+                {isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Mengirim...
+                  </>
+                ) : (
+                  "Send Message"
+                )}
               </Button>
             </form>
           </div>

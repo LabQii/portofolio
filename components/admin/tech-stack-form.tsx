@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Loader2, Upload, Trash2, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { createOrUpdateTechStack, deleteTechStack } from "@/app/actions/tech-stack-actions";
-import AdminAlert from "./admin-alert";
+import { useToast } from "@/components/ui/toast";
+import { useConfirm } from "@/components/ui/confirm-modal";
 
 type TechStackItem = { id: string; name: string; customLogoUrl: string | null };
 
@@ -14,20 +15,33 @@ const labelCls = "block text-[11px] font-semibold text-[#64748b] uppercase track
 
 export default function TechStackAdminForm({ techStacks }: { techStacks: TechStackItem[] }) {
   const router = useRouter();
+  const { success, error: toastError } = useToast();
+  const confirm = useConfirm();
   const [isPending, startTransition] = useTransition();
   const [editingTech, setEditingTech] = useState<TechStackItem | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [alert, setAlert] = useState<{ open: boolean; type: "success" | "error"; title: string }>({ open: false, type: "success", title: "" });
 
   const handleEdit = (tech: TechStackItem) => { setEditingTech(tech); setPreview(tech.customLogoUrl); };
   const handleCancelEdit = () => { setEditingTech(null); setPreview(null); };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete "${name}"?`)) return;
+    const ok = await confirm({
+      title: "Delete Tech Stack",
+      message: `Are you sure you want to delete "${name}"? this cannot be undone.`,
+      confirmLabel: "Delete",
+      type: "danger"
+    });
+    
+    if (!ok) return;
+
     startTransition(async () => {
       const result = await deleteTechStack(id);
-      if (result.success) { if (editingTech?.id === id) handleCancelEdit(); router.refresh(); }
-      else { setAlert({ open: true, type: "error", title: result.error || "Delete failed." }); }
+      if (result.success) { 
+        if (editingTech?.id === id) handleCancelEdit(); 
+        success(`"${name}" deleted successfully!`);
+        router.refresh(); 
+      }
+      else { toastError(result.error || "Delete failed."); }
     });
   };
 
@@ -41,17 +55,15 @@ export default function TechStackAdminForm({ techStacks }: { techStacks: TechSta
         handleCancelEdit();
         router.refresh();
         (e.target as HTMLFormElement).reset();
-        setAlert({ open: true, type: "success", title: "Tech stack saved successfully!" });
+        success("Tech stack saved successfully!");
       } else {
-        setAlert({ open: true, type: "error", title: result.error || "Failed to save." });
+        toastError(result.error || "Failed to save.");
       }
     });
   };
 
   return (
     <>
-      <AdminAlert open={alert.open} type={alert.type} title={alert.title} onClose={() => setAlert(a => ({ ...a, open: false }))} />
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         {/* Existing Stacks Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">

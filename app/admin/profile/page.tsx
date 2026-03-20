@@ -5,8 +5,10 @@ import { updateProfile, getProfile } from "@/app/actions/profile";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AdminBreadcrumb from "@/components/admin/admin-breadcrumb";
+import { useToast } from "@/components/ui/toast";
 
 export default function EditProfilePage() {
+  const { success, error: toastError } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [name, setName] = useState("");
@@ -43,7 +45,7 @@ export default function EditProfilePage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !description.trim()) { alert("Name and description are required."); return; }
+    if (!name.trim() || !description.trim()) { toastError("Name and description are required."); return; }
     setIsLoading(true);
     try {
       const result = await updateProfile({
@@ -54,10 +56,13 @@ export default function EditProfilePage() {
         activitiesTitle,
         activitiesDescription
       });
-      if (result.success) { router.refresh(); alert("Profile updated successfully!"); }
-      else { alert(result.error || "Failed to update profile"); }
+      if (result.success) { 
+        router.refresh(); 
+        success("Profile updated successfully!"); 
+      }
+      else { toastError(result.error || "Failed to update profile"); }
     } catch {
-      alert("An unexpected error occurred");
+      toastError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }

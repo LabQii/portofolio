@@ -3,7 +3,7 @@
 import { useState, useTransition, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, X } from "lucide-react";
-import AdminAlert from "./admin-alert";
+import { useToast } from "@/components/ui/toast";
 
 type Experience = {
   id: string; category: string; period: string; title: string;
@@ -23,11 +23,11 @@ interface ExperienceFormProps {
 
 export default function ExperienceForm({ experience, action, submitLabel = "Save Experience" }: ExperienceFormProps) {
   const router = useRouter();
+  const { success, error: toastError } = useToast();
   const [isPending, startTransition] = useTransition();
   const [tags, setTags] = useState<string[]>(experience?.tags ?? []);
   const [tagInput, setTagInput] = useState("");
   const [featured, setFeatured] = useState(experience?.featured ?? false);
-  const [alert, setAlert] = useState<{ open: boolean; type: "success" | "error"; title: string }>({ open: false, type: "success", title: "" });
 
   const addTag = () => {
     const val = tagInput.trim();
@@ -43,14 +43,17 @@ export default function ExperienceForm({ experience, action, submitLabel = "Save
     formData.set("featured", featured ? "on" : "");
     startTransition(async () => {
       const result = await action(formData);
-      if (result.success) { router.push("/admin/experiences"); router.refresh(); }
-      else { setAlert({ open: true, type: "error", title: result.error ?? "Something went wrong." }); }
+      if (result.success) { 
+        success(experience ? "Experience updated successfully!" : "Experience created successfully!");
+        router.push("/admin/experiences"); 
+        router.refresh(); 
+      }
+      else { toastError(result.error ?? "Something went wrong."); }
     });
   };
 
   return (
     <>
-      <AdminAlert open={alert.open} type={alert.type} title={alert.title} onClose={() => setAlert(a => ({ ...a, open: false }))} />
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Title + Organization */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

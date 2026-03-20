@@ -81,7 +81,7 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
                       transition-all duration-500 hover:scale-[1.03]
                       ${isActive ? 'grayscale-0' : 'grayscale'}
                     `}
-                    sizes="(max-width: 768px) 100vw, 65vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
                 <div 

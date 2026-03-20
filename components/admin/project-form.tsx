@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, X, Upload } from "lucide-react";
 import Image from "next/image";
 import type { Project } from "@prisma/client";
-import AdminAlert from "./admin-alert";
+import { useToast } from "@/components/ui/toast";
 
 const CATEGORIES = ["Website", "UI/UX", "Assignment", "Android"];
 const TECH_COLORS = [
@@ -24,6 +24,7 @@ interface ProjectFormProps {
 
 export default function ProjectForm({ project, action, submitLabel = "Save Project" }: ProjectFormProps) {
   const router = useRouter();
+  const { success, error: toastError } = useToast();
   const [isPending, startTransition] = useTransition();
   const [tags, setTags] = useState<string[]>(project?.tags ?? []);
   const [techStack, setTechStack] = useState<string[]>(project?.techStack ?? []);
@@ -31,7 +32,6 @@ export default function ProjectForm({ project, action, submitLabel = "Save Proje
   const [techInput, setTechInput] = useState("");
   const [thumbnail, setThumbnail] = useState<string | null>(project?.thumbnail ?? null);
   const [featured, setFeatured] = useState(project?.featured ?? false);
-  const [alert, setAlert] = useState<{ open: boolean; type: "success" | "error"; title: string }>({ open: false, type: "success", title: "" });
 
   const addTag = () => { if (tagInput.trim()) { setTags([...tags, tagInput.trim()]); setTagInput(""); } };
   const removeTag = (t: string) => setTags(tags.filter((x) => x !== t));
@@ -53,22 +53,17 @@ export default function ProjectForm({ project, action, submitLabel = "Save Proje
     startTransition(async () => {
       const result = await action(formData);
       if (result.success) {
+        success(project ? "Project updated successfully!" : "Project created successfully!");
         router.push("/admin/projects");
         router.refresh();
       } else {
-        setAlert({ open: true, type: "error", title: "Something went wrong. Please try again." });
+        toastError("Something went wrong. Please try again.");
       }
     });
   };
 
   return (
     <>
-      <AdminAlert
-        open={alert.open}
-        type={alert.type}
-        title={alert.title}
-        onClose={() => setAlert(a => ({ ...a, open: false }))}
-      />
       <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
         {/* Title + Slug */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Upload } from "lucide-react";
 import Image from "next/image";
 import type { Post } from "@prisma/client";
-import AdminAlert from "./admin-alert";
+import { useToast } from "@/components/ui/toast";
 
 const CATEGORIES = ["Event", "Achievement", "Experience", "Certification", "Other"];
 const cls = "w-full border border-[#e2e8f0] rounded-lg px-[14px] py-[10px] text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#1e293b] focus:shadow-[0_0_0_3px_rgba(30,41,59,0.08)] transition-all bg-white";
@@ -19,9 +19,9 @@ interface PostFormProps {
 
 export default function PostForm({ post, action, submitLabel = "Save Post" }: PostFormProps) {
   const router = useRouter();
+  const { success, error: toastError } = useToast();
   const [isPending, startTransition] = useTransition();
   const [thumbnail, setThumbnail] = useState<string | null>(post?.thumbnail ?? null);
-  const [alert, setAlert] = useState<{ open: boolean; type: "success" | "error"; title: string }>({ open: false, type: "success", title: "" });
 
   const generateSlug = (e: React.ChangeEvent<HTMLInputElement>) => {
     const slug = e.target.value.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
@@ -34,14 +34,17 @@ export default function PostForm({ post, action, submitLabel = "Save Post" }: Po
     const formData = new FormData(e.currentTarget);
     startTransition(async () => {
       const result = await action(formData);
-      if (result.success) { router.push("/admin/posts"); router.refresh(); }
-      else { setAlert({ open: true, type: "error", title: "Something went wrong. Please try again." }); }
+      if (result.success) { 
+        success(post ? "Post updated successfully!" : "Post created successfully!");
+        router.push("/admin/posts"); 
+        router.refresh(); 
+      }
+      else { toastError("Something went wrong. Please try again."); }
     });
   };
 
   return (
     <>
-      <AdminAlert open={alert.open} type={alert.type} title={alert.title} onClose={() => setAlert(a => ({ ...a, open: false }))} />
       <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
         {/* Title + Slug */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

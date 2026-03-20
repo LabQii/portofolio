@@ -6,15 +6,33 @@ import { Edit, Trash2, Star, Eye } from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
 import type { Project } from "@prisma/client";
+import { useConfirm } from "@/components/ui/confirm-modal";
+import { useToast } from "@/components/ui/toast";
 
 export default function AdminProjectTable({ projects }: { projects: Project[] }) {
+  const confirm = useConfirm();
+  const { success, error: toastError } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this project? This cannot be undone.")) return;
+  const handleDelete = async (id: string, title: string) => {
+    const ok = await confirm({
+      title: "Delete Project",
+      message: `Are you sure you want to delete "${title}"? This cannot be undone.`,
+      confirmLabel: "Delete",
+      type: "danger"
+    });
+
+    if (!ok) return;
+
     setDeletingId(id);
-    await deleteProject(id);
-    setDeletingId(null);
+    try {
+      await deleteProject(id);
+      success("Project deleted successfully!");
+    } catch (err) {
+      toastError("Failed to delete project.");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   if (projects.length === 0) {
@@ -71,7 +89,7 @@ export default function AdminProjectTable({ projects }: { projects: Project[] })
                   <button
                     className="p-1.5 rounded-lg text-[#94a3b8] hover:text-[#ef4444] hover:bg-red-50 transition-colors disabled:opacity-40"
                     disabled={deletingId === project.id}
-                    onClick={() => handleDelete(project.id)}
+                    onClick={() => handleDelete(project.id, project.title)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

@@ -3,21 +3,21 @@
 import { useState, useTransition, useRef } from "react";
 import { uploadCV } from "@/app/actions/cv-actions";
 import { Upload, FileText, CheckCircle, Loader2, AlertCircle, Download } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
 
 export default function CVUploadClient({ currentCV }: { currentCV: { fileUrl: string; fileName: string; updatedAt: Date } | null }) {
+  const { success, error: toastError } = useToast();
   const [isPending, startTransition] = useTransition();
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [result, setResult] = useState<{ success: boolean; error?: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
     if (!file.name.endsWith(".pdf")) {
-      setResult({ success: false, error: "Only PDF files are accepted." });
+      toastError("Only PDF files are accepted.");
       return;
     }
     setSelectedFile(file);
-    setResult(null);
   };
 
   const handleSubmit = () => {
@@ -26,8 +26,12 @@ export default function CVUploadClient({ currentCV }: { currentCV: { fileUrl: st
     formData.append("cv", selectedFile);
     startTransition(async () => {
       const res = await uploadCV(formData);
-      setResult(res);
-      if (res.success) setSelectedFile(null);
+      if (res.success) {
+        success("CV uploaded successfully!");
+        setSelectedFile(null);
+      } else {
+        toastError(res.error || "Failed to upload CV.");
+      }
     });
   };
 
@@ -79,14 +83,6 @@ export default function CVUploadClient({ currentCV }: { currentCV: { fileUrl: st
           </div>
         )}
       </div>
-
-      {/* Result */}
-      {result && (
-        <div className={`flex items-center gap-3 p-4 rounded-xl border ${result.success ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-700"}`}>
-          {result.success ? <CheckCircle className="h-4 w-4 flex-shrink-0" /> : <AlertCircle className="h-4 w-4 flex-shrink-0" />}
-          <span className="text-[13px] font-medium">{result.success ? "CV uploaded successfully!" : result.error}</span>
-        </div>
-      )}
 
       <button
         onClick={handleSubmit}

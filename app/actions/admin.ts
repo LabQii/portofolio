@@ -64,3 +64,38 @@ export async function deleteAdmin(id: string, currentUserId: string) {
     return { success: false, error: "Failed to delete admin" };
   }
 }
+
+export async function updateAdmin(id: string, data: { email?: string; password?: string }) {
+  try {
+    const updateData: any = {};
+    
+    if (data.email) {
+      const existing = await prisma.admin.findFirst({
+        where: { 
+          email: data.email,
+          NOT: { id }
+        },
+      });
+
+      if (existing) {
+        return { success: false, error: "Admin with this email already exists" };
+      }
+      updateData.email = data.email;
+    }
+
+    if (data.password) {
+      updateData.password = await bcrypt.hash(data.password, 10);
+    }
+
+    await prisma.admin.update({
+      where: { id },
+      data: updateData,
+    });
+
+    revalidatePath("/admin/users");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating admin:", error);
+    return { success: false, error: "Failed to update admin" };
+  }
+}

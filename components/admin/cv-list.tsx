@@ -5,6 +5,8 @@ import { formatDate } from "@/lib/utils";
 import { FileText, CheckCircle, Trash2, Loader2, Pencil, Check, X, Download } from "lucide-react";
 import { setActiveCV, deleteCV, renameCV } from "@/app/actions/cv-actions";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/toast";
+import { useConfirm } from "@/components/ui/confirm-modal";
 
 interface CVListClientProps {
   cvs: {
@@ -18,6 +20,8 @@ interface CVListClientProps {
 
 export default function CVListClient({ cvs }: CVListClientProps) {
   const router = useRouter();
+  const { success, error: toastError } = useToast();
+  const confirm = useConfirm();
   const [isPending, startTransition] = useTransition();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -25,17 +29,30 @@ export default function CVListClient({ cvs }: CVListClientProps) {
   const handleSetActive = (id: string) => {
     startTransition(async () => {
       await setActiveCV(id);
+      success("CV set as active!");
       router.refresh();
     });
   };
 
-  const handleDelete = (id: string, fileUrl: string) => {
-    if (confirm("Are you sure you want to delete this CV?")) {
-      startTransition(async () => {
+  const handleDelete = async (id: string, fileUrl: string) => {
+    const ok = await confirm({
+      title: "Delete CV",
+      message: "Are you sure you want to delete this CV? This action cannot be undone.",
+      confirmLabel: "Delete",
+      type: "danger"
+    });
+    
+    if (!ok) return;
+
+    startTransition(async () => {
+      try {
         await deleteCV(id, fileUrl);
+        success("CV deleted successfully!");
         router.refresh();
-      });
-    }
+      } catch (err) {
+        toastError("Failed to delete CV.");
+      }
+    });
   };
 
   const handleEditClick = (id: string, currentName: string) => {
@@ -50,9 +67,14 @@ export default function CVListClient({ cvs }: CVListClientProps) {
   const handleRenameSubmit = (id: string) => {
     if (!editingName.trim()) return;
     startTransition(async () => {
-      await renameCV(id, editingName);
-      setEditingId(null);
-      router.refresh();
+      try {
+        await renameCV(id, editingName);
+        success("CV renamed successfully!");
+        setEditingId(null);
+        router.refresh();
+      } catch (err) {
+        toastError("Failed to rename CV.");
+      }
     });
   };
 

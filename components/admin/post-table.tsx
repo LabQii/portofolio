@@ -6,15 +6,33 @@ import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
 import type { Post } from "@prisma/client";
+import { useConfirm } from "@/components/ui/confirm-modal";
+import { useToast } from "@/components/ui/toast";
 
 export default function AdminPostTable({ posts }: { posts: Post[] }) {
+  const confirm = useConfirm();
+  const { success, error: toastError } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this post? This cannot be undone.")) return;
+  const handleDelete = async (id: string, title: string) => {
+    const ok = await confirm({
+      title: "Delete Post",
+      message: `Are you sure you want to delete "${title}"? This cannot be undone.`,
+      confirmLabel: "Delete",
+      type: "danger"
+    });
+
+    if (!ok) return;
+
     setDeletingId(id);
-    await deletePost(id);
-    setDeletingId(null);
+    try {
+      await deletePost(id);
+      success("Post deleted successfully!");
+    } catch (err) {
+      toastError("Failed to delete post.");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   if (posts.length === 0) {
@@ -53,7 +71,7 @@ export default function AdminPostTable({ posts }: { posts: Post[] }) {
                   <button
                     className="p-1.5 rounded-lg text-[#94a3b8] hover:text-[#ef4444] hover:bg-red-50 transition-colors disabled:opacity-40"
                     disabled={deletingId === post.id}
-                    onClick={() => handleDelete(post.id)}
+                    onClick={() => handleDelete(post.id, post.title)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

@@ -8,8 +8,10 @@ import { createAdmin } from "@/app/actions/admin";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useToast } from "@/components/ui/toast";
 
 export default function NewAdminPage() {
+  const { success, error: toastError } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,17 +21,17 @@ export default function NewAdminPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
-      alert("Email and password are required.");
+      toastError("Email and password are required.");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      toastError("Passwords do not match.");
       return;
     }
 
     if (password.length < 6) {
-      alert("Password must be at least 6 characters long.");
+      toastError("Password must be at least 6 characters long.");
       return;
     }
 
@@ -37,14 +39,14 @@ export default function NewAdminPage() {
     try {
       const result = await createAdmin({ email, password });
       if (result.success) {
-        alert("Admin created successfully!");
+        success("Admin created successfully!");
         router.push("/admin/users");
       } else {
-        alert(result.error || "Failed to create admin.");
+        toastError(result.error || "Failed to create admin.");
       }
     } catch (error) {
       console.error(error);
-      alert("An unexpected error occurred.");
+      toastError("An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }

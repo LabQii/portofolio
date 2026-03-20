@@ -3,6 +3,8 @@ import AdminNavbar from "@/components/admin/admin-navbar";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { ConfirmProvider } from "@/components/ui/confirm-modal";
+import { ToastProvider } from "@/components/ui/toast";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -24,7 +26,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             }} 
           />
           <div className="relative z-10 w-full min-h-full">
-            {children}
+            <ConfirmProvider>
+              <ToastProvider>
+                {children}
+              </ToastProvider>
+            </ConfirmProvider>
           </div>
         </main>
       </div>

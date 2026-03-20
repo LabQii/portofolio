@@ -18,13 +18,13 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId }: Her
   const defaultDesc = "Fullstack JavaScript Developer with hands-on experience in Google Apps Script automation and web application development for operational and business needs. He has a strong interest in Front-End Development and continuously improves his skills in Laravel and modern web technologies. Experienced in supporting internal systems, improving workflow efficiency, and mentoring learners in coding environments.";
 
   return (
-    <section className="relative overflow-hidden min-h-[90vh] flex items-center pt-12 pb-20 md:py-24 lg:py-0" style={{ background: "var(--gradient-hero)" }}>
+    <section className="relative overflow-hidden min-h-[90vh] flex items-center pt-20 pb-20 md:pt-24 md:pb-24 lg:py-0" style={{ background: "var(--gradient-hero)" }}>
       <div
         className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]"
         style={{ backgroundColor: "#1a3a5c" }}
       ></div>
       <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-14">
 
           <div className="w-full md:max-w-[60%] lg:max-w-[50%] text-center md:text-left relative z-10">
             <motion.h1
