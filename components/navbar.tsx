@@ -36,8 +36,8 @@ export default function Navbar() {
       <nav
         className={cn(
           "fixed top-0 z-50 w-full transition-all duration-300 ease-in-out",
-          scrolled 
-            ? "bg-white/65 backdrop-blur-[16px] border-b border-white/30 shadow-[0_2px_20px_rgba(0,0,0,0.06)]" 
+          scrolled
+            ? "bg-white/65 backdrop-blur-[16px] border-b border-white/30 shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
             : "bg-white border-b border-slate-100 shadow-none"
         )}
         style={scrolled ? { WebkitBackdropFilter: "blur(16px)" } : {}}
@@ -47,11 +47,11 @@ export default function Navbar() {
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-2.5 text-[22px] font-bold tracking-tight text-navy group">
                 <div className="relative w-8 h-8 flex items-center justify-center bg-slate-50 rounded-lg p-1.5 border border-slate-100 group-hover:border-navy/20 transition-all">
-                  <Image 
-                    src="/images/icon.jpg" 
-                    alt="Labqii Tech Logo" 
-                    width={24} 
-                    height={24} 
+                  <Image
+                    src="/images/icon.png"
+                    alt="Labqii Tech Logo"
+                    width={24}
+                    height={24}
                     className="object-contain"
                   />
                 </div>

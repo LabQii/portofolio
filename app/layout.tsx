@@ -9,7 +9,7 @@ import WhatsAppFloat from "@/components/whatsapp-float";
 import Providers from "@/components/providers";
 import PageLoader from "@/components/page-loader";
 
-const font = Poppins({ 
+const font = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: "M Iqbal Firmansyah | Portfolio",
   description: "Clean, minimal, and professional portfolio of M Iqbal Firmansyah - Web Developer & UI Designer.",
   icons: {
-    icon: "/images/icon.jpg",
+    icon: "/images/icon.png",
   },
 };
 
