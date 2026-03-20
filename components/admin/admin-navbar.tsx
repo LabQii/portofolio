@@ -10,11 +10,11 @@ export default function AdminNavbar() {
     <header className="h-[64px] bg-white border-b border-[#e2e8f0] flex items-center justify-between px-6 shrink-0 relative z-20">
       <Link href="/admin" className="flex items-center gap-2.5 text-[18px] font-bold tracking-tight text-[#0f172a] group">
         <div className="relative w-8 h-8 flex items-center justify-center bg-slate-50 rounded-lg p-1.5 border border-slate-100 group-hover:border-[#0f172a]/20 transition-all">
-          <Image
-            src="/images/icon.png"
-            alt="Logo"
-            width={20}
-            height={20}
+          <Image 
+            src="/images/logo-q.png" 
+            alt="Logo" 
+            width={20} 
+            height={20} 
             className="object-contain"
           />
         </div>
