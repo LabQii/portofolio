@@ -7,6 +7,7 @@ import Image from "next/image";
 import { createOrUpdateTechStack, deleteTechStack } from "@/app/actions/tech-stack-actions";
 import { useToast } from "@/components/ui/toast";
 import { useConfirm } from "@/components/ui/confirm-modal";
+import { cn } from "@/lib/utils";
 
 type TechStackItem = { id: string; name: string; customLogoUrl: string | null };
 
