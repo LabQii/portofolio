@@ -26,6 +26,9 @@ export async function createOrUpdateTechStack(formData: FormData) {
     }
 
     if (file && file.size > 0) {
+      if (file.size > 5 * 1024 * 1024) {
+        return { success: false, error: "Logo file size must be less than 5MB" };
+      }
       // Convert file to base64 for Cloudinary
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);

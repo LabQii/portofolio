@@ -122,8 +122,8 @@ export default function TechStackAdminForm({ techStacks }: { techStacks: TechSta
                 placeholder="e.g. React Native"
                 defaultValue={editingTech?.name ?? ""}
                 key={editingTech?.id ?? "new"}
-                disabled={!!editingTech}
-                className={cls}
+                readOnly={!!editingTech}
+                className={cn(cls, editingTech && "bg-slate-50 cursor-not-allowed")}
               />
               {editingTech && <p className="text-[12px] text-[#94a3b8] mt-1.5">Name cannot be changed while editing.</p>}
             </div>
@@ -134,7 +134,17 @@ export default function TechStackAdminForm({ techStacks }: { techStacks: TechSta
                 className="border-2 border-dashed border-[#cbd5e1] rounded-xl p-8 text-center cursor-pointer hover:border-[#1e293b] hover:bg-[#f8fafc] transition-all relative"
                 onClick={() => document.getElementById("logo-input")?.click()}
               >
-                <input id="logo-input" name="logo" type="file" accept="image/png, image/svg+xml, image/webp, image/jpeg" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPreview(URL.createObjectURL(f)); }} className="hidden" />
+                <input id="logo-input" name="logo" type="file" accept="image/png, image/svg+xml, image/webp, image/jpeg" onChange={(e) => { 
+                  const f = e.target.files?.[0]; 
+                  if (f) {
+                    if (f.size > 5 * 1024 * 1024) {
+                      toastError("Logo size must be less than 5MB.");
+                      e.target.value = "";
+                      return;
+                    }
+                    setPreview(URL.createObjectURL(f)); 
+                  }
+                }} className="hidden" />
                 {preview ? (
                   <div className="flex flex-col items-center gap-3">
                     <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-[#e2e8f0] shadow-sm bg-white">
