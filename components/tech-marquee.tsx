@@ -19,9 +19,12 @@ export default function TechMarquee({
   const row2 = techStacks.slice(mid);
 
   const renderRow = (items: string[], direction: "left" | "right", duration: string) => {
+    if (!items || items.length === 0) return null;
+
     // We need the items to span fully across ultrawide screens.
     // If the user only has a few items, duplicating them 2x is not enough to fill the width.
     let repeatCount = Math.max(4, Math.ceil(40 / items.length));
+    if (!isFinite(repeatCount)) repeatCount = 4;
     if (repeatCount % 2 !== 0) repeatCount++; // ensure it's even for -50% translateX loop
     const multipliedItems = Array(repeatCount).fill(items).flat() as string[];
 
