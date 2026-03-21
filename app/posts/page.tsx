@@ -5,12 +5,10 @@ import PublicBreadcrumb from "@/components/public-breadcrumb";
 import { getProfile } from "@/app/actions/profile";
 
 export default async function PostsPage() {
-  const [posts, profile] = await Promise.all([
-    prisma.post.findMany({
-      orderBy: { createdAt: "desc" },
-    }),
-    getProfile(),
-  ]);
+  const posts = await prisma.post.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  const profile = await getProfile();
 
   return (
     <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>

@@ -14,17 +14,15 @@ export default async function ProjectsPage({
 }) {
   const { category, tag } = await searchParams;
 
-  const [projects, customTechLogos, profile] = await Promise.all([
-    prisma.project.findMany({
-      where: {
-        ...(category ? { category } : {}),
-        ...(tag ? { tags: { has: tag } } : {}),
-      },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.techStack.findMany(),
-    getProfile(),
-  ]);
+  const projects = await prisma.project.findMany({
+    where: {
+      ...(category ? { category } : {}),
+      ...(tag ? { tags: { has: tag } } : {}),
+    },
+    orderBy: { createdAt: "desc" },
+  });
+  const customTechLogos = await prisma.techStack.findMany();
+  const profile = await getProfile();
 
   const allCategories = ["Website", "UI/UX", "Assignment", "Android"];
 

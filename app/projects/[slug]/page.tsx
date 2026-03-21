@@ -31,13 +31,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  const [project, customTechLogos] = await Promise.all([
-    prisma.project.update({
-      where: { slug },
-      data: { views: { increment: 1 } },
-    }),
-    prisma.techStack.findMany(),
-  ]);
+  const project = await prisma.project.update({
+    where: { slug },
+    data: { views: { increment: 1 } },
+  });
+  const customTechLogos = await prisma.techStack.findMany();
 
   if (!project) notFound();
 
