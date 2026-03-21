@@ -34,9 +34,9 @@ export default function ProjectForm({ project, action, submitLabel = "Save Proje
   const [featured, setFeatured] = useState(project?.featured ?? false);
 
   const addTag = () => { if (tagInput.trim()) { setTags([...tags, tagInput.trim()]); setTagInput(""); } };
-  const removeTag = (t: string) => setTags(tags.filter((x) => x !== t));
+  const removeTag = (index: number) => setTags(tags.filter((_, i) => i !== index));
   const addTech = () => { if (techInput.trim()) { setTechStack([...techStack, techInput.trim()]); setTechInput(""); } };
-  const removeTech = (t: string) => setTechStack(techStack.filter((x) => x !== t));
+  const removeTech = (index: number) => setTechStack(techStack.filter((_, i) => i !== index));
 
   const generateSlug = (e: React.ChangeEvent<HTMLInputElement>) => {
     const slug = e.target.value.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
@@ -113,9 +113,9 @@ export default function ProjectForm({ project, action, submitLabel = "Save Proje
         <div>
           <label className={label}>Tags</label>
           <div className="border border-[#e2e8f0] rounded-lg px-3 py-2 min-h-[44px] flex flex-wrap gap-2 items-center focus-within:border-[#1e293b] focus-within:shadow-[0_0_0_3px_rgba(30,41,59,0.08)] transition-all">
-            {tags.map((tag) => (
-              <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#f1f5f9] rounded-full text-[12px] font-medium text-[#0f172a]">
-                {tag}<button type="button" onClick={() => removeTag(tag)} className="text-[#94a3b8] hover:text-[#ef4444]"><X className="h-3 w-3" /></button>
+            {tags.map((tag, i) => (
+              <span key={`${tag}-${i}`} className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#f1f5f9] rounded-full text-[12px] font-medium text-[#0f172a]">
+                {tag}<button type="button" onClick={() => removeTag(i)} className="text-[#94a3b8] hover:text-[#ef4444]"><X className="h-3 w-3" /></button>
               </span>
             ))}
             <input
@@ -134,8 +134,8 @@ export default function ProjectForm({ project, action, submitLabel = "Save Proje
           <label className={label}>Tech Stack</label>
           <div className="border border-[#e2e8f0] rounded-lg px-3 py-2 min-h-[44px] flex flex-wrap gap-2 items-center focus-within:border-[#1e293b] focus-within:shadow-[0_0_0_3px_rgba(30,41,59,0.08)] transition-all">
             {techStack.map((tech, i) => (
-              <span key={tech} className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-medium ${TECH_COLORS[i % TECH_COLORS.length]}`}>
-                {tech}<button type="button" onClick={() => removeTech(tech)} className="opacity-60 hover:opacity-100"><X className="h-3 w-3" /></button>
+              <span key={`${tech}-${i}`} className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-medium ${TECH_COLORS[i % TECH_COLORS.length]}`}>
+                {tech}<button type="button" onClick={() => removeTech(i)} className="opacity-60 hover:opacity-100"><X className="h-3 w-3" /></button>
               </span>
             ))}
             <input

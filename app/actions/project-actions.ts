@@ -22,8 +22,8 @@ export async function createProject(formData: FormData) {
   const description = formData.get("description") as string;
   const content = formData.get("content") as string;
   const category = formData.get("category") as string;
-  const tags = (formData.get("tags") as string).split(",").map((t) => t.trim()).filter(Boolean);
-  const techStack = (formData.get("techStack") as string).split(",").map((t) => t.trim()).filter(Boolean);
+  const tags = Array.from(new Set((formData.get("tags") as string).split(",").map((t) => t.trim()).filter(Boolean)));
+  const techStack = Array.from(new Set((formData.get("techStack") as string).split(",").map((t) => t.trim()).filter(Boolean)));
   const demoUrl = formData.get("demoUrl") as string | null;
   const videoUrl = formData.get("videoUrl") as string | null;
   const githubUrl = formData.get("githubUrl") as string | null;
@@ -84,8 +84,8 @@ export async function updateProject(id: string, formData: FormData) {
   const description = formData.get("description") as string;
   const content = formData.get("content") as string;
   const category = formData.get("category") as string;
-  const tags = (formData.get("tags") as string).split(",").map((t) => t.trim()).filter(Boolean);
-  const techStack = (formData.get("techStack") as string).split(",").map((t) => t.trim()).filter(Boolean);
+  const tags = Array.from(new Set((formData.get("tags") as string).split(",").map((t) => t.trim()).filter(Boolean)));
+  const techStack = Array.from(new Set((formData.get("techStack") as string).split(",").map((t) => t.trim()).filter(Boolean)));
   const demoUrl = formData.get("demoUrl") as string | null;
   const videoUrl = formData.get("videoUrl") as string | null;
   const githubUrl = formData.get("githubUrl") as string | null;

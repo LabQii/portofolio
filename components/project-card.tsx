@@ -177,7 +177,7 @@ export default function ProjectCard({
 
               return (
                 <div
-                  key={tech}
+                  key={`${tech}-${i}`}
                   ref={(el) => { itemRefs.current[i] = el; }}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border text-[13px] font-semibold shadow-sm transition-colors bg-slate-50 border-slate-200 text-slate-700 whitespace-nowrap shrink-0 ${!isVisible ? 'hidden' : ''}`}
                 >

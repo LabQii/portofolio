@@ -53,8 +53,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               <Badge variant="secondary" className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-600 border-transparent">
                 {project.category}
               </Badge>
-              {project.tags.map((tag) => (
-                <Badge key={tag} variant="outline">{tag}</Badge>
+              {project.tags.map((tag, i) => (
+                <Badge key={`${tag}-${i}`} variant="outline">{tag}</Badge>
               ))}
             </div>
             <h1 className="text-4xl font-bold tracking-tight mb-4">{project.title}</h1>
@@ -110,10 +110,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 <h2 className="text-xl font-bold m-0 text-navy">Tech Stack</h2>
               </div>
               <div className="flex flex-col gap-3">
-                {project.techStack.map((tech) => {
+                {project.techStack.map((tech, i) => {
                   const logoDetails = getTechLogoDetails(tech, customTechLogos);
                   return (
-                    <div key={tech} className="px-5 py-3 rounded-xl border text-sm font-medium flex items-center justify-start gap-3 transition-colors bg-slate-50 border-slate-200 text-slate-800 shadow-sm">
+                    <div key={`${tech}-${i}`} className="px-5 py-3 rounded-xl border text-sm font-medium flex items-center justify-start gap-3 transition-colors bg-slate-50 border-slate-200 text-slate-800 shadow-sm">
                       {logoDetails.type === 'initial' ? (
                         <div className="w-5 h-5 rounded bg-slate-200 flex items-center justify-center text-[11px] font-bold text-slate-600">
                           {logoDetails.initial}
