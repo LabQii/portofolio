@@ -25,9 +25,9 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
         style={{ backgroundColor: "#1a3a5c" }}
       ></div>
       <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-14">
+        <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-14">
 
-          <div className="w-full md:max-w-[60%] lg:max-w-[50%] text-center md:text-left relative z-10">
+          <div className="w-full lg:max-w-[50%] text-center lg:text-left relative z-10">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -48,7 +48,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-              className="flex flex-wrap items-center justify-center md:justify-start gap-4"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
             >
               <Button size="lg" asChild className="bg-navy hover:bg-navy/90 text-white rounded-md px-8 py-6 text-lg font-semibold shadow-md hover:shadow-lg transition-all">
                 <a
@@ -92,7 +92,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
-                className="absolute -top-6 left-1/2 -translate-x-1/2 hidden md:flex items-center gap-3 z-20 w-max"
+                className="absolute -top-6 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 z-20 w-max"
               >
                 <div className="flex items-center bg-white rounded-full px-3 py-1.5 shadow-md text-sm font-semibold text-slate-700">
                   <img src="https://cdn.simpleicons.org/nextdotjs" alt="Next.js" className="w-4 h-4 mr-1.5" />
@@ -130,7 +130,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex md:hidden items-center justify-center gap-2 z-20 w-max"
+              className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex lg:hidden items-center justify-center gap-2 z-20 w-max"
             >
               <div className="flex items-center bg-white rounded-full px-3 py-1.5 shadow-md text-[13px] font-semibold text-slate-700">
                 <img src="https://cdn.simpleicons.org/nextdotjs" alt="Next.js" className="w-3.5 h-3.5 mr-1.5" />
