@@ -30,6 +30,32 @@ export default function Navbar() {
   }, []);
 
   if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
+  
+  const handleScroll = (e: React.MouseEvent, href: string) => {
+    if (href.includes('#') && pathname === '/') {
+      e.preventDefault();
+      const id = href.split('#')[1];
+      const element = document.getElementById(id);
+      if (element) {
+        if (id === 'contact') {
+          // Robust scroll to bottom for footer to handle layout shifts
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth'
+          });
+          // Re-trigger scroll after most dynamic content has settled
+          setTimeout(() => {
+            window.scrollTo({
+              top: document.documentElement.scrollHeight,
+              behavior: 'smooth'
+            });
+          }, 500);
+        } else {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  };
 
   return (
     <>
@@ -66,13 +92,7 @@ export default function Navbar() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={(e) => {
-                      if (item.href.includes('#') && window.location.pathname === '/') {
-                        e.preventDefault();
-                        const id = item.href.split('#')[1];
-                        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }}
+                    onClick={(e) => handleScroll(e, item.href)}
                     className={cn(
                       "text-[14px] font-semibold transition-colors hover:text-navy/70",
                       pathname === item.href ? "text-navy" : "text-foreground"
@@ -147,7 +167,10 @@ export default function Navbar() {
                           ? "bg-slate-50 text-navy"
                           : "text-foreground hover:bg-slate-50"
                       )}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={(e) => {
+                        setIsMenuOpen(false);
+                        handleScroll(e, item.href);
+                      }}
                     >
                       {item.name}
                     </Link>

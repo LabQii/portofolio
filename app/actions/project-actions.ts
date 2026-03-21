@@ -25,6 +25,7 @@ export async function createProject(formData: FormData) {
   const tags = (formData.get("tags") as string).split(",").map((t) => t.trim()).filter(Boolean);
   const techStack = (formData.get("techStack") as string).split(",").map((t) => t.trim()).filter(Boolean);
   const demoUrl = formData.get("demoUrl") as string | null;
+  const videoUrl = formData.get("videoUrl") as string | null;
   const githubUrl = formData.get("githubUrl") as string | null;
   const featured = formData.get("featured") === "on";
   
@@ -66,6 +67,7 @@ export async function createProject(formData: FormData) {
       tags,
       techStack,
       demoUrl: demoUrl || null,
+      videoUrl: videoUrl || null,
       githubUrl: githubUrl || null,
       category,
       featured,
@@ -85,6 +87,7 @@ export async function updateProject(id: string, formData: FormData) {
   const tags = (formData.get("tags") as string).split(",").map((t) => t.trim()).filter(Boolean);
   const techStack = (formData.get("techStack") as string).split(",").map((t) => t.trim()).filter(Boolean);
   const demoUrl = formData.get("demoUrl") as string | null;
+  const videoUrl = formData.get("videoUrl") as string | null;
   const githubUrl = formData.get("githubUrl") as string | null;
   const featured = formData.get("featured") === "on";
   const slug = formData.get("slug") as string;
@@ -117,6 +120,7 @@ export async function updateProject(id: string, formData: FormData) {
       tags,
       techStack,
       demoUrl: demoUrl || null,
+      videoUrl: videoUrl || null,
       githubUrl: githubUrl || null,
       category,
       featured,

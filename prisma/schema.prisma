@@ -17,6 +17,7 @@ model Project {
   tags        String[]
   techStack   String[]
   demoUrl     String?
+  videoUrl    String?
   githubUrl   String?
   category    String
   featured    Boolean  @default(false)

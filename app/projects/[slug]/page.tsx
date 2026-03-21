@@ -11,6 +11,7 @@ import { formatDate } from "@/lib/utils";
 import ReactMarkdown from 'react-markdown';
 import { getTechLogoDetails } from "@/lib/tech-icons";
 import TechLogoImage from "@/components/tech-logo-image";
+import VideoDemoButton from "@/components/video-demo-button";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -74,15 +75,27 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           {/* Links */}
           <div className="flex flex-wrap gap-4 mb-12">
             {project.demoUrl && (
-              <Button asChild className="bg-navy hover:bg-navy/90 text-white rounded-xl px-6 h-11">
-                <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-medium">
+              <Button asChild className="bg-navy hover:bg-navy/90 text-white rounded-xl px-7 h-11 shadow-sm transition-all active:scale-[0.98]">
+                <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 font-semibold text-[15px]">
                   <ExternalLink className="h-4 w-4" /> Live Demo
                 </a>
               </Button>
             )}
+            
+            {project.videoUrl && (
+              <Button asChild className="bg-[#ff0000] hover:bg-[#dc2626] text-white border-transparent rounded-xl px-7 h-11 shadow-sm transition-all duration-200 active:scale-[0.98]">
+                <a href={project.videoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 font-semibold text-[15px]">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                  Video Demo
+                </a>
+              </Button>
+            )}
+
             {project.githubUrl && (
-              <Button variant="outline" asChild className="rounded-xl px-6 h-11 border-slate-200 hover:bg-slate-50">
-                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-medium text-slate-700">
+              <Button asChild className="bg-slate-800 hover:bg-slate-900 text-white rounded-xl px-7 h-11 shadow-sm transition-all active:scale-[0.98]">
+                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 font-semibold text-[15px]">
                   <Github className="h-4 w-4" /> Source Code
                 </a>
               </Button>

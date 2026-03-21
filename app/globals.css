@@ -27,6 +27,11 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem; /* Equivalent to h-20 (80px) for the navbar */
+}
+
+section[id] {
+  scroll-margin-top: 5rem;
 }
 
 body {

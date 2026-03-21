@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useToast } from "@/components/ui/toast";
 
 const socialLinks = [
@@ -23,6 +23,28 @@ export default function Footer() {
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
   if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
+
+  // Re-trigger scroll on mount if the hash is #contact to handle dynamic content loading
+  // This ensures that even on initial load, the user lands at the bottom of the page.
+  useEffect(() => {
+    if (window.location.hash === "#contact") {
+      const handleInitialScroll = () => {
+        setTimeout(() => {
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: "smooth",
+          });
+        }, 800);
+      };
+      
+      if (document.readyState === "complete") {
+        handleInitialScroll();
+      } else {
+        window.addEventListener("load", handleInitialScroll);
+        return () => window.removeEventListener("load", handleInitialScroll);
+      }
+    }
+  }, []);
 
   const validateEmail = (email: string) => {
     return String(email)

@@ -102,9 +102,10 @@ export default function ProjectForm({ project, action, submitLabel = "Save Proje
           </div>
         </div>
 
-        {/* Demo + GitHub URLs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Demo + Video + GitHub URLs */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div><label className={label}>Demo URL</label><input id="demoUrl" name="demoUrl" type="url" defaultValue={project?.demoUrl ?? ""} placeholder="https://..." className={cls} /></div>
+          <div><label className={label}>YouTube Video URL</label><input id="videoUrl" name="videoUrl" type="url" defaultValue={project?.videoUrl ?? ""} placeholder="https://youtube.com/..." className={cls} /></div>
           <div><label className={label}>GitHub URL</label><input id="githubUrl" name="githubUrl" type="url" defaultValue={project?.githubUrl ?? ""} placeholder="https://github.com/..." className={cls} /></div>
         </div>
 
