@@ -58,7 +58,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               ))}
             </div>
             <h1 className="text-4xl font-bold tracking-tight mb-4">{project.title}</h1>
-            <p className="text-xl text-muted-foreground leading-relaxed max-w-[900px]">{project.description}</p>
+            <p className="text-xl text-muted-foreground leading-relaxed max-w-[950px]">{project.description}</p>
             <div className="flex items-center gap-1 mt-3 text-sm text-muted-foreground">
               <Eye className="h-3.5 w-3.5" />
               <span>{project.views} views</span>
