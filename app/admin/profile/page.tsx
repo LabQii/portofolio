@@ -30,10 +30,8 @@ export default function EditProfilePage() {
   useEffect(() => {
     async function loadProfile() {
       try {
-        const [profileData, imagesData] = await Promise.all([
-          getProfile(),
-          getProfileImages()
-        ]);
+        const profileData = await getProfile();
+        const imagesData = await getProfileImages();
         
         if (profileData) {
           setName(profileData.name);

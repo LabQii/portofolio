@@ -11,14 +11,12 @@ export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
-  const [projectCount, postCount, cv, experienceCount, recentProjects, recentPosts] = await Promise.all([
-    prisma.project.count(),
-    prisma.post.count(),
-    prisma.cV.findFirst({ where: { isActive: true } }),
-    prisma.experience.count(),
-    prisma.project.findMany({ take: 4, orderBy: { createdAt: "desc" } }),
-    prisma.post.findMany({ take: 4, orderBy: { createdAt: "desc" } }),
-  ]);
+  const projectCount = await prisma.project.count();
+  const postCount = await prisma.post.count();
+  const cv = await prisma.cV.findFirst({ where: { isActive: true } });
+  const experienceCount = await prisma.experience.count();
+  const recentProjects = await prisma.project.findMany({ take: 4, orderBy: { createdAt: "desc" } });
+  const recentPosts = await prisma.post.findMany({ take: 4, orderBy: { createdAt: "desc" } });
 
   return (
     <div className="w-full max-w-[1400px] mx-auto p-4 sm:p-8 space-y-10 pb-20">
