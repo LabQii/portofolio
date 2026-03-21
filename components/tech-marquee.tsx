@@ -21,12 +21,16 @@ export default function TechMarquee({
   const renderRow = (items: string[], direction: "left" | "right", duration: string) => {
     if (!items || items.length === 0) return null;
 
-    // We need the items to span fully across ultrawide screens.
-    // If the user only has a few items, duplicating them 2x is not enough to fill the width.
-    let repeatCount = Math.max(4, Math.ceil(40 / items.length));
-    if (!isFinite(repeatCount)) repeatCount = 4;
-    if (repeatCount % 2 !== 0) repeatCount++; // ensure it's even for -50% translateX loop
-    const multipliedItems = Array(repeatCount).fill(items).flat() as string[];
+    // Internal deduplication
+    const uniqueItems = Array.from(new Set(items));
+
+    // Calculate repeats for ~60 items total
+    let repeatCount = Math.max(2, Math.ceil(60 / uniqueItems.length));
+    if (!isFinite(repeatCount)) repeatCount = 2;
+    if (repeatCount % 2 !== 0) repeatCount++;
+    
+    // Cap at 100 items for performance
+    const itemsToRender = Array(repeatCount).fill(uniqueItems).flat().slice(0, 100) as string[];
 
     return (
       <div className="flex w-full overflow-hidden group">
@@ -34,7 +38,7 @@ export default function TechMarquee({
           className="flex w-fit will-change-transform group-hover:[animation-play-state:paused]"
           style={{ animation: `marquee-${direction} ${duration} linear infinite` }}
         >
-          {multipliedItems.map((tech, idx) => {
+          {itemsToRender.map((tech, idx) => {
             const logoDetails = getTechLogoDetails(tech, customTechLogos);
             return (
               <div

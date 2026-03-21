@@ -38,63 +38,61 @@ export default function ProjectCard({
     if (!containerRef.current) return;
 
     const calculateOverflow = () => {
-      if (!containerRef.current) return;
+      const container = containerRef.current;
+      if (!container) return;
       
-      const categoryBadge = containerRef.current.children[0] as HTMLElement;
-      const containerWidth = containerRef.current.offsetWidth;
-      let currentWidth = categoryBadge ? categoryBadge.offsetWidth + 12 : 0; // category plus gap-3 (12px)
-      let count = 0;
-      const badgeWidth = 45; // Approximate width of the +N badge
+      const children = Array.from(container.children) as HTMLElement[];
+      if (children.length < 2) return; // Need at least category + 1 tech
 
-      // Temporarily unhide all items to measure them accurately
-      itemRefs.current.forEach(item => {
-        if (item) {
-          item.classList.remove('hidden');
-          item.classList.remove('sr-only');
-          item.classList.remove('invisible');
+      const containerWidth = container.offsetWidth;
+      const categoryBadge = children[0];
+      let currentWidth = categoryBadge.offsetWidth + 12; // category + gap
+      
+      let count = 0;
+      const badgeWidth = 45; // Width for +N badge
+      const totalTechItems = project.techStack.length;
+
+      // Reset hidden state temporarily for measurement
+      children.forEach((child, i) => {
+        if (i > 0 && i <= totalTechItems) {
+          child.style.display = 'flex'; // Ensure it's measurable
         }
       });
 
-      for (let i = 0; i < itemRefs.current.length; i++) {
-        const item = itemRefs.current[i];
+      for (let i = 0; i < totalTechItems; i++) {
+        const item = children[i + 1]; // items start at index 1
         if (!item) continue;
         
-        const itemWidth = item.offsetWidth + 12; // width + gap
-        const needsBadge = i < itemRefs.current.length - 1;
+        const itemWidth = item.offsetWidth + 12;
+        const isNotLast = i < totalTechItems - 1;
         
-        if (currentWidth + itemWidth + (needsBadge ? badgeWidth : 0) > containerWidth) {
+        if (currentWidth + itemWidth + (isNotLast ? badgeWidth : 0) > containerWidth) {
           break;
         }
         currentWidth += itemWidth;
         count++;
       }
 
-      // Restore hidden states manually to prevent layout break if React skips render
-      itemRefs.current.forEach((item, i) => {
-        if (item) {
-          if (i >= count) {
-             item.classList.add('hidden');
-          } else {
-             item.classList.remove('hidden');
-          }
+      // Re-apply hidden state only if needed
+      children.forEach((child, i) => {
+        if (i > 0 && i <= totalTechItems) {
+          child.style.display = (i - 1) < count ? 'flex' : 'none';
         }
       });
 
-      setVisibleCount(count);
+      setVisibleCount((prev: number) => (prev !== count ? count : prev));
     };
 
     calculateOverflow();
     
-    // Instead of just window resize, use ResizeObserver for any container size changes
     const resizeObserver = new ResizeObserver(() => {
-      calculateOverflow();
+      // Small delay or rAF to avoid "ResizeObserver loop limit exceeded"
+      requestAnimationFrame(calculateOverflow);
     });
     
     resizeObserver.observe(containerRef.current);
     
-    return () => {
-      resizeObserver.disconnect();
-    };
+    return () => resizeObserver.disconnect();
   }, [project.techStack]);
 
   return (
