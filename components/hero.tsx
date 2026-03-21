@@ -40,7 +40,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-              className="text-[17px] text-foreground/80 leading-[1.7] mb-10 max-w-[672px]"
+              className="text-[17px] text-foreground/80 leading-[1.7] mb-10 max-w-[672px] mx-auto lg:mx-0"
             >
               {description || defaultDesc}
             </motion.p>
