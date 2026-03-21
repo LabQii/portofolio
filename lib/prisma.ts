@@ -10,7 +10,7 @@ const globalForPrisma = globalThis as unknown as {
 function createPrismaClient() {
   const pool = globalForPrisma.pool ?? new Pool({
     connectionString: process.env.DATABASE_URL,
-    max: process.env.NODE_ENV === "production" ? 1 : 10,
+    // Using default max connections to avoid potential NextAuth authorize deadlocks
   });
 
   if (process.env.NODE_ENV !== "production") {
