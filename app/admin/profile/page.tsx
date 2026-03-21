@@ -59,6 +59,11 @@ export default function EditProfilePage() {
     e.preventDefault();
     if (!selectedFile) return;
     
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      toastError("Image size must be less than 5MB.");
+      return;
+    }
+    
     setIsUploading(true);
     try {
       const formData = new FormData();
@@ -306,7 +311,16 @@ export default function EditProfilePage() {
                     <input 
                       type="file" 
                       ref={fileInputRef}
-                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                      onChange={(e) => {
+                        const f = e.target.files?.[0] || null;
+                        if (f && f.size > 5 * 1024 * 1024) {
+                          toastError("Image size must be less than 5MB.");
+                          if (fileInputRef.current) fileInputRef.current.value = "";
+                          setSelectedFile(null);
+                          return;
+                        }
+                        setSelectedFile(f);
+                      }}
                       accept="image/*"
                       className="hidden"
                     />
@@ -324,7 +338,7 @@ export default function EditProfilePage() {
                     ) : (
                       <div>
                         <p className="text-[14px] font-semibold text-[#0f172a]">Click to select photo</p>
-                        <p className="text-[12px] text-slate-400 mt-1">JPG, PNG or WEBP (max 10MB)</p>
+                        <p className="text-[12px] text-slate-400 mt-1">JPG, PNG or WEBP (max 5MB)</p>
                       </div>
                     )}
                   </div>

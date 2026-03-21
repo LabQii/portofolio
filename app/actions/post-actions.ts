@@ -36,6 +36,9 @@ export async function createPost(formData: FormData) {
   const thumbnailFile = formData.get("thumbnail") as File | null;
   let thumbnailUrl = "";
   if (thumbnailFile && thumbnailFile.size > 0) {
+    if (thumbnailFile.size > 5 * 1024 * 1024) {
+      return { success: false, error: "Thumbnail file size must be less than 5MB" };
+    }
     thumbnailUrl = await uploadThumbnail(thumbnailFile);
   }
 
@@ -69,6 +72,9 @@ export async function updatePost(id: string, formData: FormData) {
 
   const thumbnailFile = formData.get("thumbnail") as File | null;
   if (thumbnailFile && thumbnailFile.size > 0) {
+    if (thumbnailFile.size > 5 * 1024 * 1024) {
+      return { success: false, error: "Thumbnail file size must be less than 5MB" };
+    }
     thumbnailUrl = await uploadThumbnail(thumbnailFile);
   }
 

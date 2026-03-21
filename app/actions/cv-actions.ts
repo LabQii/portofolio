@@ -9,6 +9,9 @@ export async function uploadCV(formData: FormData) {
   if (!file || file.size === 0) {
     return { success: false, error: "No file provided" };
   }
+  if (file.size > 5 * 1024 * 1024) {
+    return { success: false, error: "CV file size must be less than 5MB" };
+  }
   if (!file.name.endsWith(".pdf")) {
     return { success: false, error: "Only PDF files are allowed" };
   }

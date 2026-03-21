@@ -18,7 +18,7 @@ const label = "block text-[11px] font-semibold text-[#64748b] uppercase tracking
 
 interface ProjectFormProps {
   project?: Project;
-  action: (formData: FormData) => Promise<{ success: boolean }>;
+  action: (formData: FormData) => Promise<{ success: boolean; error?: string }>;
   submitLabel?: string;
 }
 
@@ -51,13 +51,18 @@ export default function ProjectForm({ project, action, submitLabel = "Save Proje
     formData.set("techStack", techStack.join(","));
     formData.set("featured", featured ? "on" : "");
     startTransition(async () => {
-      const result = await action(formData);
-      if (result.success) {
-        success(project ? "Project updated successfully!" : "Project created successfully!");
-        router.push("/admin/projects");
-        router.refresh();
-      } else {
-        toastError("Something went wrong. Please try again.");
+      try {
+        const result = await action(formData);
+        if (result.success) {
+          success(project ? "Project updated successfully!" : "Project created successfully!");
+          router.push("/admin/projects");
+          router.refresh();
+        } else {
+          toastError(result.error || "Something went wrong. Please try again.");
+        }
+      } catch (err) {
+        console.error("Form submission error:", err);
+        toastError("An unexpected error occurred. The file might be too large.");
       }
     });
   };
@@ -153,7 +158,17 @@ export default function ProjectForm({ project, action, submitLabel = "Save Proje
         <div>
           <label className={label}>Thumbnail</label>
           <div className="border-2 border-dashed border-[#cbd5e1] rounded-xl overflow-hidden hover:border-[#1e293b] hover:bg-[#f8fafc] transition-all cursor-pointer relative group">
-            <input id="thumbnail" name="thumbnail" type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) setThumbnail(URL.createObjectURL(f)); }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+            <input id="thumbnail" name="thumbnail" type="file" accept="image/*" onChange={(e) => { 
+              const f = e.target.files?.[0]; 
+              if (f) {
+                if (f.size > 5 * 1024 * 1024) {
+                  toastError("File is too large. Max size is 5MB.");
+                  e.target.value = "";
+                  return;
+                }
+                setThumbnail(URL.createObjectURL(f)); 
+              }
+            }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
             {thumbnail ? (
               <div className="relative aspect-video"><Image src={thumbnail} alt="Thumbnail preview" fill className="object-cover" /><div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center"><span className="text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-3 py-1.5 rounded-lg">Change Image</span></div></div>
             ) : (

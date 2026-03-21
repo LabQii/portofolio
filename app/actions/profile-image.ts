@@ -17,6 +17,9 @@ export async function uploadProfileImage(formData: FormData) {
     if (!file || file.size === 0) {
       return { success: false, error: "No file provided" };
     }
+    if (file.size > 5 * 1024 * 1024) {
+      return { success: false, error: "Profile image size must be less than 5MB" };
+    }
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const uploadResult = await new Promise<any>((resolve, reject) => {

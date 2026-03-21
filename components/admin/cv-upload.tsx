@@ -17,6 +17,10 @@ export default function CVUploadClient({ currentCV }: { currentCV: { fileUrl: st
       toastError("Only PDF files are accepted.");
       return;
     }
+    if (file.size > 5 * 1024 * 1024) {
+      toastError("CV file size must be less than 5MB.");
+      return;
+    }
     setSelectedFile(file);
   };
 

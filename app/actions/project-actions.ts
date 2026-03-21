@@ -44,6 +44,9 @@ export async function createProject(formData: FormData) {
   const thumbnailFile = formData.get("thumbnail") as File | null;
   let thumbnailUrl = "";
   if (thumbnailFile && thumbnailFile.size > 0) {
+    if (thumbnailFile.size > 5 * 1024 * 1024) {
+      return { success: false, error: "Thumbnail file size must be less than 5MB" };
+    }
     const buffer = Buffer.from(await thumbnailFile.arrayBuffer());
     const uploadResult = await new Promise<any>((resolve, reject) => {
       cloudinary.uploader
@@ -97,6 +100,9 @@ export async function updateProject(id: string, formData: FormData) {
 
   const thumbnailFile = formData.get("thumbnail") as File | null;
   if (thumbnailFile && thumbnailFile.size > 0) {
+    if (thumbnailFile.size > 5 * 1024 * 1024) {
+      return { success: false, error: "Thumbnail file size must be less than 5MB" };
+    }
     const buffer = Buffer.from(await thumbnailFile.arrayBuffer());
     const uploadResult = await new Promise<any>((resolve, reject) => {
       cloudinary.uploader
