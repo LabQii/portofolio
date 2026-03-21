@@ -9,32 +9,32 @@ import TechMarquee from "@/components/tech-marquee";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [profile, featuredProjects, recentPosts, customTechLogos, experiences, cv, activeProfileImage, allProjects] = await Promise.all([
-    prisma.profile.findFirst(),
-    prisma.project.findMany({
-      where: { featured: true },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.post.findMany({
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.techStack.findMany(),
-    prisma.experience.findMany({
-      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-    }),
-    prisma.cV.findFirst({
-      where: { isActive: true },
-    }),
-    // Robust raw SQL: Prioritize Active, then most recent created
-    prisma.$queryRaw<any[]>`
-      SELECT url FROM "ProfileImage" 
-      ORDER BY 
-        CASE WHEN "isActive" = true THEN 0 ELSE 1 END, 
-        "createdAt" DESC 
-      LIMIT 1
-    `.then(rows => rows[0] || null),
-    prisma.project.findMany({ select: { techStack: true } })
-  ]);
+  const profile = await prisma.profile.findFirst();
+  const featuredProjects = await prisma.project.findMany({
+    where: { featured: true },
+    orderBy: { createdAt: "desc" },
+  });
+  const recentPosts = await prisma.post.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  const customTechLogos = await prisma.techStack.findMany();
+  const experiences = await prisma.experience.findMany({
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+  });
+  const cv = await prisma.cV.findFirst({
+    where: { isActive: true },
+  });
+  
+  // Robust raw SQL: Prioritize Active, then most recent created
+  const rawImages = await prisma.$queryRaw<any[]>`
+    SELECT url FROM "ProfileImage" 
+    ORDER BY 
+      CASE WHEN "isActive" = true THEN 0 ELSE 1 END, 
+      "createdAt" DESC 
+    LIMIT 1
+  `;
+  const activeProfileImage = rawImages[0] || null;
+  const allProjects = await prisma.project.findMany({ select: { techStack: true } });
 
   const allTechSet = new Set<string>();
   allProjects.forEach(p => p.techStack.forEach(t => allTechSet.add(t)));
