@@ -4,11 +4,12 @@ import ProjectCard from "@/components/project-card";
 import RecentPostsCarousel from "@/components/recent-posts-carousel";
 import AnimatedSectionHeader from "@/components/animated-section-header";
 import ExperienceTimeline from "@/components/experience-timeline";
+import TechMarquee from "@/components/tech-marquee";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [profile, featuredProjects, recentPosts, customTechLogos, experiences, cv, activeProfileImage] = await Promise.all([
+  const [profile, featuredProjects, recentPosts, customTechLogos, experiences, cv, activeProfileImage, allProjects] = await Promise.all([
     prisma.profile.findFirst(),
     prisma.project.findMany({
       where: { featured: true },
@@ -32,15 +33,21 @@ export default async function Home() {
         "createdAt" DESC 
       LIMIT 1
     `.then(rows => rows[0] || null),
+    prisma.project.findMany({ select: { techStack: true } })
   ]);
+
+  const allTechSet = new Set<string>();
+  allProjects.forEach(p => p.techStack.forEach(t => allTechSet.add(t)));
+  customTechLogos.forEach(t => allTechSet.add(t.name));
+  const uniqueTechStacks = Array.from(allTechSet);
 
   return (
     <div className="flex flex-col">
-      <Hero 
-        name={profile?.name} 
-        description={profile?.description} 
-        cvUrl={cv?.fileUrl} 
-        cvFileName={cv?.fileName} 
+      <Hero
+        name={profile?.name}
+        description={profile?.description}
+        cvUrl={cv?.fileUrl}
+        cvFileName={cv?.fileName}
         cvId={cv?.id}
         profileImageUrl={activeProfileImage?.url}
       />
@@ -88,6 +95,8 @@ export default async function Home() {
             <h2 className="text-[2.5rem] font-bold text-navy">Experience</h2>
           </div>
           <ExperienceTimeline experiences={experiences} />
+
+          <TechMarquee techStacks={uniqueTechStacks} customTechLogos={customTechLogos} />
         </div>
       </section>
     </div>
