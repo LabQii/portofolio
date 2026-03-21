@@ -10,12 +10,12 @@ interface AnimatedHeaderProps {
 
 export default function AnimatedHeader({ title, description, className }: AnimatedHeaderProps) {
   return (
-    <div className={`max-w-[768px] ${className ?? ""}`}>
+    <div className={`w-full ${className ?? ""}`}>
       <motion.h1
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, ease: "easeOut" }}
-        className="text-5xl md:text-[52px] font-bold text-navy leading-[1.15] mb-6"
+        className="text-5xl md:text-[52px] font-bold text-navy leading-[1.15] mb-6 max-w-[768px]"
       >
         {title}
       </motion.h1>
@@ -24,7 +24,7 @@ export default function AnimatedHeader({ title, description, className }: Animat
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.15, ease: "easeOut" }}
-          className="text-slate-600 text-lg md:text-[20px] leading-[1.7]"
+          className="text-slate-600 text-lg md:text-[18px] leading-[1.8] max-w-[860px]"
         >
           {description}
         </motion.p>
