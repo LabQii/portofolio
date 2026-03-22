@@ -165,3 +165,11 @@ export async function updateProjectsOrder(projectIds: string[]) {
   revalidatePath("/admin/projects");
   return { success: true };
 }
+
+export async function toggleProjectFeatured(id: string, featured: boolean) {
+  await prisma.project.update({ where: { id }, data: { featured } });
+  revalidatePath("/");
+  revalidatePath("/projects");
+  revalidatePath("/admin/projects");
+  return { success: true };
+}

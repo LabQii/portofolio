@@ -107,13 +107,35 @@ export default function AdminProjectTable({ projects: initialProjects }: { proje
                 <div className="flex items-center gap-1 text-[#94a3b8] text-xs"><Eye className="h-3.5 w-3.5" />{project.views}</div>
               </td>
               <td className="px-4 py-[14px]">
-                {project.featured ? (
-                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-600">
-                     <Star className="h-3 w-3 fill-amber-500 text-amber-500" /> Featured
-                   </span>
-                ) : (
-                  <span className="text-[#94a3b8] text-xs">—</span>
-                )}
+                <button
+                  onClick={async () => {
+                    const newFeatured = !project.featured;
+                    // Optimistic update
+                    setItems(items.map(p => p.id === project.id ? { ...p, featured: newFeatured } : p));
+                    try {
+                      const { toggleProjectFeatured } = await import("@/app/actions/project-actions");
+                      await toggleProjectFeatured(project.id, newFeatured);
+                      success(`Project ${newFeatured ? "marked as featured" : "removed from featured"}`);
+                    } catch (err) {
+                      toastError("Failed to update featured status");
+                      // Revert
+                      setItems(items);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors hover:bg-amber-100/50"
+                >
+                  {project.featured ? (
+                    <>
+                      <Star className="h-3 w-3 fill-amber-500 text-amber-500" /> 
+                      <span className="text-amber-600">Featured</span>
+                    </>
+                  ) : (
+                    <>
+                      <Star className="h-3 w-3 text-[#94a3b8]" />
+                      <span className="text-[#94a3b8]">Mark Featured</span>
+                    </>
+                  )}
+                </button>
               </td>
               <td className="px-4 py-[14px]">
                 <div className="flex items-center justify-end gap-1">

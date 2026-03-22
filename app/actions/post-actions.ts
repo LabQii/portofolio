@@ -131,3 +131,11 @@ export async function updateActivitiesOrder(ids: string[]) {
   revalidatePath("/");
   return { success: true };
 }
+
+export async function togglePostFeatured(id: string, featured: boolean) {
+  await prisma.post.update({ where: { id }, data: { featured } });
+  revalidatePath("/");
+  revalidatePath("/posts");
+  revalidatePath("/admin/posts");
+  return { success: true };
+}
