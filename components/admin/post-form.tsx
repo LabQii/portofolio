@@ -64,8 +64,8 @@ export default function PostForm({ post, action, submitLabel = "Save Post" }: Po
           <textarea id="description" name="description" defaultValue={post?.description} required rows={4} placeholder="Brief summary of this post..." className={`${cls} resize-vertical`} />
         </div>
 
-        {/* Category + Event + Team */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* Category + Event + Team + Featured */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-5 items-end">
           <div>
             <label className={label}>Category *</label>
             <select id="category" name="category" defaultValue={post?.category ?? "Event"} required className={cls}>
@@ -74,6 +74,16 @@ export default function PostForm({ post, action, submitLabel = "Save Post" }: Po
           </div>
           <div><label className={label}>Event Name</label><input id="eventName" name="eventName" defaultValue={post?.eventName ?? ""} placeholder="e.g. DICODING CYCLE 6" className={cls} /></div>
           <div><label className={label}>Team Name</label><input id="teamName" name="teamName" defaultValue={post?.teamName ?? ""} placeholder="e.g. THREE HEARTS" className={cls} /></div>
+          <div className="flex items-center gap-2 pb-3">
+            <input 
+              type="checkbox" 
+              id="featured" 
+              name="featured" 
+              defaultChecked={post?.featured} 
+              className="w-4 h-4 rounded border-slate-300 text-navy focus:ring-navy" 
+            />
+            <label htmlFor="featured" className="text-sm font-medium text-slate-700">Featured Activity</label>
+          </div>
         </div>
 
         {/* Thumbnail */}

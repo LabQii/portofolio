@@ -11,7 +11,7 @@ export default async function AdminExperiencesPage() {
   if (!session) redirect("/login");
 
   const experiences = await prisma.experience.findMany({
-    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    orderBy: { order: "asc" },
   });
 
   return (

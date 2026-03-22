@@ -31,6 +31,7 @@ export async function createPost(formData: FormData) {
   const category = formData.get("category") as string;
   const teamName = formData.get("teamName") as string | null;
   const eventName = formData.get("eventName") as string | null;
+  const featured = formData.get("featured") === "on";
   const slug = formData.get("slug") as string || generateSlug(title);
 
   const thumbnailFile = formData.get("thumbnail") as File | null;
@@ -42,6 +43,12 @@ export async function createPost(formData: FormData) {
     thumbnailUrl = await uploadThumbnail(thumbnailFile);
   }
 
+  // Get latest order
+  const lastPost = await prisma.post.findFirst({
+    orderBy: { order: "desc" },
+  });
+  const newOrder = (lastPost?.order ?? 0) + 1;
+
   await prisma.post.create({
     data: {
       title,
@@ -51,11 +58,14 @@ export async function createPost(formData: FormData) {
       category,
       teamName: teamName || null,
       eventName: eventName || null,
+      featured,
+      order: newOrder,
     },
   });
 
   revalidatePath("/posts");
   revalidatePath("/admin/posts");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -65,6 +75,7 @@ export async function updatePost(id: string, formData: FormData) {
   const category = formData.get("category") as string;
   const teamName = formData.get("teamName") as string | null;
   const eventName = formData.get("eventName") as string | null;
+  const featured = formData.get("featured") === "on";
   const slug = formData.get("slug") as string;
 
   const existing = await prisma.post.findUnique({ where: { id } });
@@ -88,12 +99,14 @@ export async function updatePost(id: string, formData: FormData) {
       category,
       teamName: teamName || null,
       eventName: eventName || null,
+      featured,
     },
   });
 
   revalidatePath("/posts");
   revalidatePath(`/posts/${slug}`);
   revalidatePath("/admin/posts");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -101,5 +114,20 @@ export async function deletePost(id: string) {
   await prisma.post.delete({ where: { id } });
   revalidatePath("/posts");
   revalidatePath("/admin/posts");
+  revalidatePath("/");
+  return { success: true };
+}
+
+export async function updateActivitiesOrder(ids: string[]) {
+  const updates = ids.map((id, index) =>
+    prisma.post.update({
+      where: { id },
+      data: { order: index + 1 },
+    })
+  );
+  await Promise.all(updates);
+  revalidatePath("/posts");
+  revalidatePath("/admin/posts");
+  revalidatePath("/");
   return { success: true };
 }

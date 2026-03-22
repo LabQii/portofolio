@@ -68,3 +68,16 @@ export async function toggleExperienceFeatured(id: string, featured: boolean) {
   revalidatePath("/admin/experiences");
   return { success: true };
 }
+
+export async function updateExperiencesOrder(ids: string[]) {
+  const updates = ids.map((id, index) =>
+    prisma.experience.update({
+      where: { id },
+      data: { order: index + 1 },
+    })
+  );
+  await Promise.all(updates);
+  revalidatePath("/");
+  revalidatePath("/admin/experiences");
+  return { success: true };
+}

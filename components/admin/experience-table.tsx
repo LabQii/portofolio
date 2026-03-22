@@ -1,11 +1,12 @@
 "use client";
 
-import { deleteExperience, toggleExperienceFeatured } from "@/app/actions/experience-actions";
+import { deleteExperience, toggleExperienceFeatured, updateExperiencesOrder } from "@/app/actions/experience-actions";
 import Link from "next/link";
-import { Edit, Trash2, Star } from "lucide-react";
-import { useState } from "react";
+import { Edit, Trash2, Star, GripVertical } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useConfirm } from "@/components/ui/confirm-modal";
 import { useToast } from "@/components/ui/toast";
+import { Reorder } from "framer-motion";
 
 type Experience = {
   id: string; category: string; period: string; title: string;
@@ -20,11 +21,31 @@ const categoryColors: Record<string, string> = {
   Achievement: "bg-slate-100 text-slate-700",
 };
 
-export default function AdminExperienceTable({ experiences }: { experiences: Experience[] }) {
+export default function AdminExperienceTable({ experiences: initialExperiences }: { experiences: Experience[] }) {
   const confirm = useConfirm();
   const { success, error: toastError } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [items, setItems] = useState(initialExperiences);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    setItems(initialExperiences);
+  }, [initialExperiences]);
+
+  const handleReorder = async (newOrder: Experience[]) => {
+    setItems(newOrder);
+    setIsUpdating(true);
+    try {
+      await updateExperiencesOrder(newOrder.map(e => e.id));
+      success("Order updated successfully");
+    } catch (err) {
+      toastError("Failed to update order");
+      setItems(initialExperiences);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const handleDelete = async (id: string, title: string) => {
     const ok = await confirm({
@@ -53,7 +74,7 @@ export default function AdminExperienceTable({ experiences }: { experiences: Exp
     setTogglingId(null);
   };
 
-  if (experiences.length === 0) {
+  if (initialExperiences.length === 0) {
     return (
       <div className="text-center py-24 border-2 border-dashed border-[#e2e8f0] rounded-xl bg-white">
         <p className="text-[#64748b] mb-4 text-sm">No experiences yet.</p>
@@ -63,10 +84,11 @@ export default function AdminExperienceTable({ experiences }: { experiences: Exp
   }
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)]">
+    <div className={`bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] transition-opacity ${isUpdating ? 'opacity-70 pointer-events-none' : ''}`}>
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-[#f8fafc] border-b border-[#e2e8f0]">
+            <th className="w-10 px-4 py-3"></th>
             <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3">Title</th>
             <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3 hidden md:table-cell">Organization</th>
             <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3 hidden lg:table-cell">Category</th>
@@ -75,9 +97,19 @@ export default function AdminExperienceTable({ experiences }: { experiences: Exp
             <th className="text-right text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          {experiences.map((exp) => (
-            <tr key={exp.id} className="border-b border-[#f1f5f9] last:border-0 hover:bg-[#f8fafc] transition-colors">
+        <Reorder.Group axis="y" values={items} onReorder={handleReorder} as="tbody">
+          {items.map((exp) => (
+            <Reorder.Item 
+              key={exp.id} 
+              value={exp} 
+              as="tr" 
+              className="border-b border-[#f1f5f9] last:border-0 hover:bg-[#f8fafc] transition-colors cursor-default"
+            >
+              <td className="px-4 py-[14px] text-center">
+                <div className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors">
+                  <GripVertical className="h-4 w-4 mx-auto" />
+                </div>
+              </td>
               <td className="px-4 py-[14px] font-medium text-[#0f172a]"><span className="line-clamp-1">{exp.title}</span></td>
               <td className="px-4 py-[14px] text-[#64748b] hidden md:table-cell"><span className="line-clamp-1">{exp.organization}</span></td>
               <td className="px-4 py-[14px] hidden lg:table-cell">
@@ -110,9 +142,9 @@ export default function AdminExperienceTable({ experiences }: { experiences: Exp
                   </button>
                 </div>
               </td>
-            </tr>
+            </Reorder.Item>
           ))}
-        </tbody>
+        </Reorder.Group>
       </table>
     </div>
   );

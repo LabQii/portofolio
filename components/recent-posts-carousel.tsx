@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function RecentPostsCarousel({ posts: initialPosts }: { posts: any[] }) {
@@ -84,6 +84,12 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
+                {/* Featured Star Badge */}
+                {post.featured && (
+                  <div className="absolute top-3 right-3 z-30 bg-white/90 backdrop-blur-sm p-1.5 rounded-full shadow-md animate-in fade-in zoom-in duration-300">
+                    <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
+                  </div>
+                )}
                 <div 
                   className="absolute bottom-0 left-0 right-0 p-6 pt-24 pointer-events-none" 
                   style={{ background: "linear-gradient(to top, rgba(15, 36, 66, 0.85) 0%, rgba(15, 36, 66, 0) 100%)" }}

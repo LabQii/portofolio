@@ -103,24 +103,17 @@ export default function ExperienceForm({ experience, action, submitLabel = "Save
           </div>
         </div>
 
-        {/* Order + Featured toggle */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
-            <label className={label}>Order</label>
-            <input id="order" name="order" type="number" min={0} defaultValue={experience?.order ?? 0} className={cls} />
-            <p className="text-[12px] text-[#94a3b8] mt-1.5">Lower number = shown first.</p>
-          </div>
-          <div className="flex flex-col justify-end pb-2">
-            <label className="flex items-center gap-3 cursor-pointer select-none">
-              <div
-                className={`w-10 h-5 rounded-full relative transition-colors cursor-pointer ${featured ? "bg-[#1e293b]" : "bg-slate-200"}`}
-                onClick={() => setFeatured(!featured)}
-              >
-                <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${featured ? "translate-x-5" : ""}`} />
-              </div>
-              <span className="text-[14px] font-medium text-[#0f172a]">Mark as featured</span>
-            </label>
-          </div>
+        {/* Featured toggle */}
+        <div className="flex flex-col justify-end pb-2">
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <div
+              className={`w-10 h-5 rounded-full relative transition-colors cursor-pointer ${featured ? "bg-[#1e293b]" : "bg-slate-200"}`}
+              onClick={() => setFeatured(!featured)}
+            >
+              <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${featured ? "translate-x-5" : ""}`} />
+            </div>
+            <span className="text-[14px] font-medium text-[#0f172a]">Mark as featured</span>
+          </label>
         </div>
 
         {/* Actions */}

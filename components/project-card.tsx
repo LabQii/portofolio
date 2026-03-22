@@ -203,7 +203,7 @@ export default function ProjectCard({
             )}
           </div>
 
-          <p className="text-slate-600 text-[18px] leading-[1.7] line-clamp-3">
+          <p className="text-slate-600 text-[18px] leading-[1.7]">
             {project.description}
           </p>
         </div>

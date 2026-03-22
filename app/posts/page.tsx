@@ -6,7 +6,7 @@ import { getProfile } from "@/app/actions/profile";
 
 export default async function PostsPage() {
   const posts = await prisma.post.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ featured: "desc" }, { order: "asc" }, { createdAt: "desc" }],
   });
   const profile = await getProfile();
 

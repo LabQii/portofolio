@@ -1,18 +1,39 @@
 "use client";
 
-import { deletePost } from "@/app/actions/post-actions";
+import { deletePost, updateActivitiesOrder } from "@/app/actions/post-actions";
 import Link from "next/link";
-import { Edit, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Edit, Trash2, Star, GripVertical } from "lucide-react";
+import { useState, useEffect } from "react";
 import { formatDate } from "@/lib/utils";
 import type { Post } from "@prisma/client";
 import { useConfirm } from "@/components/ui/confirm-modal";
 import { useToast } from "@/components/ui/toast";
+import { Reorder } from "framer-motion";
 
-export default function AdminPostTable({ posts }: { posts: Post[] }) {
+export default function AdminPostTable({ posts: initialPosts }: { posts: Post[] }) {
   const confirm = useConfirm();
   const { success, error: toastError } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [items, setItems] = useState(initialPosts);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    setItems(initialPosts);
+  }, [initialPosts]);
+
+  const handleReorder = async (newOrder: Post[]) => {
+    setItems(newOrder);
+    setIsUpdating(true);
+    try {
+      await updateActivitiesOrder(newOrder.map(p => p.id));
+      success("Order updated successfully");
+    } catch (err) {
+      toastError("Failed to update order");
+      setItems(initialPosts);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const handleDelete = async (id: string, title: string) => {
     const ok = await confirm({
@@ -35,7 +56,7 @@ export default function AdminPostTable({ posts }: { posts: Post[] }) {
     }
   };
 
-  if (posts.length === 0) {
+  if (initialPosts.length === 0) {
     return (
       <div className="text-center py-24 border-2 border-dashed border-[#e2e8f0] rounded-xl bg-white">
         <p className="text-[#64748b] mb-4 text-sm">No posts yet.</p>
@@ -45,24 +66,45 @@ export default function AdminPostTable({ posts }: { posts: Post[] }) {
   }
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)]">
+    <div className={`bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] transition-opacity ${isUpdating ? 'opacity-70 pointer-events-none' : ''}`}>
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-[#f8fafc] border-b border-[#e2e8f0]">
+            <th className="w-10 px-4 py-3"></th>
             <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3">Title</th>
             <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3 hidden md:table-cell">Category</th>
             <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3 hidden lg:table-cell">Created</th>
+            <th className="text-center text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3">Featured</th>
             <th className="text-right text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          {posts.map((post) => (
-            <tr key={post.id} className="border-b border-[#f1f5f9] last:border-0 hover:bg-[#f8fafc] transition-colors">
+        <Reorder.Group axis="y" values={items} onReorder={handleReorder} as="tbody">
+          {items.map((post) => (
+            <Reorder.Item 
+              key={post.id} 
+              value={post} 
+              as="tr" 
+              className="border-b border-[#f1f5f9] last:border-0 hover:bg-[#f8fafc] transition-colors cursor-default"
+            >
+              <td className="px-4 py-[14px] text-center">
+                <div className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors">
+                  <GripVertical className="h-4 w-4 mx-auto" />
+                </div>
+              </td>
               <td className="px-4 py-[14px] font-medium text-[#0f172a]"><span className="line-clamp-1">{post.title}</span></td>
               <td className="px-4 py-[14px] hidden md:table-cell">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">{post.category}</span>
               </td>
               <td className="px-4 py-[14px] text-[#64748b] text-xs hidden lg:table-cell">{formatDate(post.createdAt)}</td>
+              <td className="px-4 py-[14px] text-center">
+                {(post as any).featured ? (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-600 mx-auto">
+                    <Star className="h-3 w-3 fill-amber-500 text-amber-500" /> Featured
+                  </span>
+                ) : (
+                  <span className="text-[#94a3b8] text-xs">—</span>
+                )}
+              </td>
               <td className="px-4 py-[14px]">
                 <div className="flex items-center justify-end gap-1">
                   <Link href={`/admin/posts/${post.id}/edit`} className="p-1.5 rounded-lg text-[#64748b] hover:text-[#0f172a] hover:bg-slate-100 transition-colors">
@@ -77,9 +119,9 @@ export default function AdminPostTable({ posts }: { posts: Post[] }) {
                   </button>
                 </div>
               </td>
-            </tr>
+            </Reorder.Item>
           ))}
-        </tbody>
+        </Reorder.Group>
       </table>
     </div>
   );

@@ -10,7 +10,7 @@ export default async function AdminPostsPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
-  const posts = await prisma.post.findMany({ orderBy: { createdAt: "desc" } });
+  const posts = await prisma.post.findMany({ orderBy: { order: "asc" } });
 
   return (
     <div className="p-6 md:p-8">

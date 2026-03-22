@@ -15,11 +15,11 @@ export default async function Home() {
     orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
   const recentPosts = await prisma.post.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ featured: "desc" }, { order: "asc" }, { createdAt: "desc" }],
   });
   const customTechLogos = await prisma.techStack.findMany();
   const experiences = await prisma.experience.findMany({
-    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    orderBy: [{ featured: "desc" }, { order: "asc" }, { createdAt: "desc" }],
   });
   const cv = await prisma.cV.findFirst({
     where: { isActive: true },
