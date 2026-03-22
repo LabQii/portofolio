@@ -6,17 +6,15 @@ import { ConfirmProvider } from "@/components/ui/confirm-modal";
 import { MusicProvider } from "@/contexts/MusicContext";
 
 export default function Providers({ 
-  children,
-  musicUrl 
+  children
 }: { 
   children: React.ReactNode;
-  musicUrl?: string;
 }) {
   return (
     <SessionProvider>
       <ConfirmProvider>
         <ToastProvider>
-          <MusicProvider musicUrl={musicUrl}>
+          <MusicProvider>
             {children}
           </MusicProvider>
         </ToastProvider>

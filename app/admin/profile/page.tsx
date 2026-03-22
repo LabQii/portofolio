@@ -21,6 +21,7 @@ export default function EditProfilePage() {
   const [activitiesTitle, setActivitiesTitle] = useState("");
   const [activitiesDescription, setActivitiesDescription] = useState("");
   const [musicUrl, setMusicUrl] = useState("");
+  const [heroExperience, setHeroExperience] = useState("");
   const [profileImages, setProfileImages] = useState<any[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -41,7 +42,8 @@ export default function EditProfilePage() {
           setProjectsDescription(profileData.projectsDescription || "");
           setActivitiesTitle(profileData.activitiesTitle || "");
           setActivitiesDescription(profileData.activitiesDescription || "");
-          setMusicUrl((profileData as any).musicUrl || "");
+          setMusicUrl(profileData.musicUrl || "");
+          setHeroExperience(profileData.heroExperience || "");
         } else {
           setName("Hi, I am Muhammad Iqbal Firmansyah");
           setDescription("Fullstack JavaScript Developer...");
@@ -138,7 +140,8 @@ export default function EditProfilePage() {
         projectsDescription,
         activitiesTitle,
         activitiesDescription,
-        musicUrl
+        musicUrl,
+        heroExperience,
       });
       if (result.success) { 
         router.refresh(); 
@@ -284,33 +287,51 @@ export default function EditProfilePage() {
               </div>
             </div>
 
-            {/* Card 4: Music Settings */}
+            {/* Card 4: Music + Hero Experience Settings */}
             <div className="bg-white rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)] p-[28px_32px] flex flex-col h-full">
               <div className="border-l-[3px] border-[#1e293b] pl-3 mb-5">
                 <h3 className="text-[15px] font-semibold text-[#0f172a]">
-                  Music Settings
+                  Music & Hero Settings
                 </h3>
               </div>
               <div className="border-b border-[#f1f5f9] mb-5"></div>
-              
               <div className="space-y-4 flex-grow">
                 <div className="space-y-1.5">
                   <label htmlFor="musicUrl" className="block text-[12px] font-medium text-[#64748b] tracking-[0.03em]">
-                    Background Music (YouTube Video ID)
+                    YouTube Music URL
                   </label>
                   <input
                     id="musicUrl"
+                    type="url"
                     value={musicUrl}
                     onChange={(e) => setMusicUrl(e.target.value)}
-                    placeholder="E.g., 2NsOhwBLJks"
+                    placeholder="https://youtu.be/..."
                     className="w-full border border-[#e2e8f0] rounded-lg px-[14px] py-[10px] text-[14px] text-[#0f172a] focus:outline-none focus:border-[#1e293b] focus:shadow-[0_0_0_3px_rgba(30,41,59,0.07)] transition-all"
                   />
-                  <p className="text-[11px] text-slate-400 mt-1 italic">
-                    Masukkan ID video YouTube (11 karakter) yang ingin diputar sebagai latar belakang. Contoh: 2NsOhwBLJks
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Tempel link YouTube (e.g. https://youtu.be/abc123). Kosongkan untuk menonaktifkan musik.
+                  </p>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label htmlFor="heroExperience" className="block text-[12px] font-medium text-[#64748b] tracking-[0.03em]">
+                    Hero Experience Badge Text
+                  </label>
+                  <input
+                    id="heroExperience"
+                    type="text"
+                    value={heroExperience}
+                    onChange={(e) => setHeroExperience(e.target.value)}
+                    placeholder="E.g., 1+ Years"
+                    className="w-full border border-[#e2e8f0] rounded-lg px-[14px] py-[10px] text-[14px] text-[#0f172a] focus:outline-none focus:border-[#1e293b] focus:shadow-[0_0_0_3px_rgba(30,41,59,0.07)] transition-all"
+                  />
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Teks yang muncul di badge &quot;Experience&quot; pada hero. Default: 1+ Years.
                   </p>
                 </div>
               </div>
             </div>
+
           </div>
 
           {/* New Card: Profile Image Management */}

@@ -50,6 +50,7 @@ export default async function Home() {
         cvFileName={cv?.fileName}
         cvId={cv?.id}
         profileImageUrl={activeProfileImage?.url}
+        heroExperience={profile?.heroExperience ?? undefined}
       />
 
       {/* Activities (Recent Posts) Section */}

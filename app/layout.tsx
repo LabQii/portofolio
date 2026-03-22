@@ -5,9 +5,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import BackToTop from "@/components/back-to-top";
-import MusicPlayer from "@/components/music-player";
 import Providers from "@/components/providers";
 import PageLoader from "@/components/page-loader";
+import { MusicPlayerButton } from "@/components/music-player-button";
 import { getProfile } from "@/app/actions/profile";
 
 const font = Poppins({
@@ -37,13 +37,13 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Providers musicUrl={(profile as any)?.musicUrl || ""}>
+          <Providers>
             <div className="flex min-h-screen flex-col bg-white text-slate-800 relative">
               <Navbar />
               <main className="flex-grow">{children}</main>
               <Footer />
               <BackToTop />
-              <MusicPlayer />
+              <MusicPlayerButton />
             </div>
           </Providers>
         </ThemeProvider>

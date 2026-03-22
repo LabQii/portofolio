@@ -8,6 +8,11 @@ export async function getProfile() {
   return profile;
 }
 
+export async function getMusicUrl(): Promise<string | null> {
+  const profile = await prisma.profile.findFirst({ select: { musicUrl: true } });
+  return profile?.musicUrl ?? null;
+}
+
 export async function updateProfile(data: { 
   name: string; 
   description: string;
@@ -16,6 +21,7 @@ export async function updateProfile(data: {
   activitiesTitle?: string;
   activitiesDescription?: string;
   musicUrl?: string;
+  heroExperience?: string;
 }) {
   try {
     const existing = await prisma.profile.findFirst();
@@ -41,3 +47,4 @@ export async function updateProfile(data: {
     return { success: false, error: "Failed to update profile" };
   }
 }
+

@@ -81,9 +81,12 @@ model Profile {
   activitiesTitle       String?
   activitiesDescription String? @db.Text
 
-  // Music settings
-  musicUrl              String?
-  
+  // Music player settings
+  musicUrl        String?
+
+  // Hero experience badge
+  heroExperience  String?
+
   updatedAt   DateTime @updatedAt
 }
 
