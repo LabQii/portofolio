@@ -1,95 +1,87 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { Music, Pause, Play, Volume2, VolumeX } from "lucide-react";
+import { useMusic } from "@/contexts/MusicContext";
+import { Music, Pause, Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 
-// @ts-ignore
-const ReactPlayer = dynamic(() => import("react-player"), { ssr: false }) as any;
+export default function MusicPlayer() {
+    const { isPlaying, toggle, isReady } = useMusic();
+    const [showLabel, setShowLabel] = useState(false);
+    const pathname = usePathname();
 
-interface MusicPlayerProps {
-  initialMusicUrl?: string;
-}
+    // Hide on admin/login pages
+    if (pathname?.startsWith("/admin") || pathname?.startsWith("/login")) return null;
 
-export default function MusicPlayer({ initialMusicUrl = "" }: MusicPlayerProps) {
-  const pathname = usePathname();
-  const [url, setUrl] = useState(initialMusicUrl);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-  
-  useEffect(() => {
-    if (initialMusicUrl) setUrl(initialMusicUrl);
-  }, [initialMusicUrl]);
+    return (
+        <div className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-50 flex flex-col items-end gap-3">
+            {/* Tooltip label - only shows on hover */}
+            <AnimatePresence>
+                {showLabel && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="bg-white border border-slate-100 text-slate-800 text-sm font-medium px-4 py-2 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.08)] whitespace-nowrap backdrop-blur-md"
+                    >
+                        {isPlaying ? "Pause music" : "Play music"}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-  // Hide on admin/login pages
-  if (pathname?.startsWith("/admin") || pathname?.startsWith("/login")) return null;
-  if (!url) return null;
+            {/* Player button */}
+            <div className="relative group">
+                {/* Wave effect rings */}
+                <AnimatePresence>
+                    {isPlaying && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            {[1, 2, 3].map((i) => (
+                                <motion.div
+                                    key={i}
+                                    className="absolute inset-0 rounded-full bg-navy/20"
+                                    initial={{ scale: 1, opacity: 0.6 }}
+                                    animate={{ scale: 2.5, opacity: 0 }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        delay: i * 0.6,
+                                        ease: "easeOut",
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </AnimatePresence>
 
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-    if (!hasStarted) setHasStarted(true);
-  };
-
-  return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2 group">
-      {/* "Play music" bubble as seen in mockup */}
-      <motion.div
-        initial={false}
-        animate={{ 
-          opacity: isPlaying ? 0.3 : 1,
-          y: isPlaying ? 5 : 0,
-          scale: isPlaying ? 0.95 : 1
-        }}
-        className="bg-white border border-rose-50 px-6 py-2.5 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.05)] text-[15px] font-medium text-slate-800 cursor-pointer hover:shadow-md transition-all mb-1"
-        onClick={togglePlay}
-      >
-        {isPlaying ? "Pause music" : "Play music"}
-      </motion.div>
-
-      {/* Circular music icon button */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={togglePlay}
-        className={`w-[68px] h-[68px] rounded-full flex items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 relative overflow-hidden backdrop-blur-sm border ${
-          isPlaying 
-            ? "bg-navy text-white border-navy/20" 
-            : "bg-[#f1f5f9] text-slate-700 border-white/50 hover:bg-slate-200"
-        }`}
-      >
-        <div className="relative z-10">
-          <Music className={`w-8 h-8 ${isPlaying ? 'animate-pulse' : ''}`} strokeWidth={1.5} />
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={toggle}
+                    onMouseEnter={() => setShowLabel(true)}
+                    onMouseLeave={() => setShowLabel(false)}
+                    title={isPlaying ? "Pause music" : "Play background music"}
+                    disabled={!isReady}
+                    className={`relative h-10 w-10 md:h-12 md:w-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-500 border
+                        ${isPlaying
+                            ? "bg-navy text-white border-navy/20 shadow-navy/20"
+                            : "bg-white text-slate-600 border-slate-200 hover:border-navy/30 hover:text-navy"
+                        } backdrop-blur-md disabled:opacity-40 z-10`}
+                >
+                    <motion.div
+                        key={isPlaying ? "pause" : "play"}
+                        initial={{ scale: 0.5, opacity: 0, rotate: -45 }}
+                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    >
+                        {isPlaying ? (
+                            <Pause className="h-4 w-4 md:h-5 md:w-5 fill-current" />
+                        ) : (
+                            <Music className="h-4 w-4 md:h-5 md:w-5" />
+                        )}
+                    </motion.div>
+                </motion.button>
+            </div>
         </div>
-      </motion.button>
-
-
-      {/* Hidden Player */}
-      <div className="hidden pointer-events-none opacity-0 invisible" aria-hidden="true">
-        <ReactPlayer
-          url={url}
-          playing={isPlaying}
-          muted={isMuted}
-          loop={true}
-          volume={0.5}
-          width="0"
-          height="0"
-          config={{
-            youtube: {
-              playerVars: { 
-                autoplay: 0,
-                controls: 0,
-                modestbranding: 1,
-                rel: 0,
-              }
-            }
-          } as any}
-          onError={(e: any) => console.error("Music Player Error:", e)}
-        />
-      </div>
-    </div>
-  );
+    );
 }
