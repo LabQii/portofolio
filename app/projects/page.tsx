@@ -19,7 +19,7 @@ export default async function ProjectsPage({
       ...(category ? { category } : {}),
       ...(tag ? { tags: { has: tag } } : {}),
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
   const customTechLogos = await prisma.techStack.findMany();
   const profile = await getProfile();
