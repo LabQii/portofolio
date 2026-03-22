@@ -53,11 +53,10 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
               <Button size="lg" asChild className="bg-navy hover:bg-navy/90 text-white rounded-md px-8 py-6 text-lg font-semibold shadow-md hover:shadow-lg transition-all">
                 <a
                   href={cvId ? `/api/cv/download/${cvId}` : (cvUrl || "#")}
-                  download={cvFileName || "CV.pdf"}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Download CV
+                  View CV
                 </a>
               </Button>
             </motion.div>

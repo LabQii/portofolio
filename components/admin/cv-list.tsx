@@ -2,7 +2,7 @@
 
 import { useTransition, useState } from "react";
 import { formatDate } from "@/lib/utils";
-import { FileText, CheckCircle, Trash2, Loader2, Pencil, Check, X, Download } from "lucide-react";
+import { FileText, CheckCircle, Trash2, Loader2, Pencil, Check, X, Eye } from "lucide-react";
 import { setActiveCV, deleteCV, renameCV } from "@/app/actions/cv-actions";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
@@ -181,9 +181,9 @@ export default function CVListClient({ cvs }: CVListClientProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1.5 rounded-lg text-slate-400 hover:text-navy hover:bg-slate-50 transition-colors"
-                title="Download CV"
+                title="View CV"
               >
-                <Download className="h-4 w-4" />
+                <Eye className="h-4 w-4" />
               </a>
 
               <button
