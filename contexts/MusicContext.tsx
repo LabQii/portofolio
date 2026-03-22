@@ -66,7 +66,7 @@ export function MusicProvider({ children, musicUrl }: { children: ReactNode; mus
                 rel: 0,
                 loop: 1,
                 playlist: videoId, // Required for loop to work on single video
-                origin: typeof window !== 'undefined' ? window.location.origin : undefined,
+                origin: typeof window !== 'undefined' ? window.location.origin : '',
             },
             events: {
                 onReady: (event) => {
