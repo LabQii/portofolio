@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 
 // @ts-ignore
-const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
+const ReactPlayer = dynamic(() => import("react-player"), { ssr: false }) as any;
 
 interface MusicPlayerProps {
   initialMusicUrl?: string;
@@ -86,7 +86,7 @@ export default function MusicPlayer({ initialMusicUrl = "" }: MusicPlayerProps) 
                 rel: 0,
               }
             }
-          }}
+          } as any}
           onError={(e: any) => console.error("Music Player Error:", e)}
         />
       </div>
