@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { Search, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 interface CategoryTabsProps {
   categories: string[];
@@ -9,8 +12,35 @@ interface CategoryTabsProps {
 }
 
 export default function CategoryTabs({ categories, activeCategory }: CategoryTabsProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+  const [query, setQuery] = useState(initialQuery);
+
+  // Update URL on search change with debounce
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const currentQ = searchParams.get("q") || "";
+      if (query === currentQ) return; // Prevent infinite re-rendering
+
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      if (query) {
+        current.set("q", query);
+      } else {
+        current.delete("q");
+      }
+      // maintain the category if it exists
+      const search = current.toString();
+      const queryStr = search ? `?${search}` : "";
+      router.push(`/projects${queryStr}`);
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [query, router, searchParams]);
+
   return (
-    <div className="flex flex-wrap gap-2 mb-12 border-b border-slate-200 pb-1">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 border-b border-slate-200 pb-1">
+      <div className="flex flex-wrap gap-2 w-full sm:w-auto">
       {/* "All" Tab */}
       <Link href="/projects" className="relative px-4 py-2 text-sm font-semibold rounded-t-lg transition-colors duration-200 hover:bg-slate-50 text-slate-600">
         <span className={!activeCategory ? "text-navy" : ""}>All Projects</span>
@@ -45,6 +75,29 @@ export default function CategoryTabs({ categories, activeCategory }: CategoryTab
           </Link>
         );
       })}
+      </div>
+
+      {/* Minimalism Search Input */}
+      <div className="relative group w-full sm:w-auto pb-1 sm:pb-0">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-navy transition-colors">
+          <Search className="w-4 h-4" />
+        </div>
+        <input
+          type="text"
+          placeholder="Search projects..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full sm:w-[200px] sm:focus:w-[260px] pl-9 pr-8 py-2 bg-slate-50/50 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-navy focus:ring-1 focus:ring-navy rounded-full text-sm text-slate-700 placeholder:text-slate-400 transition-all duration-300 outline-none"
+        />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }

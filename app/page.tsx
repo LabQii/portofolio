@@ -96,7 +96,9 @@ export default async function Home() {
             <h2 className="text-[2.5rem] font-bold text-navy">Experience</h2>
           </div>
           <ExperienceTimeline experiences={experiences} />
+        </div>
 
+        <div className="relative z-10 w-full">
           <TechMarquee techStacks={uniqueTechStacks} customTechLogos={customTechLogos} />
         </div>
       </section>

@@ -10,14 +10,20 @@ import { getProfile } from "@/app/actions/profile";
 export default async function ProjectsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; tag?: string }>;
+  searchParams: Promise<{ category?: string; tag?: string; q?: string }>;
 }) {
-  const { category, tag } = await searchParams;
+  const { category, tag, q } = await searchParams;
 
   const projects = await prisma.project.findMany({
     where: {
       ...(category ? { category } : {}),
       ...(tag ? { tags: { has: tag } } : {}),
+      ...(q ? {
+        OR: [
+          { title: { contains: q, mode: "insensitive" } },
+          { description: { contains: q, mode: "insensitive" } }
+        ]
+      } : {}),
     },
     orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });

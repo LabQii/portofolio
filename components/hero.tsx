@@ -1,9 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Code2, Terminal, Cpu } from "lucide-react";
+import { useState, useRef } from "react";
 
 interface HeroProps {
   name?: string;
@@ -18,6 +19,53 @@ interface HeroProps {
 export default function Hero({ name, description, cvUrl, cvFileName, cvId, profileImageUrl, heroExperience }: HeroProps) {
   const defaultName = "Hi, I am Muhammad Iqbal Firmansyah";
   const defaultDesc = "Fullstack JavaScript Developer with hands-on experience in Google Apps Script automation and web application development for operational and business needs. He has a strong interest in Front-End Development and continuously improves his skills in Laravel and modern web technologies. Experienced in supporting internal systems, improving workflow efficiency, and mentoring learners in coding environments.";
+
+  // 3D Card State
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  
+  // Motion values for smooth 3D effect
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Springs for smoother physics
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 20 });
+
+  // Map mouse positions to rotation degrees (max 20)
+  const rotateX = useTransform(springY, [-0.5, 0.5], [20, -20]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-20, 20]);
+
+  // Map mouse positions to glare position
+  const glareX = useTransform(springX, [-0.5, 0.5], [0, 100]);
+  const glareY = useTransform(springY, [-0.5, 0.5], [0, 100]);
+  
+  // Spring for the overall scale
+  const scale = useSpring(isHovered ? 1.04 : 1, { stiffness: 200, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    
+    // Convert to relative coordinates inside the card: -0.5 to 0.5
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    mouseX.set(0);
+    mouseY.set(0);
+    scale.set(1);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    scale.set(1.04);
+  };
 
   return (
     <section className="relative overflow-hidden min-h-[calc(100vh-80px)] flex items-center pt-12 pb-20 md:py-24 lg:py-0" style={{ background: "var(--gradient-hero)" }}>
@@ -81,57 +129,135 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
 
             {/* Main Photo Card Container */}
             <motion.div
+              ref={cardRef}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative w-[300px] h-[340px] md:w-[340px] md:h-[380px]"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              onMouseEnter={handleMouseEnter}
+              style={{
+                perspective: 1200,
+                transformStyle: "preserve-3d",
+              }}
+              className="relative w-[300px] h-[340px] md:w-[340px] md:h-[380px] z-20 group"
             >
-              {/* Photo Area */}
-              <div className="absolute inset-0 bg-slate-100 rounded-[24px] shadow-xl overflow-hidden">
-                <Image
-                  src={profileImageUrl || ""}
-                  alt={name || "Profile Image"}
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 768px) 300px, 340px"
-                  priority
+              <motion.div
+                style={{
+                  rotateX,
+                  rotateY,
+                  scale,
+                  transformStyle: "preserve-3d",
+                }}
+                className="w-full h-full relative"
+              >
+                {/* Glare Effect */}
+                <motion.div 
+                  className="absolute inset-0 rounded-[24px] pointer-events-none z-40"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isHovered ? 0.4 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  style={{
+                    background: useTransform(
+                      [glareX, glareY],
+                      ([x, y]) => `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)`
+                    )
+                  }}
                 />
-              </div>
 
-              {/* Tech Stack Badges (Row above photo) */}
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="absolute -top-6 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 z-20 w-max"
-              >
-                <div className="flex items-center bg-white rounded-full px-3 py-1.5 shadow-md text-sm font-semibold text-slate-700">
-                  <img src="https://cdn.simpleicons.org/nextdotjs" alt="Next.js" className="w-4 h-4 mr-1.5" />
-                  Next.js
-                </div>
-                <div className="flex items-center bg-white rounded-full px-3 py-1.5 shadow-md text-sm font-semibold text-slate-700">
-                  <img src="https://cdn.simpleicons.org/react" alt="React" className="w-4 h-4 mr-1.5" />
-                  React.js
-                </div>
-                <div className="flex items-center bg-white rounded-full px-3 py-1.5 shadow-md text-sm font-semibold text-slate-700">
-                  <img src="https://cdn.simpleicons.org/laravel" alt="Laravel" className="w-4 h-4 mr-1.5" />
-                  Laravel
-                </div>
-              </motion.div>
+                {/* Corner Brackets */}
+                <div className="absolute -top-3 -left-3 w-8 h-8 border-t-2 border-l-2 border-transparent rounded-tl-xl z-30 transition-all duration-300 group-hover:scale-110 group-hover:border-blue-500"></div>
+                <div className="absolute -top-3 -right-3 w-8 h-8 border-t-2 border-r-2 border-transparent rounded-tr-xl z-30 transition-all duration-300 group-hover:scale-110 group-hover:border-blue-500"></div>
+                <div className="absolute -bottom-3 -left-3 w-8 h-8 border-b-2 border-l-2 border-transparent rounded-bl-xl z-30 transition-all duration-300 group-hover:scale-110 group-hover:border-blue-500"></div>
+                <div className="absolute -bottom-3 -right-3 w-8 h-8 border-b-2 border-r-2 border-transparent rounded-br-xl z-30 transition-all duration-300 group-hover:scale-110 group-hover:border-blue-500"></div>
 
-              {/* Experience Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="absolute -bottom-3 -right-3 md:-bottom-4 md:-right-4 bg-white rounded-2xl px-4 py-3 shadow-lg border border-slate-100 w-[130px] z-20"
-              >
-                <div className="text-[10px] text-slate-400 tracking-widest uppercase mb-1">Experience</div>
-                <div className="flex items-center font-bold text-slate-800 text-sm">
-                  <svg className="w-4 h-4 mr-1.5 text-navy shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  {heroExperience || "1+ Years"}
+                {/* Photo Area */}
+                <div className="absolute inset-0 bg-slate-100 rounded-[24px] shadow-2xl overflow-hidden border border-white/40">
+                  <Image
+                    src={profileImageUrl || ""}
+                    alt={name || "Profile Image"}
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 768px) 300px, 340px"
+                    priority
+                  />
+                </div>
+
+                {/* Floating Code Snippets */}
+                <div 
+                  className={`absolute top-12 -left-12 bg-slate-900/40 backdrop-blur-md text-slate-100 font-mono text-[11px] px-3 py-1.5 rounded-lg flex items-center shadow-lg border border-white/10 z-30 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)]
+                    ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                  style={{ transform: "translateZ(50px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(16px)" }) }}
+                >
+                  <span className="text-cyan-400 mr-0.5">&lt;</span><span className="text-emerald-400">HelloWorld</span><span className="text-cyan-400 ml-1">/&gt;</span>
+                </div>
+
+                <div 
+                  className={`absolute top-2/3 -left-6 bg-slate-900/40 backdrop-blur-md text-slate-100 font-mono text-[11px] px-3 py-1.5 rounded-lg shadow-lg border border-white/10 z-30 transition-all duration-[800ms] delay-100 ease-[cubic-bezier(0.22,0.61,0.36,1)]
+                    ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                  style={{ transform: "translateZ(40px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(16px)" }) }}
+                >
+                  npm<span className="text-pink-400 mx-1.5">run</span><span className="text-cyan-300">dev</span>
+                </div>
+
+                <div 
+                  className={`absolute bottom-24 -right-10 bg-slate-900/40 backdrop-blur-md text-slate-100 font-mono text-[11px] px-3 py-1.5 rounded-lg shadow-lg border border-white/10 z-30 transition-all duration-700 delay-75 ease-[cubic-bezier(0.22,0.61,0.36,1)]
+                    ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                  style={{ transform: "translateZ(60px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(16px)" }) }}
+                >
+                  php<span className="text-emerald-400 mx-1.5">artisan</span><span className="text-orange-300">serve</span>
+                </div>
+
+                {/* Floating Decorative Icons */}
+                <div 
+                  className={`absolute top-4 -right-6 w-10 h-10 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl border border-white/50 z-30 transition-all duration-500 delay-150 ease-[cubic-bezier(0.22,0.61,0.36,1)]
+                    ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                  style={{ transform: "translateZ(40px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(16px)" }) }}
+                >
+                  <Code2 className="w-5 h-5 text-navy drop-shadow-sm" />
+                </div>
+                
+                <div 
+                  className={`absolute top-1/2 -left-8 w-10 h-10 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl border border-white/50 z-30 transition-all duration-700 delay-100 ease-[cubic-bezier(0.22,0.61,0.36,1)]
+                    ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
+                  style={{ transform: "translateZ(45px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(-16px)" }) }}
+                >
+                  <Cpu className="w-5 h-5 text-navy drop-shadow-sm" />
+                </div>
+
+                {/* Tech Stack Badges (Row above photo) */}
+                <div className="absolute -top-6 left-0 right-0 hidden lg:flex justify-center z-30 pointer-events-none">
+                  <div
+                    className={`flex items-center gap-3 w-max pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]`}
+                    style={{ transform: isHovered ? "translateZ(50px) translateY(-14px)" : "translateZ(0) translateY(0)" }}
+                  >
+                    <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-white/60 text-sm font-semibold text-slate-800">
+                      <img src="https://cdn.simpleicons.org/nextdotjs" alt="Next.js" className="w-4 h-4 mr-1.5" />
+                      Next.js
+                    </div>
+                    <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-white/60 text-sm font-semibold text-slate-800">
+                      <img src="https://cdn.simpleicons.org/react" alt="React" className="w-4 h-4 mr-1.5" />
+                      React.js
+                    </div>
+                    <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-white/60 text-sm font-semibold text-slate-800">
+                      <img src="https://cdn.simpleicons.org/laravel" alt="Laravel" className="w-4 h-4 mr-1.5" />
+                      Laravel
+                    </div>
+                  </div>
+                </div>
+
+                {/* Experience Badge */}
+                <div
+                  className="absolute -bottom-3 -right-3 md:-bottom-4 md:-right-4 bg-white/90 backdrop-blur-sm rounded-2xl px-4 py-3 shadow-xl border border-white/60 min-w-[130px] z-30 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)]"
+                  style={{ transform: isHovered ? "translateZ(60px)" : "translateZ(0)" }}
+                >
+                  <div className="text-[10px] text-slate-500 tracking-widest uppercase mb-1 font-semibold">Experience</div>
+                  <div className="flex items-center font-bold text-slate-800 text-[15px]">
+                    <svg className="w-4 h-4 mr-1.5 text-navy shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    {heroExperience || "1+ Years"}
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
