@@ -20,29 +20,37 @@ export function useMusic() {
     return ctx;
 }
 
-// YouTube video ID from the user
-const YT_VIDEO_ID = "3jvQpuk-9q4";
-
-declare global {
-    interface Window {
-        YT: any;
-        onYouTubeIframeAPIReady: () => void;
-    }
+/**
+ * Utility to extract YouTube video ID from various URL formats
+ */
+function getYouTubeID(url: string) {
+    if (!url) return null;
+    
+    // If it's already an ID (alphanumeric, 11 chars)
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+    
+    // Handle various URL formats
+    const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    
+    return (match && match[2].length === 11) ? match[2] : null;
 }
 
-export function MusicProvider({ children }: { children: ReactNode }) {
+export function MusicProvider({ children, musicUrl }: { children: ReactNode; musicUrl?: string }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolumeState] = useState(40);
     const [isReady, setIsReady] = useState(false);
     const playerRef = useRef<any>(null);
-    // Track whether user has ever clicked play (for autoplay policy)
     const hasInteractedRef = useRef(false);
+    
+    // Extract video ID from prop
+    const videoId = getYouTubeID(musicUrl || "3jvQpuk-9q4");
 
     const initPlayer = useCallback(() => {
-        if (playerRef.current || !window.YT || !window.YT.Player) return;
+        if (playerRef.current || !window.YT || !window.YT.Player || !videoId) return;
         
         playerRef.current = new window.YT.Player("yt-music-player", {
-            videoId: YT_VIDEO_ID,
+            videoId: videoId,
             playerVars: {
                 autoplay: 0,
                 controls: 0,
@@ -52,23 +60,19 @@ export function MusicProvider({ children }: { children: ReactNode }) {
                 modestbranding: 1,
                 rel: 0,
                 loop: 1,
-                playlist: YT_VIDEO_ID, // Required for loop to work on single video
+                playlist: videoId, // Required for loop to work on single video
             },
             events: {
                 onReady: (event: any) => {
                     event.target.setVolume(volume);
                     setIsReady(true);
                     
-                    // Respect user preference from last session
                     const saved = localStorage.getItem("cc-music-playing");
-                    // Note: Autoplay might still fail due to browser policies 
-                    // until the user interacts with the page.
                     if (saved === "true" && hasInteractedRef.current) {
                         event.target.playVideo();
                     }
                 },
                 onStateChange: (event: any) => {
-                    // YT.PlayerState.PLAYING = 1, PAUSED = 2, ENDED = 0
                     if (event.data === 1) {
                         setIsPlaying(true);
                         localStorage.setItem("cc-music-playing", "true");
@@ -82,10 +86,20 @@ export function MusicProvider({ children }: { children: ReactNode }) {
                 }
             },
         });
-    }, [volume]);
+    }, [volume, videoId]);
+
+    // Update video if videoId changes
+    useEffect(() => {
+        if (playerRef.current && isReady && videoId) {
+            playerRef.current.cueVideoById(videoId);
+            // If it was playing, resume with the new video
+            if (isPlaying) {
+                playerRef.current.playVideo();
+            }
+        }
+    }, [videoId, isReady, isPlaying]);
 
     useEffect(() => {
-        // Load YouTube IFrame API
         if (document.getElementById("yt-api-script")) {
             if (window.YT && window.YT.Player) {
                 initPlayer();
@@ -101,13 +115,6 @@ export function MusicProvider({ children }: { children: ReactNode }) {
         document.head.appendChild(tag);
 
         window.onYouTubeIframeAPIReady = initPlayer;
-
-        // Cleanup if necessary (though YT API is usually global)
-        return () => {
-            if (playerRef.current) {
-                // playerRef.current.destroy() // Sometimes causes issues on fast refresh
-            }
-        };
     }, [initPlayer]);
 
     const toggle = useCallback(() => {
@@ -130,7 +137,6 @@ export function MusicProvider({ children }: { children: ReactNode }) {
 
     return (
         <MusicContext.Provider value={{ isPlaying, toggle, volume, setVolume, isReady }}>
-            {/* Hidden YouTube player — audio only via invisible iframe */}
             <div
                 style={{ position: "fixed", top: "-9999px", left: "-9999px", width: 1, height: 1, pointerEvents: "none", visibility: "hidden", zIndex: -1 }}
                 aria-hidden="true"

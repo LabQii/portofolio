@@ -37,7 +37,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Providers>
+          <Providers musicUrl={(profile as any)?.musicUrl || ""}>
             <div className="flex min-h-screen flex-col bg-white text-slate-800 relative">
               <Navbar />
               <main className="flex-grow">{children}</main>
