@@ -59,6 +59,12 @@ export async function createProject(formData: FormData) {
     thumbnailUrl = uploadResult.secure_url;
   }
 
+  // Get latest order for new projects
+  const lastProject = await prisma.project.findFirst({
+    orderBy: { order: "desc" },
+  });
+  const newOrder = (lastProject?.order ?? 0) + 1;
+
   await prisma.project.create({
     data: {
       title,
@@ -74,7 +80,7 @@ export async function createProject(formData: FormData) {
       githubUrl: githubUrl || null,
       category,
       featured,
-      order: parseInt(formData.get("order") as string) || 0,
+      order: newOrder,
     },
   });
 
@@ -131,7 +137,6 @@ export async function updateProject(id: string, formData: FormData) {
       githubUrl: githubUrl || null,
       category,
       featured,
-      order: parseInt(formData.get("order") as string) || 0,
     },
   });
 
@@ -143,6 +148,19 @@ export async function updateProject(id: string, formData: FormData) {
 
 export async function deleteProject(id: string) {
   await prisma.project.delete({ where: { id } });
+  revalidatePath("/projects");
+  revalidatePath("/admin/projects");
+  return { success: true };
+}
+
+export async function updateProjectsOrder(projectIds: string[]) {
+  const updates = projectIds.map((id, index) =>
+    prisma.project.update({
+      where: { id },
+      data: { order: index + 1 },
+    })
+  );
+  await Promise.all(updates);
   revalidatePath("/projects");
   revalidatePath("/admin/projects");
   return { success: true };

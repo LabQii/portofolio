@@ -1,18 +1,41 @@
 "use client";
 
-import { deleteProject } from "@/app/actions/project-actions";
+import { deleteProject, updateProjectsOrder } from "@/app/actions/project-actions";
 import Link from "next/link";
-import { Edit, Trash2, Star, Eye } from "lucide-react";
-import { useState } from "react";
+import { Edit, Trash2, Star, Eye, GripVertical } from "lucide-react";
+import { useState, useEffect } from "react";
 import { formatDate } from "@/lib/utils";
 import type { Project } from "@prisma/client";
 import { useConfirm } from "@/components/ui/confirm-modal";
 import { useToast } from "@/components/ui/toast";
+import { Reorder, useDragControls } from "framer-motion";
 
-export default function AdminProjectTable({ projects }: { projects: Project[] }) {
+export default function AdminProjectTable({ projects: initialProjects }: { projects: Project[] }) {
   const confirm = useConfirm();
   const { success, error: toastError } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [items, setItems] = useState(initialProjects);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // Keep local state in sync with props
+  useEffect(() => {
+    setItems(initialProjects);
+  }, [initialProjects]);
+
+  const handleReorder = async (newOrder: Project[]) => {
+    setItems(newOrder);
+    setIsUpdating(true);
+    try {
+      await updateProjectsOrder(newOrder.map(p => p.id));
+      success("Order updated successfully");
+    } catch (err) {
+      toastError("Failed to update order");
+      // Revert on error
+      setItems(initialProjects);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const handleDelete = async (id: string, title: string) => {
     const ok = await confirm({
@@ -35,7 +58,7 @@ export default function AdminProjectTable({ projects }: { projects: Project[] })
     }
   };
 
-  if (projects.length === 0) {
+  if (initialProjects.length === 0) {
     return (
       <div className="text-center py-24 border-2 border-dashed border-[#e2e8f0] rounded-xl bg-white">
         <p className="text-[#64748b] mb-4 text-sm">No projects yet.</p>
@@ -45,10 +68,11 @@ export default function AdminProjectTable({ projects }: { projects: Project[] })
   }
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)]">
+    <div className={`bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] transition-opacity ${isUpdating ? 'opacity-70 pointer-events-none' : ''}`}>
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-[#f8fafc] border-b border-[#e2e8f0]">
+            <th className="w-10 px-4 py-3"></th>
             <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3">Title</th>
             <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3 hidden md:table-cell">Category</th>
             <th className="text-left text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3 hidden lg:table-cell">Created</th>
@@ -57,9 +81,19 @@ export default function AdminProjectTable({ projects }: { projects: Project[] })
             <th className="text-right text-[11px] font-semibold text-[#64748b] uppercase tracking-[0.05em] px-4 py-3">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          {projects.map((project) => (
-            <tr key={project.id} className="border-b border-[#f1f5f9] last:border-0 hover:bg-[#f8fafc] transition-colors">
+        <Reorder.Group axis="y" values={items} onReorder={handleReorder} as="tbody">
+          {items.map((project) => (
+            <Reorder.Item 
+              key={project.id} 
+              value={project} 
+              as="tr" 
+              className="border-b border-[#f1f5f9] last:border-0 hover:bg-[#f8fafc] transition-colors cursor-default"
+            >
+              <td className="px-4 py-[14px] text-center">
+                <div className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors">
+                  <GripVertical className="h-4 w-4 mx-auto" />
+                </div>
+              </td>
               <td className="px-4 py-[14px] font-medium text-[#0f172a]">
                 <span className="line-clamp-1">{project.title}</span>
               </td>
@@ -74,9 +108,9 @@ export default function AdminProjectTable({ projects }: { projects: Project[] })
               </td>
               <td className="px-4 py-[14px]">
                 {project.featured ? (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-600">
-                    <Star className="h-3 w-3 fill-amber-500 text-amber-500" /> Featured
-                  </span>
+                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-600">
+                     <Star className="h-3 w-3 fill-amber-500 text-amber-500" /> Featured
+                   </span>
                 ) : (
                   <span className="text-[#94a3b8] text-xs">—</span>
                 )}
@@ -95,9 +129,9 @@ export default function AdminProjectTable({ projects }: { projects: Project[] })
                   </button>
                 </div>
               </td>
-            </tr>
+            </Reorder.Item>
           ))}
-        </tbody>
+        </Reorder.Group>
       </table>
     </div>
   );
