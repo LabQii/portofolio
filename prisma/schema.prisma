@@ -80,6 +80,9 @@ model Profile {
   // Activities page settings
   activitiesTitle       String?
   activitiesDescription String? @db.Text
+
+  // Music settings
+  musicUrl              String?
   
   updatedAt   DateTime @updatedAt
 }

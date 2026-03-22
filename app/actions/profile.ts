@@ -15,6 +15,7 @@ export async function updateProfile(data: {
   projectsDescription?: string;
   activitiesTitle?: string;
   activitiesDescription?: string;
+  musicUrl?: string;
 }) {
   try {
     const existing = await prisma.profile.findFirst();

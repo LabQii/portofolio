@@ -5,9 +5,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import BackToTop from "@/components/back-to-top";
-import WhatsAppFloat from "@/components/whatsapp-float";
+import MusicPlayer from "@/components/music-player";
 import Providers from "@/components/providers";
 import PageLoader from "@/components/page-loader";
+import { getProfile } from "@/app/actions/profile";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -19,11 +20,13 @@ export const metadata: Metadata = {
   description: "Clean, minimal, and professional portfolio of M Iqbal Firmansyah - Web Developer & UI Designer.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const profile = await getProfile();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={font.className}>
@@ -40,7 +43,7 @@ export default function RootLayout({
               <main className="flex-grow">{children}</main>
               <Footer />
               <BackToTop />
-              <WhatsAppFloat />
+              <MusicPlayer initialMusicUrl={(profile as any)?.musicUrl || ""} />
             </div>
           </Providers>
         </ThemeProvider>
