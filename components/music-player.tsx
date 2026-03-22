@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-// @ts-ignore
-import ReactPlayer from "react-player/youtube";
+import dynamic from "next/dynamic";
 import { Music, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
+
+// @ts-ignore
+const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 
 interface MusicPlayerProps {
   initialMusicUrl?: string;
