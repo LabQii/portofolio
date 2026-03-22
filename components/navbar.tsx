@@ -47,29 +47,42 @@ export default function Navbar() {
 
   if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
   
-  const handleScroll = (e: React.MouseEvent, href: string) => {
+  const handleScroll = (e: React.MouseEvent, href: string, isMobile = false) => {
     if (href.includes('#') && pathname === '/') {
       const id = href.split('#')[1];
       const element = document.getElementById(id);
       if (element) {
         e.preventDefault();
-        if (id === 'contact') {
-          window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: 'smooth'
-          });
-          setTimeout(() => {
+        
+        const executeScroll = () => {
+          if (id === 'contact') {
             window.scrollTo({
               top: document.documentElement.scrollHeight,
               behavior: 'smooth'
             });
-          }, 500);
+            setTimeout(() => {
+              window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: 'smooth'
+              });
+            }, 500);
+          } else {
+            const yOffset = -80;
+            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+        };
+
+        if (isMobile) {
+          setIsMenuOpen(false);
+          // Small delay to ensure menu closing doesn't interrupt scroll
+          setTimeout(executeScroll, 10);
         } else {
-          const yOffset = -80;
-          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
+          executeScroll();
         }
       }
+    } else if (isMobile) {
+      setIsMenuOpen(false);
     }
   };
 
@@ -183,10 +196,7 @@ export default function Navbar() {
                           ? "bg-slate-50 text-navy"
                           : "text-foreground hover:bg-slate-50"
                       )}
-                      onClick={(e) => {
-                        setIsMenuOpen(false);
-                        handleScroll(e, item.href);
-                      }}
+                      onClick={(e) => handleScroll(e, item.href, true)}
                     >
                       {item.name}
                     </Link>
