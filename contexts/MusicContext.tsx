@@ -45,11 +45,11 @@ export function MusicProvider({ children, musicUrl }: { children: ReactNode; mus
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolumeState] = useState(40);
     const [isReady, setIsReady] = useState(false);
-    const playerRef = useRef<any>(null);
+    const playerRef = useRef<YTPlayer | null>(null);
     const hasInteractedRef = useRef(false);
     
     // Extract video ID from prop
-    const videoId = getYouTubeID(musicUrl || "3jvQpuk-9q4");
+    const videoId = getYouTubeID(musicUrl) || DEFAULT_VIDEO_ID;
 
     const initPlayer = useCallback(() => {
         if (playerRef.current || !window.YT || !window.YT.Player || !videoId) return;
@@ -66,18 +66,23 @@ export function MusicProvider({ children, musicUrl }: { children: ReactNode; mus
                 rel: 0,
                 loop: 1,
                 playlist: videoId, // Required for loop to work on single video
+                origin: typeof window !== 'undefined' ? window.location.origin : undefined,
             },
             events: {
-                onReady: (event: any) => {
-                    event.target.setVolume(volume);
+                onReady: (event) => {
+                    const player = event.target;
+                    player.setVolume(volume);
                     setIsReady(true);
                     
                     const saved = localStorage.getItem("cc-music-playing");
+                    // Only autoplay if we've had interaction OR it was playing before
+                    // Note: Browser might still block this until first click anyway
                     if (saved === "true" && hasInteractedRef.current) {
-                        event.target.playVideo();
+                        player.playVideo();
                     }
                 },
-                onStateChange: (event: any) => {
+                onStateChange: (event) => {
+                    // YT.PlayerState.PLAYING = 1, PAUSED = 2, ENDED = 0
                     if (event.data === 1) {
                         setIsPlaying(true);
                         localStorage.setItem("cc-music-playing", "true");
@@ -86,40 +91,44 @@ export function MusicProvider({ children, musicUrl }: { children: ReactNode; mus
                         localStorage.setItem("cc-music-playing", "false");
                     }
                 },
-                onError: (error: any) => {
-                    console.error("YouTube Player Error:", error);
+                onError: (event) => {
+                    console.error("YouTube Player Error:", event.data);
                 }
             },
         });
     }, [volume, videoId]);
 
-    // Update video if videoId changes
+    // Handle video ID changes
     useEffect(() => {
         if (playerRef.current && isReady && videoId) {
-            playerRef.current.cueVideoById(videoId);
-            // If it was playing, resume with the new video
+            // Check current video ID to avoid redundant reloads
+            const currentPlayer = playerRef.current;
+            currentPlayer.cueVideoById(videoId);
             if (isPlaying) {
-                playerRef.current.playVideo();
+                currentPlayer.playVideo();
             }
         }
     }, [videoId, isReady, isPlaying]);
 
     useEffect(() => {
-        if (document.getElementById("yt-api-script")) {
-            if (window.YT && window.YT.Player) {
-                initPlayer();
-            } else {
-                window.onYouTubeIframeAPIReady = initPlayer;
-            }
-            return;
+        // Load API if not present
+        if (!document.getElementById("yt-api-script")) {
+            const tag = document.createElement("script");
+            tag.id = "yt-api-script";
+            tag.src = "https://www.youtube.com/iframe_api";
+            document.head.appendChild(tag);
         }
 
-        const tag = document.createElement("script");
-        tag.id = "yt-api-script";
-        tag.src = "https://www.youtube.com/iframe_api";
-        document.head.appendChild(tag);
+        if (window.YT && window.YT.Player) {
+            initPlayer();
+        } else {
+            window.onYouTubeIframeAPIReady = initPlayer;
+        }
 
-        window.onYouTubeIframeAPIReady = initPlayer;
+        return () => {
+            // Optional cleanup if component unmounts
+            // window.onYouTubeIframeAPIReady = () => {};
+        };
     }, [initPlayer]);
 
     const toggle = useCallback(() => {

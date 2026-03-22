@@ -296,17 +296,17 @@ export default function EditProfilePage() {
               <div className="space-y-4 flex-grow">
                 <div className="space-y-1.5">
                   <label htmlFor="musicUrl" className="block text-[12px] font-medium text-[#64748b] tracking-[0.03em]">
-                    Background Music (YouTube URL)
+                    Background Music (YouTube Video ID)
                   </label>
                   <input
                     id="musicUrl"
                     value={musicUrl}
                     onChange={(e) => setMusicUrl(e.target.value)}
-                    placeholder="E.g., https://www.youtube.com/watch?v=..."
+                    placeholder="E.g., 2NsOhwBLJks"
                     className="w-full border border-[#e2e8f0] rounded-lg px-[14px] py-[10px] text-[14px] text-[#0f172a] focus:outline-none focus:border-[#1e293b] focus:shadow-[0_0_0_3px_rgba(30,41,59,0.07)] transition-all"
                   />
                   <p className="text-[11px] text-slate-400 mt-1 italic">
-                    Masukkan URL video YouTube yang ingin diputar sebagai latar belakang. Hanya suaranya saja yang akan diputar.
+                    Masukkan ID video YouTube (11 karakter) yang ingin diputar sebagai latar belakang. Contoh: 2NsOhwBLJks
                   </p>
                 </div>
               </div>
