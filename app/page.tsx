@@ -12,7 +12,7 @@ export default async function Home() {
   const profile = await prisma.profile.findFirst();
   const featuredProjects = await prisma.project.findMany({
     where: { featured: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
   const recentPosts = await prisma.post.findMany({
     orderBy: { createdAt: "desc" },
