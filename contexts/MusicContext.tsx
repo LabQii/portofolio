@@ -25,7 +25,7 @@ export function useMusic() {
 /**
  * Utility to extract YouTube video ID from various URL formats
  */
-function getYouTubeID(url: string) {
+function getYouTubeID(url?: string) {
     if (!url) return null;
     
     // If it's already an ID (alphanumeric, 11 chars)
