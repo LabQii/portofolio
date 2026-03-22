@@ -10,7 +10,7 @@ export default async function AdminProjectsPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
-  const projects = await prisma.project.findMany({ orderBy: [{ order: "asc" }, { createdAt: "desc" }] });
+  const projects = await prisma.project.findMany({ orderBy: { createdAt: "desc" } });
 
   return (
     <div className="p-6 md:p-8">
