@@ -1,5 +1,7 @@
 "use client";
 
+/// <reference path="../types/youtube.d.ts" />
+
 import {
     createContext, useContext, useEffect, useRef, useState, useCallback, ReactNode
 } from "react";
@@ -35,6 +37,9 @@ function getYouTubeID(url: string) {
     
     return (match && match[2].length === 11) ? match[2] : null;
 }
+
+// YouTube video ID from the user (default fallback)
+const DEFAULT_VIDEO_ID = "3jvQpuk-9q4";
 
 export function MusicProvider({ children, musicUrl }: { children: ReactNode; musicUrl?: string }) {
     const [isPlaying, setIsPlaying] = useState(false);
