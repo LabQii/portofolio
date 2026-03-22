@@ -29,21 +29,35 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  React.useEffect(() => {
+    // Handle scroll to hash on initial load or navigation from other pages
+    const hash = window.location.hash;
+    if (hash && pathname === '/') {
+      const id = hash.replace('#', '');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          const yOffset = -80;
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [pathname]);
+
   if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
   
   const handleScroll = (e: React.MouseEvent, href: string) => {
     if (href.includes('#') && pathname === '/') {
-      e.preventDefault();
       const id = href.split('#')[1];
       const element = document.getElementById(id);
       if (element) {
+        e.preventDefault();
         if (id === 'contact') {
-          // Robust scroll to bottom for footer to handle layout shifts
           window.scrollTo({
             top: document.documentElement.scrollHeight,
             behavior: 'smooth'
           });
-          // Re-trigger scroll after most dynamic content has settled
           setTimeout(() => {
             window.scrollTo({
               top: document.documentElement.scrollHeight,
@@ -51,7 +65,9 @@ export default function Navbar() {
             });
           }, 500);
         } else {
-          element.scrollIntoView({ behavior: 'smooth' });
+          const yOffset = -80;
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
         }
       }
     }
