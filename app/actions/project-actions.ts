@@ -74,7 +74,6 @@ export async function createProject(formData: FormData) {
       githubUrl: githubUrl || null,
       category,
       featured,
-      order: parseInt(formData.get("order") as string) || 0,
     },
   });
 
@@ -131,7 +130,6 @@ export async function updateProject(id: string, formData: FormData) {
       githubUrl: githubUrl || null,
       category,
       featured,
-      order: parseInt(formData.get("order") as string) || 0,
     },
   });
 
