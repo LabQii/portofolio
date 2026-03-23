@@ -1,8 +1,8 @@
 export default function ProjectsLoading() {
   return (
-    <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>
+    <div className="min-h-screen pb-24 bg-page-gradient">
       {/* Header Skeleton */}
-      <div className="border-b border-slate-100 dark:border-slate-800/50 py-16" style={{ background: "var(--gradient-hero)" }}>
+      <div className="border-b border-slate-100 dark:border-slate-800/50 py-16 bg-hero-gradient">
         <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-[768px]">
             <div className="h-14 w-64 bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-xl mb-6"></div>

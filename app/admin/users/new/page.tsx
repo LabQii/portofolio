@@ -53,7 +53,7 @@ export default function NewAdminPage() {
   }
 
   return (
-    <div className="min-h-screen py-12" style={{ background: "var(--gradient-page)" }}>
+    <div className="min-h-screen py-12 bg-page-gradient">
       <div className="w-full mx-auto max-w-[672px] px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <Link href="/admin/users" className="text-navy hover:underline text-sm font-medium">
