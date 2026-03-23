@@ -108,7 +108,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-slate-200 relative overflow-hidden" id="contact" style={{ background: "var(--gradient-hero)" }}>
+    <footer className="border-t border-slate-200 relative overflow-hidden bg-hero-gradient" id="contact">
 
       <div
         className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-slate-800"

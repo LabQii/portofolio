@@ -68,7 +68,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
   };
 
   return (
-    <section className="relative overflow-hidden min-h-[calc(100vh-80px)] flex items-center pt-12 pb-20 md:py-24 lg:py-0" style={{ background: "var(--gradient-hero)" }}>
+    <section className="relative overflow-hidden min-h-[calc(100vh-80px)] flex items-center pt-12 pb-20 md:py-24 lg:py-0 bg-hero-gradient">
       <div
         className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-white"
       ></div>
