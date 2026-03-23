@@ -14,8 +14,7 @@ export default async function PostsPage() {
     <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>
       <div className="border-b border-slate-100/60 py-16 relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
         <div 
-          className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]" 
-          style={{ backgroundColor: "#1a3a5c" }}
+          className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-white" 
           aria-hidden="true"
         ></div>
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
@@ -34,8 +33,8 @@ export default async function PostsPage() {
               <PostCard key={post.id} post={post} index={index} />
             ))
           ) : (
-            <div className="col-span-full py-24 text-center bg-white rounded-2xl border border-slate-100 shadow-sm">
-              <p className="text-slate-500 italic">I haven&apos;t posted anything yet. Check back soon!</p>
+            <div className="col-span-full py-24 text-center bg-surface rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <p className="text-muted italic">I haven&apos;t posted anything yet. Check back soon!</p>
             </div>
           )}
         </div>

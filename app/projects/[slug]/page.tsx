@@ -45,7 +45,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <article className="w-full mx-auto px-4 py-16 sm:py-24 max-w-[1024px] flex-grow">
           <div className="mb-8">
             <Button variant="ghost" asChild className="mb-6 pl-0 hover:pl-2 transition-all">
-              <Link href="/projects" className="flex items-center gap-2 text-muted-foreground">
+              <Link href="/projects" className="flex items-center gap-2 text-muted hover:text-primary transition-colors">
                 <ArrowLeft className="h-4 w-4" /> Back to Projects
               </Link>
             </Button>
@@ -54,26 +54,28 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 {project.category}
               </Badge>
               {project.tags.map((tag, i) => (
-                <Badge key={`${tag}-${i}`} variant="outline">{tag}</Badge>
+                <Badge key={`${tag}-${i}`} variant="outline" className="text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40">
+                  {tag}
+                </Badge>
               ))}
             </div>
-            <h1 className="text-4xl font-bold tracking-tight mb-4">{project.title}</h1>
-            <p className="text-xl text-muted-foreground leading-relaxed max-w-[950px]">{project.description}</p>
-            <div className="flex items-center gap-1 mt-3 text-sm text-muted-foreground">
+            <h1 className="text-4xl font-bold tracking-tight mb-4 text-primary">{project.title}</h1>
+            <p className="text-xl text-muted leading-relaxed max-w-[950px]">{project.description}</p>
+            <div className="flex items-center gap-1 mt-3 text-sm text-muted">
               <Eye className="h-3.5 w-3.5" />
               <span>{project.views} views</span>
             </div>
           </div>
 
           {/* Thumbnail */}
-          <div className="relative aspect-video rounded-2xl overflow-hidden mb-12 shadow-xl border border-slate-100">
+          <div className="relative aspect-video rounded-2xl overflow-hidden mb-12 shadow-xl border border-slate-100 dark:border-slate-800">
             <Image src={project.thumbnail} alt={project.title} fill className="object-cover" />
           </div>
 
           {/* Links */}
           <div className="flex flex-wrap gap-4 mb-12">
             {project.demoUrl && (
-              <Button asChild className="bg-navy hover:bg-navy/90 text-white rounded-xl px-7 h-11 shadow-sm transition-all active:scale-[0.98]">
+              <Button asChild className="bg-navy hover:bg-navy/90 dark:bg-transparent dark:border dark:border-slate-500 dark:text-white dark:hover:bg-slate-700 dark:hover:border-slate-300 text-white rounded-xl px-7 h-11 shadow-sm transition-all active:scale-[0.98]">
                 <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 font-semibold text-[15px]">
                   <ExternalLink className="h-4 w-4" /> Live Demo
                 </a>
@@ -81,7 +83,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             )}
             
             {project.videoUrl && (
-              <Button asChild className="bg-[#ff0000] hover:bg-[#dc2626] text-white border-transparent rounded-xl px-7 h-11 shadow-sm transition-all duration-200 active:scale-[0.98]">
+              <Button asChild className="bg-[#ff0000] hover:bg-[#dc2626] dark:bg-transparent dark:border dark:border-red-500 dark:text-red-400 dark:hover:bg-red-500/20 dark:hover:border-red-400 text-white border-transparent rounded-xl px-7 h-11 shadow-sm transition-all duration-200 active:scale-[0.98]">
                 <a href={project.videoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 font-semibold text-[15px]">
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -92,7 +94,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             )}
 
             {project.githubUrl && (
-              <Button asChild className="bg-slate-800 hover:bg-slate-900 text-white rounded-xl px-7 h-11 shadow-sm transition-all active:scale-[0.98]">
+              <Button asChild className="bg-slate-800 hover:bg-slate-900 dark:bg-transparent dark:border dark:border-slate-500 dark:text-white dark:hover:bg-slate-700 dark:hover:border-slate-300 text-white rounded-xl px-7 h-11 shadow-sm transition-all active:scale-[0.98]">
                 <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 font-semibold text-[15px]">
                   <Github className="h-4 w-4" /> Source Code
                 </a>
@@ -106,16 +108,16 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             {/* Left Column: Tech Stack */}
             <div className="md:col-span-1">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-8 h-1 bg-navy rounded-full"></div>
-                <h2 className="text-xl font-bold m-0 text-navy">Tech Stack</h2>
+                <div className="w-8 h-1 bg-accent rounded-full"></div>
+                <h2 className="text-xl font-bold m-0 text-primary">Tech Stack</h2>
               </div>
               <div className="flex flex-col gap-3">
                 {project.techStack.map((tech, i) => {
                   const logoDetails = getTechLogoDetails(tech, customTechLogos);
                   return (
-                    <div key={`${tech}-${i}`} className="px-5 py-3 rounded-xl border text-sm font-medium flex items-center justify-start gap-3 transition-colors bg-slate-50 border-slate-200 text-slate-800 shadow-sm">
+                    <div key={`${tech}-${i}`} className="px-5 py-3 rounded-xl border text-[14px] font-semibold flex items-center justify-start gap-3 transition-colors bg-background dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-primary shadow-sm hover:border-accent/40">
                       {logoDetails.type === 'initial' ? (
-                        <div className="w-5 h-5 rounded bg-slate-200 flex items-center justify-center text-[11px] font-bold text-slate-600">
+                        <div className="w-5 h-5 rounded bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[11px] font-bold text-slate-600 dark:text-slate-200">
                           {logoDetails.initial}
                         </div>
                       ) : (
@@ -136,17 +138,17 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
             {/* Right Column: About Content */}
             <div className="md:col-span-2">
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100">
+              <div className="bg-surface rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 mt-1">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-8 h-1 bg-navy rounded-full"></div>
-                  <h2 className="text-xl font-bold m-0 text-navy">About this project</h2>
+                  <div className="w-8 h-1 bg-accent rounded-full"></div>
+                  <h2 className="text-xl font-bold m-0 text-primary">About this project</h2>
                 </div>
                 {project.content ? (
-                  <div className="prose prose-neutral dark:prose-invert max-w-none text-muted-foreground leading-relaxed whitespace-pre-wrap text-base">
+                  <div className="prose prose-neutral dark:prose-invert max-w-none text-muted leading-relaxed whitespace-pre-wrap text-base">
                     {project.content}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground italic">No description provided.</p>
+                  <p className="text-muted italic">No description provided.</p>
                 )}
               </div>
             </div>
@@ -159,7 +161,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               <h2 className="text-xl font-semibold mb-4">Gallery</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {project.images.map((img, i) => (
-                  <div key={i} className="relative aspect-video rounded-xl overflow-hidden shadow-md border border-slate-100">
+                  <div key={i} className="relative aspect-video rounded-xl overflow-hidden shadow-md border border-slate-100 dark:border-slate-800">
                     <Image src={img} alt={`${project.title} screenshot ${i + 1}`} fill className="object-cover" />
                   </div>
                 ))}

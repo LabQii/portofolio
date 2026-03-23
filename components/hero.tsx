@@ -70,8 +70,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
   return (
     <section className="relative overflow-hidden min-h-[calc(100vh-80px)] flex items-center pt-12 pb-20 md:py-24 lg:py-0" style={{ background: "var(--gradient-hero)" }}>
       <div
-        className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]"
-        style={{ backgroundColor: "#1a3a5c" }}
+        className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-white"
       ></div>
       <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-14">
@@ -81,7 +80,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-[44px] md:text-[38px] font-bold text-navy leading-[1.1] mb-6 tracking-tight"
+              className="text-[44px] md:text-[38px] font-bold text-primary leading-[1.1] mb-6 tracking-tight"
             >
               {name || defaultName}
             </motion.h1>
@@ -89,7 +88,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-              className="text-[17px] text-foreground/80 leading-[1.7] mb-10 max-w-[672px] mx-auto lg:mx-0"
+              className="text-[17px] text-muted leading-[1.7] mb-10 max-w-[672px] mx-auto lg:mx-0"
             >
               {description || defaultDesc}
             </motion.p>
@@ -99,7 +98,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
               transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
               className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
             >
-              <Button size="lg" asChild className="bg-navy hover:bg-navy/90 text-white rounded-md px-8 py-6 text-lg font-semibold shadow-md hover:shadow-lg transition-all">
+              <Button size="lg" asChild className="bg-navy hover:bg-navy/90 dark:bg-transparent dark:border dark:border-slate-500 dark:text-white dark:hover:bg-slate-700/50 text-white rounded-xl px-8 py-6 text-lg font-semibold shadow-md hover:shadow-lg transition-all">
                 <a
                   href={cvId ? `/api/cv/download/${cvId}` : (cvUrl || "#")}
                   target="_blank"
@@ -108,7 +107,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
                   View CV
                 </a>
               </Button>
-              <Button size="lg" variant="ghost" asChild className="text-navy hover:bg-slate-100/70 hover:text-navy rounded-md px-8 py-6 text-lg font-semibold transition-all duration-300">
+              <Button size="lg" variant="ghost" asChild className="text-primary hover:bg-slate-100/70 dark:border dark:border-slate-500 dark:text-white dark:hover:bg-slate-700/50 hover:text-accent dark:hover:text-white rounded-xl px-8 py-6 text-lg font-semibold transition-all duration-300">
                 <a
                   href="https://wa.me/6285177440699"
                   target="_blank"
@@ -125,7 +124,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
           {/* Right Area: Dev Portfolio Card */}
           <div className="relative flex items-center justify-center flex-shrink-0 p-8 md:p-10">
             {/* Decorative blob */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[420px] md:h-[420px] bg-blue-50/80 rounded-full -z-10 opacity-60"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[420px] md:h-[420px] bg-blue-50/80 dark:bg-slate-700/40 rounded-full -z-10 opacity-60"></div>
 
             {/* Main Photo Card Container */}
             <motion.div
@@ -185,7 +184,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
 
                 {/* Floating Code Snippets */}
                 <div 
-                  className={`absolute top-12 -left-12 bg-slate-900/40 backdrop-blur-md text-slate-100 font-mono text-[11px] px-3 py-1.5 rounded-lg flex items-center shadow-lg border border-white/10 z-30 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)]
+                  className={`absolute top-12 -left-12 bg-white/60 dark:bg-slate-900/40 backdrop-blur-md text-slate-800 dark:text-slate-100 font-mono text-[11px] px-3 py-1.5 rounded-lg flex items-center shadow-lg border border-slate-200/50 dark:border-white/10 z-30 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)]
                     ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
                   style={{ transform: "translateZ(50px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(16px)" }) }}
                 >
@@ -193,7 +192,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
                 </div>
 
                 <div 
-                  className={`absolute top-2/3 -left-6 bg-slate-900/40 backdrop-blur-md text-slate-100 font-mono text-[11px] px-3 py-1.5 rounded-lg shadow-lg border border-white/10 z-30 transition-all duration-[800ms] delay-100 ease-[cubic-bezier(0.22,0.61,0.36,1)]
+                  className={`absolute top-2/3 -left-6 bg-white/60 dark:bg-slate-900/40 backdrop-blur-md text-slate-800 dark:text-slate-100 font-mono text-[11px] px-3 py-1.5 rounded-lg shadow-lg border border-slate-200/50 dark:border-white/10 z-30 transition-all duration-[800ms] delay-100 ease-[cubic-bezier(0.22,0.61,0.36,1)]
                     ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
                   style={{ transform: "translateZ(40px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(16px)" }) }}
                 >
@@ -201,7 +200,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
                 </div>
 
                 <div 
-                  className={`absolute bottom-24 -right-10 bg-slate-900/40 backdrop-blur-md text-slate-100 font-mono text-[11px] px-3 py-1.5 rounded-lg shadow-lg border border-white/10 z-30 transition-all duration-700 delay-75 ease-[cubic-bezier(0.22,0.61,0.36,1)]
+                  className={`absolute bottom-24 -right-10 bg-white/60 dark:bg-slate-900/40 backdrop-blur-md text-slate-800 dark:text-slate-100 font-mono text-[11px] px-3 py-1.5 rounded-lg shadow-lg border border-slate-200/50 dark:border-white/10 z-30 transition-all duration-700 delay-75 ease-[cubic-bezier(0.22,0.61,0.36,1)]
                     ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
                   style={{ transform: "translateZ(60px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(16px)" }) }}
                 >
@@ -214,7 +213,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
                     ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
                   style={{ transform: "translateZ(40px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(16px)" }) }}
                 >
-                  <Code2 className="w-5 h-5 text-navy drop-shadow-sm" />
+                  <Code2 className="w-5 h-5 text-navy dark:text-accent drop-shadow-sm" />
                 </div>
                 
                 <div 
@@ -222,7 +221,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
                     ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
                   style={{ transform: "translateZ(45px)", ...(isHovered ? {} : { transform: "translateZ(0) translateY(-16px)" }) }}
                 >
-                  <Cpu className="w-5 h-5 text-navy drop-shadow-sm" />
+                  <Cpu className="w-5 h-5 text-navy dark:text-accent drop-shadow-sm" />
                 </div>
 
                 {/* Tech Stack Badges (Row above photo) */}
@@ -231,15 +230,15 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
                     className={`flex items-center gap-3 w-max pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]`}
                     style={{ transform: isHovered ? "translateZ(50px) translateY(-14px)" : "translateZ(0) translateY(0)" }}
                   >
-                    <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-white/60 text-sm font-semibold text-slate-800">
-                      <img src="https://cdn.simpleicons.org/nextdotjs" alt="Next.js" className="w-4 h-4 mr-1.5" />
+                    <div className="flex items-center bg-white/80 dark:bg-[#1e293b] backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-white/60 dark:border-slate-600 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                      <img src="https://cdn.simpleicons.org/nextdotjs" alt="Next.js" className="w-4 h-4 mr-1.5 dark:invert" />
                       Next.js
                     </div>
-                    <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-white/60 text-sm font-semibold text-slate-800">
+                    <div className="flex items-center bg-white/80 dark:bg-[#1e293b] backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-white/60 dark:border-slate-600 text-sm font-semibold text-slate-800 dark:text-slate-200">
                       <img src="https://cdn.simpleicons.org/react" alt="React" className="w-4 h-4 mr-1.5" />
                       React.js
                     </div>
-                    <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-white/60 text-sm font-semibold text-slate-800">
+                    <div className="flex items-center bg-white/80 dark:bg-[#1e293b] backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-white/60 dark:border-slate-600 text-sm font-semibold text-slate-800 dark:text-slate-200">
                       <img src="https://cdn.simpleicons.org/laravel" alt="Laravel" className="w-4 h-4 mr-1.5" />
                       Laravel
                     </div>
@@ -248,12 +247,12 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
 
                 {/* Experience Badge */}
                 <div
-                  className="absolute -bottom-3 -right-3 md:-bottom-4 md:-right-4 bg-white/90 backdrop-blur-sm rounded-2xl px-4 py-3 shadow-xl border border-white/60 min-w-[130px] z-30 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)]"
+                  className="absolute -bottom-3 -right-3 md:-bottom-4 md:-right-4 bg-white/90 dark:bg-[#1e293b] backdrop-blur-sm rounded-2xl px-4 py-3 shadow-xl border border-white/60 dark:border-slate-600 min-w-[130px] z-30 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)]"
                   style={{ transform: isHovered ? "translateZ(60px)" : "translateZ(0)" }}
                 >
-                  <div className="text-[10px] text-slate-500 tracking-widest uppercase mb-1 font-semibold">Experience</div>
-                  <div className="flex items-center font-bold text-slate-800 text-[15px]">
-                    <svg className="w-4 h-4 mr-1.5 text-navy shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400 tracking-widest uppercase mb-1 font-semibold">Experience</div>
+                  <div className="flex items-center font-bold text-slate-800 dark:text-slate-200 text-[15px]">
+                    <svg className="w-4 h-4 mr-1.5 text-navy dark:text-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     {heroExperience || "1+ Years"}
@@ -269,15 +268,15 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
               transition={{ duration: 0.8, delay: 0.3 }}
               className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex lg:hidden items-center justify-center gap-2 z-20 w-max"
             >
-              <div className="flex items-center bg-white rounded-full px-3 py-1.5 shadow-md text-[13px] font-semibold text-slate-700">
-                <img src="https://cdn.simpleicons.org/nextdotjs" alt="Next.js" className="w-3.5 h-3.5 mr-1.5" />
+              <div className="flex items-center bg-white dark:bg-[#1e293b] rounded-full px-3 py-1.5 shadow-md border border-transparent dark:border-slate-600 text-[13px] font-semibold text-slate-700 dark:text-slate-200">
+                <img src="https://cdn.simpleicons.org/nextdotjs" alt="Next.js" className="w-3.5 h-3.5 mr-1.5 dark:invert" />
                 Next.js
               </div>
-              <div className="flex items-center bg-white rounded-full px-3 py-1.5 shadow-md text-[13px] font-semibold text-slate-700">
+              <div className="flex items-center bg-white dark:bg-[#1e293b] rounded-full px-3 py-1.5 shadow-md border border-transparent dark:border-slate-600 text-[13px] font-semibold text-slate-700 dark:text-slate-200">
                 <img src="https://cdn.simpleicons.org/react" alt="React" className="w-3.5 h-3.5 mr-1.5" />
                 React
               </div>
-              <div className="flex items-center bg-white rounded-full px-3 py-1.5 shadow-md text-[13px] font-semibold text-slate-700">
+              <div className="flex items-center bg-white dark:bg-[#1e293b] rounded-full px-3 py-1.5 shadow-md border border-transparent dark:border-slate-600 text-[13px] font-semibold text-slate-700 dark:text-slate-200">
                 <img src="https://cdn.simpleicons.org/laravel" alt="Laravel" className="w-3.5 h-3.5 mr-1.5" />
                 Laravel
               </div>

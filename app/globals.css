@@ -1,13 +1,25 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-navy: #142850;
   --color-light-blue: #edf7fa;
+  
+  /* Semantic Tokens for Dark Mode logic */
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-primary: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --color-accent: var(--accent);
 }
 
 :root {
   --background: #ffffff;
-  --foreground: #1e293b;
+  --surface: #f1f5f9; /* abu muda */
+  --text-primary: #1e293b;
+  --text-muted: #64748b;
+  --accent: #142850; /* navy */
   
   /* Replace existing light blue */
   --color-light-blue: #e8eef5;
@@ -15,14 +27,38 @@
   /* Add new gradient tokens */
   --color-bg-hero: #f8fafc;
   --color-bg-section: #e8eef5;
-  --color-bg-section-deep: #d4dfe8;
+  --color-bg-section-deep: #e2e8f0;
   --color-bg-subtle: #f1f5f9;
   
   /* Gradient definitions */
   --gradient-hero: linear-gradient(135deg, #f8fafc 0%, #e8eef5 100%);
-  --gradient-section: linear-gradient(150deg, #e8eef5 0%, #d4dfe8 100%);
-  --gradient-page: linear-gradient(180deg, #f8fafc 0%, #e8eef5 50%, #d4dfe8 100%);
+  /* Multi-layer Radial Gradient for Depth */
+  --gradient-section: radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 40%), 
+                      radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.05) 0%, transparent 40%), 
+                      #f8fafc;
+  --gradient-page: radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 40%), 
+                   radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.05) 0%, transparent 40%), 
+                   #f8fafc;
   --gradient-navy-fade: linear-gradient(to top, var(--color-navy) 0%, color-mix(in srgb, var(--color-navy) 15%, transparent) 60%, transparent 100%);
+}
+
+.dark {
+  --background: #0f172a; /* dark navy */
+  --surface: #1e293b; /* slate gelap */
+  --text-primary: #f8fafc;
+  --text-muted: #cbd5e1;
+  --accent: #3b82f6;
+  
+  --gradient-section: radial-gradient(circle at 20% 20%, rgba(30, 58, 138, 0.25) 0%, transparent 50%), 
+                      radial-gradient(circle at 80% 80%, rgba(67, 56, 202, 0.15) 0%, transparent 50%), 
+                      #0f172a;
+  --gradient-page: radial-gradient(circle at 20% 20%, rgba(30, 58, 138, 0.25) 0%, transparent 50%), 
+                   radial-gradient(circle at 80% 80%, rgba(67, 56, 202, 0.15) 0%, transparent 50%), 
+                   #0f172a;
+}
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 html {
@@ -35,7 +71,7 @@ section[id] {
 }
 
 body {
-  color: var(--foreground);
+  color: var(--text-primary);
   background: var(--background);
   font-family: inherit;
 }
@@ -65,8 +101,16 @@ body {
   color: var(--color-navy);
 }
 
+.dark .text-navy {
+  color: var(--text-primary);
+}
+
 .bg-light-blue {
   background-color: var(--color-light-blue);
+}
+
+.dark .bg-navy {
+  background-color: var(--surface);
 }
 
 .section-title {

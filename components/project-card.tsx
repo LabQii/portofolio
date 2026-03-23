@@ -102,7 +102,7 @@ export default function ProjectCard({
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
       whileHover={{ y: -4, transition: { duration: 0.3, ease: "easeOut" } }}
-      className="group border border-[#dde4ec] relative shadow-md shadow-slate-700/10 hover:shadow-2xl hover:shadow-slate-700/30 rounded-2xl p-6 md:p-8 transition-shadow bg-[#f4f7fa]"
+      className="group border border-slate-200 dark:border-slate-800 relative shadow-md shadow-slate-700/10 hover:shadow-2xl hover:shadow-slate-700/30 rounded-2xl p-6 md:p-8 transition-shadow bg-surface"
     >
       <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start">
         <div className="w-full md:w-[45%] flex-shrink-0 relative">
@@ -111,7 +111,7 @@ export default function ProjectCard({
               New
             </Badge>
           )}
-          <Link href={`/projects/${project.slug}`} className="block relative aspect-[16/10] overflow-hidden rounded-xl bg-slate-100 shadow-sm transition-transform duration-300">
+          <Link href={`/projects/${project.slug}`} className="block relative aspect-[16/10] overflow-hidden rounded-xl bg-slate-200 dark:bg-slate-800 shadow-sm transition-transform duration-300">
             <Image
               src={project.thumbnail}
               alt={project.title}
@@ -146,7 +146,7 @@ export default function ProjectCard({
                 title="Video Demo"
                 onMouseEnter={() => setIsHoveringPlay(true)}
                 onMouseLeave={() => setIsHoveringPlay(false)}
-                className="w-10 h-10 bg-white hover:bg-slate-50 rounded-full flex items-center justify-center text-[#ef4444] shadow-lg transition-all duration-200 hover:scale-105 active:scale-95"
+                className="w-10 h-10 bg-white dark:bg-background hover:bg-slate-50 dark:hover:bg-surface rounded-full flex items-center justify-center text-[#ef4444] dark:text-accent shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 dark:border dark:border-slate-800"
               >
                 <Play className="h-4 w-4 fill-current ml-0.5" />
               </Link>
@@ -157,14 +157,14 @@ export default function ProjectCard({
         {/* Right Side: Details */}
         <div className="flex-1 pt-2 overflow-hidden w-full">
           <Link href={`/projects/${project.slug}`}>
-            <h3 className="text-[28px] font-bold text-slate-900 mb-4 leading-[1.3] group-hover:text-navy transition-colors">
+            <h3 className="text-[28px] font-bold text-primary mb-4 leading-[1.3] group-hover:text-accent transition-colors">
               {project.title}
             </h3>
           </Link>
 
           {/* Row of Category + Tech Stack */}
           <div ref={containerRef} className="flex flex-nowrap items-center gap-3 mb-6 overflow-hidden w-full">
-            <Badge className="bg-navy hover:bg-navy/90 text-white font-medium rounded-xl px-4 py-1.5 text-[14px] shrink-0">
+            <Badge variant="secondary" className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-600 border-transparent font-medium rounded-xl px-4 py-1.5 text-[14px] shrink-0">
               {project.category}
             </Badge>
 
@@ -174,13 +174,13 @@ export default function ProjectCard({
               const isVisible = i < visibleCount;
 
               return (
-                <div
-                  key={`${tech}-${i}`}
-                  ref={(el) => { itemRefs.current[i] = el; }}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border text-[13px] font-semibold shadow-sm transition-colors bg-slate-50 border-slate-200 text-slate-700 whitespace-nowrap shrink-0 ${!isVisible ? 'hidden' : ''}`}
-                >
+                  <div
+                    key={`${tech}-${i}`}
+                    ref={(el) => { itemRefs.current[i] = el; }}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border text-[13px] font-semibold shadow-sm transition-colors bg-background dark:bg-slate-700 border-slate-200 dark:border-slate-500 text-muted dark:text-slate-200 whitespace-nowrap shrink-0 ${!isVisible ? 'hidden' : ''}`}
+                  >
                   {logoDetails.type === 'initial' ? (
-                    <div className="w-4 h-4 rounded bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">
+                    <div className="w-4 h-4 rounded bg-slate-200 dark:bg-slate-600 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-200">
                       {logoDetails.initial}
                     </div>
                   ) : (
@@ -203,7 +203,7 @@ export default function ProjectCard({
             )}
           </div>
 
-          <p className="text-slate-600 text-[18px] leading-[1.7]">
+          <p className="text-muted text-[18px] leading-[1.7]">
             {project.description}
           </p>
         </div>

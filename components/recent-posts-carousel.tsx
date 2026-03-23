@@ -41,28 +41,40 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
             const total = displayPosts.length;
             let dist = idx - currentIndex;
 
-            // Normalize distance so that closest side is preferred
+            // Normalize distance — prefer shortest path around the loop
             if (dist < -Math.floor(total / 2)) dist += total;
             if (dist > Math.floor(total / 2)) dist -= total;
 
             const isActive = dist === 0;
-            const isRight = dist === 1;
-            const isLeft = dist === -1;
+            const isSide = Math.abs(dist) === 1;
+            const isHidden = Math.abs(dist) > 1;
 
-            let positioningClass = "opacity-0 scale-95 z-0 pointer-events-none translate-x-0";
-            if (isActive) {
-              positioningClass = "opacity-100 scale-100 z-30 translate-x-0 pointer-events-auto shadow-2xl shadow-slate-700/40";
-            } else if (isRight) {
-              positioningClass = "opacity-0 md:opacity-40 scale-90 z-20 translate-x-0 md:translate-x-[60%] pointer-events-none md:pointer-events-auto shadow-lg shadow-slate-700/20 cursor-pointer";
-            } else if (isLeft) {
-              positioningClass = "opacity-0 md:opacity-40 scale-90 z-20 translate-x-0 md:-translate-x-[60%] pointer-events-none md:pointer-events-auto shadow-lg shadow-slate-700/20 cursor-pointer";
-            }
+            // Derived animated values
+            const xPercent = dist * 62;          // side cards offset %
+            const scale = isActive ? 1 : 0.85;
+            const opacity = isActive ? 1 : isSide ? 0.6 : 0;
+            const rotateY = isActive ? 0 : dist > 0 ? -15 : 15;
+            const zIndex = isActive ? 30 : isSide ? 20 : 0;
 
             return (
-              <div
+              <motion.div
                 key={`${post.id}-${idx}`}
-                className={`absolute w-[80%] md:w-[75%] h-[260px] md:h-[300px] rounded-2xl overflow-hidden transition-all duration-500 ease-in-out cursor-pointer ${positioningClass} ${post.imageFit === 'contain' ? 'bg-slate-900 border border-slate-800' : 'bg-slate-100'}`}
-                style={{ boxShadow: '0 2px 12px rgba(15, 36, 66, 0.08)' }}
+                animate={{
+                  x: `${xPercent}%`,
+                  scale,
+                  opacity,
+                  rotateY,
+                  zIndex,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 120,
+                  damping: 20,
+                  mass: 0.8,
+                  opacity: { duration: 0.5, ease: "easeInOut" },
+                }}
+                style={{ perspective: 900, boxShadow: isActive ? '0 16px 48px rgba(15,36,66,0.22)' : '0 4px 16px rgba(15,36,66,0.10)' }}
+                className={`absolute w-[80%] md:w-[75%] h-[260px] md:h-[300px] rounded-2xl overflow-hidden cursor-pointer ${post.imageFit === 'contain' ? 'bg-slate-900 border border-slate-800' : 'bg-slate-100'} ${isHidden ? 'pointer-events-none' : ''}`}
                 onClick={() => {
                   if (isActive) return;
                   setCurrentIndex(idx);
@@ -78,7 +90,7 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
                       ${post.imageFit === 'contain' ? 'object-contain' : 'object-cover'}
                       ${post.imagePosition === 'center' ? 'object-center' :
                         post.imagePosition === 'bottom' ? 'object-bottom' : 'object-top'}
-                      transition-all duration-500 hover:scale-[1.03]
+                      transition-transform duration-700 hover:scale-[1.04]
                       ${isActive ? 'grayscale-0' : 'grayscale'}
                     `}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -86,9 +98,14 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
                 </div>
                 {/* Featured Star Badge */}
                 {post.featured && (
-                  <div className="absolute top-3 right-3 z-30 bg-white/90 backdrop-blur-sm p-1.5 rounded-full shadow-md animate-in fade-in zoom-in duration-300">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.7 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 20 }}
+                    className="absolute top-3 right-3 z-30 bg-white/90 backdrop-blur-sm p-1.5 rounded-full shadow-md"
+                  >
                     <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
-                  </div>
+                  </motion.div>
                 )}
                 <div 
                   className="absolute bottom-0 left-0 right-0 p-6 pt-24 pointer-events-none" 
@@ -97,7 +114,7 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
                   <h3 className="font-bold text-white text-lg line-clamp-2 md:text-xl mb-1 drop-shadow-md">{post.title}</h3>
                   <p className="text-white/80 text-sm drop-shadow-md">{formatDate(post.createdAt)}</p>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -108,7 +125,7 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
             <button
               key={idx}
               onClick={() => setCurrentIndex(idx)}
-              className={`rounded-full transition-all duration-300 ${idx === currentIndex ? "bg-navy w-6 h-2" : "bg-slate-300 w-2 h-2 hover:bg-slate-400"}`}
+              className={`rounded-full transition-all duration-300 ${idx === currentIndex ? "bg-accent w-6 h-2" : "bg-slate-300 dark:bg-slate-700 w-2 h-2 hover:bg-slate-400"}`}
               aria-label={`Go to slide ${idx + 1}`}
             />
           ))}
@@ -124,14 +141,9 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.4 }}
-            className="rounded-2xl p-8 border flex flex-col h-full relative overflow-hidden"
-            style={{
-              background: '#ffffff',
-              borderColor: '#c8d4e0',
-              boxShadow: '0 2px 12px rgba(15, 36, 66, 0.08)',
-            }}
+            className="rounded-2xl p-8 border flex flex-col h-full relative overflow-hidden bg-surface border-slate-200 dark:border-slate-800 shadow-md shadow-slate-700/10"
           >
-            <div className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.01] z-0" style={{ backgroundColor: "#1a3a5c" }} />
+            <div className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.01] z-0 bg-navy dark:bg-white" />
 
             <div className="flex justify-between items-start mb-2 relative z-10">
               <span className="uppercase tracking-widest text-sm text-slate-400 font-semibold">{formatDate(activePost.createdAt)}</span>
@@ -142,16 +154,16 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
               )}
             </div>
 
-            <h2 className="text-[28px] font-bold text-slate-900 mt-2 mb-4 leading-tight line-clamp-2 relative z-10">{activePost.title}</h2>
+            <h2 className="text-[28px] font-bold text-primary mt-2 mb-4 leading-tight line-clamp-2 relative z-10">{activePost.title}</h2>
 
-            <p className="text-slate-500 text-[16px] leading-relaxed line-clamp-5 flex-grow mb-6 overflow-y-auto max-h-[120px] relative z-10">
+            <p className="text-muted text-[16px] leading-relaxed line-clamp-5 flex-grow mb-6 overflow-y-auto max-h-[120px] relative z-10">
               {activePost.description}
             </p>
 
             <div className="mt-auto border-t border-slate-100 pt-6 relative z-10">
               <div className="flex items-center justify-between">
                 <span className="text-slate-400 text-sm font-medium">Post {currentIndex + 1} of {displayPosts.length}</span>
-                <Link href={`/posts/${activePost.slug}`} className="group flex items-center text-[15px] font-bold text-navy hover:text-blue-600 transition-colors">
+                <Link href={`/posts/${activePost.slug}`} className="group flex items-center text-[15px] font-bold text-accent hover:text-accent/80 transition-colors">
                   Read Full Post
                   <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-1" />
                 </Link>
@@ -164,7 +176,7 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
       {/* Mobile: Link shown under carousel since detail panel is hidden */}
       <div className="flex md:hidden justify-center mt-2 w-full">
         <Link href={`/posts/${activePost.slug}`} className="w-full block">
-          <button className="w-full flex items-center justify-center bg-white border border-slate-200 shadow-sm rounded-lg py-3 text-sm font-bold text-navy">
+          <button className="w-full flex items-center justify-center bg-surface dark:bg-background border border-slate-200 dark:border-slate-800 shadow-sm rounded-lg py-3 text-sm font-bold text-navy dark:text-accent">
             Read Full Post <ArrowRight className="w-4 h-4 ml-2" />
           </button>
         </Link>

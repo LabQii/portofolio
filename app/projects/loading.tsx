@@ -2,7 +2,7 @@ export default function ProjectsLoading() {
   return (
     <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>
       {/* Header Skeleton */}
-      <div className="bg-white border-b border-slate-100 py-16">
+      <div className="border-b border-slate-100 dark:border-slate-800/50 py-16" style={{ background: "var(--gradient-hero)" }}>
         <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-[768px]">
             <div className="h-14 w-64 bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-xl mb-6"></div>
@@ -21,7 +21,7 @@ export default function ProjectsLoading() {
         </div>
 
         {/* Project Cards Skeleton */}
-        <div className="flex flex-col gap-8 bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-100">
+        <div className="flex flex-col gap-8 bg-surface/50 dark:bg-slate-900/40 p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800/50">
           {[1, 2, 3, 4].map((i) => (
              <div key={i} className="flex flex-col md:flex-row gap-6 md:gap-10 items-start w-full border-b border-slate-100 pb-10 pt-4">
                 <div className="w-full md:w-[45%] flex-shrink-0 relative aspect-[16/10] bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-xl"></div>

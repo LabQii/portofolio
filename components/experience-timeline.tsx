@@ -20,50 +20,34 @@ type Experience = {
 function TimelineCard({ item }: { item: Experience }) {
   return (
     <div
-      className="rounded-2xl p-6 border relative overflow-hidden"
-      style={{
-        background: '#ffffff',
-        borderColor: '#c8d4e0',
-        boxShadow: '0 2px 12px rgba(15, 36, 66, 0.08)',
-      }}
+      className="rounded-2xl p-6 border relative overflow-hidden bg-surface border-slate-200 dark:border-slate-800 shadow-md shadow-slate-700/10"
     >
       <div 
-        className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.01]" 
-        style={{ backgroundColor: "#1a3a5c" }}
+        className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.01] bg-navy dark:bg-white" 
         aria-hidden="true"
       />
       <div className="relative z-10">
         {/* Top row */}
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <span
-            className="text-xs px-3 py-1 rounded-full"
-            style={{
-              background: 'rgba(15, 36, 66, 0.08)',
-              color: '#0f2442',
-              fontWeight: '600',
-            }}
-          >
+          <span className="text-xs px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-600 border dark:border-slate-500 text-primary dark:text-slate-100 font-semibold">
             {item.category}
           </span>
-          <span className="text-slate-500 text-sm flex items-center gap-1">
+          <span className="text-muted text-sm flex items-center gap-1">
             <Calendar className="w-3 h-3" />
             {item.period}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-bold text-navy mb-1">{item.title}</h3>
+        <h3 className="text-xl font-bold text-primary mb-1">{item.title}</h3>
 
         {/* Organization */}
-        <p
-          className="text-sm font-semibold mb-3"
-          style={{ color: '#2563a8' }}
-        >
+        <p className="text-sm font-semibold mb-3 text-accent">
           {item.organization}
         </p>
 
         {/* Description */}
-        <p className="text-slate-500 text-sm leading-relaxed mb-4">
+        <p className="text-muted text-sm leading-relaxed mb-4">
           {item.description}
         </p>
 
@@ -72,12 +56,7 @@ function TimelineCard({ item }: { item: Experience }) {
           {item.tags.map((tag: string) => (
             <span
               key={tag}
-              className="text-xs px-2 py-1 rounded-md border"
-              style={{
-                background: '#f1f5f9',
-                borderColor: '#c8d4e0',
-                color: '#475569',
-              }}
+              className="text-xs px-2 py-1 rounded-md border bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-muted"
             >
               # {tag}
             </span>
@@ -91,15 +70,10 @@ function TimelineCard({ item }: { item: Experience }) {
 function TimelineNode({ featured }: { featured: boolean }) {
   return (
     <div
-      className={`flex items-center justify-center rounded-full z-10 ${featured
-        ? "w-12 h-12 bg-navy text-white"
-        : "w-10 h-10 text-navy"
+      className={`flex items-center justify-center rounded-full z-10 transition-colors ${featured
+        ? "w-12 h-12 bg-accent text-white shadow-lg shadow-accent/20"
+        : "w-10 h-10 text-primary bg-surface border-2 border-slate-300 dark:border-slate-600 shadow-[0_0_0_4px_rgba(15,36,66,0.06)] dark:shadow-[0_0_0_4px_rgba(255,255,255,0.05)]"
       }`}
-      style={featured ? {} : {
-        background: '#ffffff',
-        border: '2px solid #8fa8be',
-        boxShadow: '0 0 0 4px rgba(15, 36, 66, 0.06)',
-      }}
     >
       {featured ? (
         <Star className="w-5 h-5" fill="currentColor" />

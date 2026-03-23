@@ -39,15 +39,15 @@ export default function CategoryTabs({ categories, activeCategory }: CategoryTab
   }, [query, router, searchParams]);
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 border-b border-slate-200 pb-1">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 border-b border-slate-200 dark:border-slate-700 pb-1">
       <div className="flex flex-wrap gap-2 w-full sm:w-auto">
       {/* "All" Tab */}
-      <Link href="/projects" className="relative px-4 py-2 text-sm font-semibold rounded-t-lg transition-colors duration-200 hover:bg-slate-50 text-slate-600">
-        <span className={!activeCategory ? "text-navy" : ""}>All Projects</span>
+      <Link href="/projects" className="relative px-4 py-2 text-sm font-semibold rounded-t-lg transition-colors duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-400">
+        <span className={!activeCategory ? "text-accent dark:text-blue-400" : ""}>{"All Projects"}</span>
         {!activeCategory && (
           <motion.div
             layoutId="activeTab"
-            className="absolute left-0 right-0 bottom-[-1px] h-[2px] bg-navy"
+            className="absolute left-0 right-0 bottom-[-1px] h-[2px] bg-accent"
             initial={false}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
@@ -61,13 +61,13 @@ export default function CategoryTabs({ categories, activeCategory }: CategoryTab
           <Link
             key={cat}
             href={`/projects?category=${cat}`}
-            className="relative px-4 py-2 text-sm font-semibold rounded-t-lg transition-colors duration-200 hover:bg-slate-50 text-slate-600"
+            className="relative px-4 py-2 text-sm font-semibold rounded-t-lg transition-colors duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-400"
           >
-            <span className={isActive ? "text-navy" : ""}>{cat}</span>
+            <span className={isActive ? "text-accent dark:text-blue-400" : ""}>{cat}</span>
             {isActive && (
               <motion.div
                 layoutId="activeTab"
-                className="absolute left-0 right-0 bottom-[-1px] h-[2px] bg-navy"
+                className="absolute left-0 right-0 bottom-[-1px] h-[2px] bg-accent"
                 initial={false}
                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
               />
@@ -79,7 +79,7 @@ export default function CategoryTabs({ categories, activeCategory }: CategoryTab
 
       {/* Minimalism Search Input */}
       <div className="relative group w-full sm:w-auto pb-1 sm:pb-0">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-navy transition-colors">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-accent transition-colors">
           <Search className="w-4 h-4" />
         </div>
         <input
@@ -87,7 +87,7 @@ export default function CategoryTabs({ categories, activeCategory }: CategoryTab
           placeholder="Search projects..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full sm:w-[200px] sm:focus:w-[260px] pl-9 pr-8 py-2 bg-slate-50/50 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-navy focus:ring-1 focus:ring-navy rounded-full text-sm text-slate-700 placeholder:text-slate-400 transition-all duration-300 outline-none"
+          className="w-full sm:w-[200px] sm:focus:w-[260px] pl-9 pr-8 py-2 bg-slate-50/50 dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 focus:bg-white dark:focus:bg-slate-800 border border-slate-200 dark:border-slate-600 focus:border-accent focus:ring-1 focus:ring-accent rounded-full text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all duration-300 outline-none"
         />
         {query && (
           <button

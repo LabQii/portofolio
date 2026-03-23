@@ -36,8 +36,7 @@ export default async function ProjectsPage({
     <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>
       <div className="border-b border-slate-100/60 py-16 relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
         <div 
-          className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]" 
-          style={{ backgroundColor: "#1a3a5c" }}
+          className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-white" 
           aria-hidden="true"
         ></div>
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
@@ -59,7 +58,7 @@ export default async function ProjectsPage({
             ))
           ) : (
             <div className="py-24 text-center">
-              <p className="text-slate-500 italic text-lg">No projects found in this category.</p>
+              <p className="text-muted italic text-lg">No projects found in this category.</p>
             </div>
           )}
         </div>

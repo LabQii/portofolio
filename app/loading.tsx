@@ -21,7 +21,7 @@ export default function Loading() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[1, 2].map((i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm h-full flex flex-col relative w-full border border-slate-100 p-6">
+              <div key={i} className="bg-surface/50 dark:bg-slate-900/50 rounded-2xl overflow-hidden shadow-sm h-full flex flex-col relative w-full border border-slate-100 dark:border-slate-800/50 p-6">
                 <div className="w-full aspect-[16/10] bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-xl mb-6"></div>
                 <div className="h-8 bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-lg w-full mb-4"></div>
                 <div className="h-4 bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-md w-1/2 mb-6"></div>
@@ -34,7 +34,7 @@ export default function Loading() {
       </section>
 
       {/* Featured Projects Skeleton Section */}
-      <section className="bg-white py-16 md:py-24">
+      <section className="py-16 md:py-24" style={{ background: "var(--gradient-hero)" }}>
         <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-10">
              <div className="h-10 w-64 bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-lg"></div>

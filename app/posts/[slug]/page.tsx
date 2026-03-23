@@ -35,7 +35,7 @@ export default async function PostDetailPage({ params }: Props) {
         <ReadingProgress />
         <article className="w-full mx-auto px-4 py-16 sm:py-24 max-w-[768px] flex-grow">
           <Button variant="ghost" asChild className="mb-6 pl-0 hover:pl-2 transition-all">
-            <Link href="/posts" className="flex items-center gap-2 text-muted-foreground">
+            <Link href="/posts" className="flex items-center gap-2 text-muted hover:text-primary transition-colors">
               <ArrowLeft className="h-4 w-4" /> Back to Posts
             </Link>
           </Button>
@@ -45,10 +45,10 @@ export default async function PostDetailPage({ params }: Props) {
               {post.category}
             </Badge>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight mb-4 leading-tight">{post.title}</h1>
-          <p className="text-xl text-muted-foreground leading-relaxed mb-6">{post.description}</p>
+          <h1 className="text-4xl font-bold tracking-tight mb-4 leading-tight text-primary">{post.title}</h1>
+          <p className="text-xl text-muted leading-relaxed mb-6">{post.description}</p>
 
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8 border-b border-slate-200 pb-6">
+          <div className="flex items-center gap-4 text-sm text-muted mb-8 border-b border-slate-200 dark:border-slate-800 pb-6">
             <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
               {formatDate(post.publishedAt)}
@@ -62,7 +62,7 @@ export default async function PostDetailPage({ params }: Props) {
           </div>
 
           {/* Thumbnail */}
-          <div className="relative aspect-video rounded-2xl overflow-hidden mb-12 shadow-xl border border-slate-100">
+          <div className="relative aspect-video rounded-2xl overflow-hidden mb-12 shadow-xl border border-slate-100 dark:border-slate-800">
             <Image src={post.thumbnail} alt={post.title} fill className="object-cover" />
           </div>
         </article>

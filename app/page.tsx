@@ -54,7 +54,7 @@ export default async function Home() {
       />
 
       {/* Activities (Recent Posts) Section */}
-      <section className="py-16 md:py-24 relative overflow-hidden" id="recent-posts" style={{ background: "linear-gradient(160deg, #ffffff 0%, #f1f5f9 100%)" }}>
+      <section className="py-16 md:py-24 relative overflow-hidden" id="recent-posts" style={{ background: "var(--gradient-section)" }}>
 
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <AnimatedSectionHeader title="Activities" href="/posts" />
@@ -67,8 +67,7 @@ export default async function Home() {
       {/* Recent Projects Section */}
       <section className="py-16 md:py-24 relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
         <div
-          className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]"
-          style={{ backgroundColor: "#1a3a5c" }}
+          className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-white"
           aria-hidden="true"
         ></div>
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
@@ -89,11 +88,11 @@ export default async function Home() {
       <section
         id="experience"
         className="py-16 md:py-24 relative overflow-hidden"
-        style={{ background: "linear-gradient(160deg, #ffffff 0%, #f1f5f9 100%)" }}
+        style={{ background: "var(--gradient-section)" }}
       >
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
-            <h2 className="text-[2.5rem] font-bold text-navy">Experience</h2>
+            <h2 className="text-[2.5rem] font-bold text-primary">Experience</h2>
           </div>
           <ExperienceTimeline experiences={experiences} />
         </div>

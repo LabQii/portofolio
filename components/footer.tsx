@@ -111,8 +111,7 @@ export default function Footer() {
     <footer className="border-t border-slate-200 relative overflow-hidden" id="contact" style={{ background: "var(--gradient-hero)" }}>
 
       <div
-        className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]"
-        style={{ backgroundColor: "#1a3a5c" }}
+        className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-slate-800"
         aria-hidden="true"
       />
       <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 md:py-24">
@@ -120,10 +119,10 @@ export default function Footer() {
 
           {/* Left Column: Socials */}
           <div>
-            <h2 className="text-[2rem] font-bold text-navy mb-4 leading-tight">
+            <h2 className="text-[2rem] font-bold text-primary mb-4 leading-tight">
               Connect with me:
             </h2>
-            <p className="text-slate-600 text-lg mb-8">
+            <p className="text-muted text-lg mb-8">
               Satisfied with me? Please contact me
             </p>
             <div className="flex items-center gap-4 mb-10">
@@ -133,7 +132,7 @@ export default function Footer() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`bg-[#0f172a] text-white p-2.5 rounded transition-all transform hover:scale-110 ${link.color}`}
+                  className={`bg-slate-900 dark:bg-white text-white dark:text-slate-900 p-2.5 rounded-lg transition-all transform hover:scale-110 ${link.color} dark:hover:text-white`}
                 >
                   <link.icon className="h-6 w-6 stroke-[1.5]" />
                   <span className="sr-only">{link.name}</span>
@@ -144,7 +143,7 @@ export default function Footer() {
 
           {/* Right Column: Contact Form */}
           <div>
-            <h3 className="text-[1.25rem] font-medium text-slate-800 mb-6">
+            <h3 className="text-[1.25rem] font-medium text-primary mb-6">
               Contact me by email, let's make magic together
             </h3>
             <form onSubmit={handleContactSubmit} className="space-y-4">
@@ -154,7 +153,7 @@ export default function Footer() {
                   id="name"
                   name="name"
                   placeholder="Name"
-                  className={`bg-white border-slate-300 focus-visible:ring-navy/20 text-base h-12 transition-colors ${errors.name ? "border-red-500 bg-red-50/10" : ""}`}
+                  className={`bg-surface border-slate-200 dark:border-slate-800 text-primary focus-visible:ring-accent text-base h-12 transition-colors ${errors.name ? "border-red-500 bg-red-50/10 dark:bg-red-500/10" : ""}`}
                 />
               </div>
               <div>
@@ -164,7 +163,7 @@ export default function Footer() {
                   id="email"
                   name="email"
                   placeholder="Email"
-                  className={`bg-white border-slate-300 focus-visible:ring-navy/20 text-base h-12 transition-colors ${errors.email ? "border-red-500 bg-red-50/10" : ""}`}
+                  className={`bg-surface border-slate-200 dark:border-slate-800 text-primary focus-visible:ring-accent text-base h-12 transition-colors ${errors.email ? "border-red-500 bg-red-50/10 dark:bg-red-500/10" : ""}`}
                 />
               </div>
               <div>
@@ -173,13 +172,13 @@ export default function Footer() {
                   id="message"
                   name="message"
                   placeholder="Message"
-                  className={`bg-white border-slate-300 focus-visible:ring-navy/20 resize-none min-h-[120px] text-base transition-colors ${errors.message ? "border-red-500 bg-red-50/10" : ""}`}
+                  className={`bg-surface border-slate-200 dark:border-slate-800 text-primary focus-visible:ring-accent resize-none min-h-[120px] text-base transition-colors ${errors.message ? "border-red-500 bg-red-50/10 dark:bg-red-500/10" : ""}`}
                 />
               </div>
               <Button
                 type="submit"
                 disabled={isPending}
-                className="bg-navy hover:bg-navy/90 text-white min-w-[140px] rounded h-11 text-base font-semibold flex items-center justify-center gap-2"
+                className="bg-navy hover:bg-navy/90 dark:bg-transparent dark:border dark:border-slate-500 dark:text-white dark:hover:bg-slate-700/40 text-white min-w-[140px] rounded-xl h-11 text-base font-semibold flex items-center justify-center gap-2"
               >
                 {isPending ? (
                   <>

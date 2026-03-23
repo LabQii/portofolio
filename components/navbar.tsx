@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
   { name: "Profile", href: "/" },
@@ -92,15 +93,15 @@ export default function Navbar() {
         className={cn(
           "fixed top-0 z-50 w-full transition-all duration-300 ease-in-out",
           scrolled
-            ? "bg-white/65 backdrop-blur-[16px] border-b border-white/30 shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
-            : "bg-white border-b border-slate-100 shadow-none"
+            ? "bg-background/80 backdrop-blur-[16px] border-b border-slate-200/50 dark:border-transparent dark:shadow-none shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
+            : "bg-background border-b border-slate-100 dark:border-transparent dark:shadow-none shadow-none"
         )}
         style={scrolled ? { WebkitBackdropFilter: "blur(16px)" } : {}}
       >
         <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             <div className="flex items-center">
-              <Link href="/" className="flex items-center gap-2.5 text-[22px] font-bold tracking-tight text-navy group">
+              <Link href="/" className="flex items-center gap-2.5 text-[22px] font-bold tracking-tight text-primary group">
                 <div className="relative w-10 h-10 flex items-center justify-center bg-slate-50 rounded-xl p-1.5 border border-slate-100 group-hover:border-navy/20 transition-all shadow-sm">
                   <Image
                     src="/images/logo-q.png"
@@ -123,21 +124,25 @@ export default function Navbar() {
                     href={item.href}
                     onClick={(e) => handleScroll(e, item.href)}
                     className={cn(
-                      "text-[14px] font-semibold transition-colors hover:text-navy/70",
-                      pathname === item.href ? "text-navy" : "text-foreground"
+                      "text-[14px] font-semibold transition-colors hover:text-accent",
+                      pathname === item.href ? "text-accent" : "text-primary"
                     )}
                   >
                     {item.name}
                   </Link>
                 ))}
+                <div className="pl-4 border-l border-slate-200 dark:border-slate-800 flex items-center h-8">
+                  <ThemeToggle />
+                </div>
               </div>
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center">
+            <div className="md:hidden flex items-center gap-2">
+              <ThemeToggle />
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-navy p-2 bg-slate-50 rounded-md"
+                className="text-primary p-2 bg-surface rounded-md"
                 aria-label="Toggle menu"
               >
                 <AnimatePresence mode="wait" initial={false}>
@@ -177,7 +182,7 @@ export default function Navbar() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="md:hidden border-t border-white/20 bg-white/80 backdrop-blur-xl overflow-hidden shadow-lg"
+              className="md:hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-background/95 backdrop-blur-xl overflow-hidden shadow-lg"
               style={{ WebkitBackdropFilter: "blur(20px)" }}
             >
               <div className="space-y-1 px-4 py-4">
@@ -191,9 +196,8 @@ export default function Navbar() {
                     <Link
                       href={item.href}
                       className={cn(
-                        "block px-3 py-2 rounded-md text-base font-semibold",
                         pathname === item.href
-                          ? "bg-slate-50 text-navy"
+                          ? "bg-slate-50 text-accent dark:bg-surface dark:text-accent"
                           : "text-foreground hover:bg-slate-50"
                       )}
                       onClick={(e) => handleScroll(e, item.href, true)}

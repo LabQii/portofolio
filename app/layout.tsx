@@ -33,12 +33,12 @@ export default async function RootLayout({
         <PageLoader />
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
           <Providers>
-            <div className="flex min-h-screen flex-col bg-white text-slate-800 relative">
+            <div className="flex min-h-screen flex-col relative text-primary">
               <Navbar />
               <main className="flex-grow">{children}</main>
               <Footer />

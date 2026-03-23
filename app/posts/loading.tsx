@@ -2,7 +2,7 @@ export default function PostsLoading() {
   return (
     <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>
       {/* Header Skeleton */}
-      <div className="bg-white border-b border-slate-100 py-16">
+      <div className="border-b border-slate-100 dark:border-slate-800/50 py-16" style={{ background: "var(--gradient-hero)" }}>
         <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-[768px]">
             <div className="h-14 w-40 bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-xl mb-6"></div>
@@ -16,7 +16,7 @@ export default function PostsLoading() {
       <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 mt-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm h-full flex flex-col">
+            <div key={i} className="bg-surface/50 dark:bg-slate-900/40 rounded-2xl overflow-hidden shadow-sm h-full flex flex-col border border-slate-100 dark:border-slate-800/50">
               {/* Image skeleton */}
               <div className="w-full aspect-[16/10] bg-slate-200 dark:bg-slate-800 animate-shimmer"></div>
               {/* Content skeleton */}
