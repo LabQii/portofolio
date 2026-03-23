@@ -33,8 +33,8 @@ export default async function ProjectsPage({
   const allCategories = ["Website", "UI/UX", "Assignment", "Android"];
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>
-      <div className="border-b border-slate-100/60 py-16 relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
+    <div className="min-h-screen pb-24 bg-page-gradient">
+      <div className="border-b border-slate-100/60 py-16 relative overflow-hidden bg-hero-gradient">
         <div 
           className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-white" 
           aria-hidden="true"

@@ -13,7 +13,7 @@ export default function Loading() {
       </div>
 
       {/* Recent Posts Skeleton Section */}
-      <section className="py-16 md:py-24" style={{ background: "var(--gradient-page)" }}>
+      <section className="py-16 md:py-24 bg-page-gradient">
         <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
              <div className="h-10 w-48 bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-lg"></div>
@@ -34,7 +34,7 @@ export default function Loading() {
       </section>
 
       {/* Featured Projects Skeleton Section */}
-      <section className="py-16 md:py-24" style={{ background: "var(--gradient-hero)" }}>
+      <section className="py-16 md:py-24 bg-hero-gradient">
         <div className="w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-10">
              <div className="h-10 w-64 bg-slate-200 dark:bg-slate-800 animate-shimmer rounded-lg"></div>

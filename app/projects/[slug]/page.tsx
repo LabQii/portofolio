@@ -40,7 +40,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   if (!project) notFound();
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "var(--gradient-page)" }}>
+    <div className="min-h-screen pb-24 bg-page-gradient">
       <div className="relative z-10 flex flex-col min-h-screen">
         <article className="w-full mx-auto px-4 py-16 sm:py-24 max-w-[1024px] flex-grow">
           <div className="mb-8">

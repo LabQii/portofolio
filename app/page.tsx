@@ -54,7 +54,7 @@ export default async function Home() {
       />
 
       {/* Activities (Recent Posts) Section */}
-      <section className="py-16 md:py-24 relative overflow-hidden" id="recent-posts" style={{ background: "var(--gradient-section)" }}>
+      <section className="py-16 md:py-24 relative overflow-hidden bg-section-gradient" id="recent-posts">
 
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <AnimatedSectionHeader title="Activities" href="/posts" />
@@ -65,7 +65,7 @@ export default async function Home() {
       </section>
 
       {/* Recent Projects Section */}
-      <section className="py-16 md:py-24 relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
+      <section className="py-16 md:py-24 relative overflow-hidden bg-hero-gradient">
         <div
           className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-white"
           aria-hidden="true"
@@ -87,8 +87,7 @@ export default async function Home() {
       {/* Experience Section */}
       <section
         id="experience"
-        className="py-16 md:py-24 relative overflow-hidden"
-        style={{ background: "var(--gradient-section)" }}
+        className="py-16 md:py-24 relative overflow-hidden bg-section-gradient"
       >
         <div className="relative z-10 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="mb-12">

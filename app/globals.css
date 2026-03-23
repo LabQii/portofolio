@@ -42,6 +42,18 @@
   --gradient-navy-fade: linear-gradient(to top, var(--color-navy) 0%, color-mix(in srgb, var(--color-navy) 15%, transparent) 60%, transparent 100%);
 }
 
+.bg-hero-gradient {
+  background: var(--gradient-hero);
+}
+
+.bg-section-gradient {
+  background: var(--gradient-section);
+}
+
+.bg-page-gradient {
+  background: var(--gradient-page);
+}
+
 .dark {
   --background: #0f172a; /* dark navy */
   --surface: #1e293b; /* slate gelap */
@@ -55,6 +67,12 @@
   --gradient-page: radial-gradient(circle at 20% 20%, rgba(30, 58, 138, 0.25) 0%, transparent 50%), 
                    radial-gradient(circle at 80% 80%, rgba(67, 56, 202, 0.15) 0%, transparent 50%), 
                    #0f172a;
+}
+
+.dark .bg-hero-gradient,
+.dark .bg-section-gradient,
+.dark .bg-page-gradient {
+  background: transparent !important;
 }
 
 * {

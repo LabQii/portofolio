@@ -33,7 +33,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-hero-gradient">
       {/* Background Pattern */}
       <div
         className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02]"
