@@ -17,8 +17,40 @@ const font = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "M Iqbal Firmansyah | Portfolio",
-  description: "Clean, minimal, and professional portfolio of M Iqbal Firmansyah - Web Developer & UI Designer.",
+  metadataBase: new URL('https://iqbalfir.vercel.app'),
+  title: {
+    default: "M Iqbal Firmansyah | Portfolio",
+    template: "%s | M Iqbal Firmansyah"
+  },
+  description: "Clean, minimal, and professional portfolio of M Iqbal Firmansyah - Web Developer & UI Designer. Explore my projects, skills, and experiences.",
+  keywords: ["M Iqbal Firmansyah", "Web Developer", "UI Designer", "Frontend Developer", "React Developer", "Next.js", "Portfolio", "Indonesia"],
+  authors: [{ name: "M Iqbal Firmansyah", url: "https://iqbalfir.vercel.app" }],
+  creator: "M Iqbal Firmansyah",
+  openGraph: {
+    title: "M Iqbal Firmansyah | Web Developer & UI Designer",
+    description: "Clean, minimal, and professional portfolio of M Iqbal Firmansyah. Explore my projects, skills, and experiences.",
+    url: "https://iqbalfir.vercel.app",
+    siteName: "M Iqbal Firmansyah Portfolio",
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "M Iqbal Firmansyah | Portfolio",
+    description: "Clean, minimal, and professional portfolio of M Iqbal Firmansyah - Web Developer & UI Designer.",
+    creator: "@iqbalfir",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default async function RootLayout({
