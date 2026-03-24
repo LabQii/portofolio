@@ -39,21 +39,21 @@ Personal portfolio website with a built-in admin panel for full content control 
 
 ### Portfolio
 
-- 🌗 &nbsp;**Dark / Light mode** — default light, persistent across sessions
-- ✨ &nbsp;**Smooth animations** — page transitions, magic line navbar, anti-gravity background orbs
-- 💀 &nbsp;**Skeleton loading** — elegant placeholder while API data loads
-- 🎵 &nbsp;**Background music** — hint alert on first visit per session
-- 📱 &nbsp;**Fully responsive** — optimized across all screen sizes
-- 🔗 &nbsp;**Hash navigation** — smooth scroll to section from any page, waits for data to load
+- **Dark / Light mode** — default light, persistent across sessions
+- **Smooth animations** — page transitions, magic line navbar, anti-gravity background orbs
+- **Skeleton loading** — elegant placeholder while API data loads
+- **Background music** — hint alert on first visit per session
+- **Fully responsive** — optimized across all screen sizes
+- **Hash navigation** — smooth scroll to section from any page, waits for data to load
 
 ### Admin Panel `/admin`
 
-- 📊 &nbsp;**Dashboard** — stats overview: total projects, posts, experiences, CV last updated
-- 🗂 &nbsp;**Manage Projects** — create, edit, delete projects with status (draft / live)
-- 📝 &nbsp;**Manage Posts & Activities** — full CRUD for blog posts and activity entries
-- 🧑‍💼 &nbsp;**Manage Admins** — control admin access and roles
-- 📄 &nbsp;**CV Manager** — upload and update CV file, track last updated date
-- 🖼 &nbsp;**Tech Logos** — manage technology icons displayed on profile
+- **Dashboard** — stats overview: total projects, posts, experiences, CV last updated
+- **Manage Projects** — create, edit, delete projects with status (draft / live)
+- **Manage Posts & Activities** — full CRUD for blog posts and activity entries
+- **Manage Admins** — control admin access and roles
+- **CV Manager** — upload and update CV file, track last updated date
+- **Tech Logos** — manage technology icons displayed on profile
 
 ---
 
@@ -157,6 +157,6 @@ New admin accounts can be created from the **Manage Admins** page after first lo
 
 <div align="center">
 
-Made with ☕ by **Iqbal** &nbsp;·&nbsp; [iqbalfir.vercel.app](https://iqbalfir.vercel.app)
+Made by **Iqbal** &nbsp;·&nbsp; [iqbalfir.vercel.app](https://iqbalfir.vercel.app)
 
 </div>
