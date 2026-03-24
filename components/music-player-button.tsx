@@ -42,8 +42,8 @@ export function MusicPlayerButton() {
                 {/* Pulse rings when playing */}
                 {isPlaying && (
                     <>
-                        <span className="absolute inset-0 rounded-full bg-slate-900/30 animate-ping" />
-                        <span className="absolute inset-0 rounded-full bg-slate-900/10 animate-pulse" />
+                        <span className="absolute inset-0 rounded-full bg-slate-900/20 dark:bg-white/20 animate-ping" />
+                        <span className="absolute inset-0 rounded-full bg-slate-900/10 dark:bg-white/10 animate-pulse" />
                     </>
                 )}
                 <AnimatePresence mode="wait">
