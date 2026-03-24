@@ -7,7 +7,7 @@ import Image from "next/image";
 import type { Project } from "@prisma/client";
 import { useToast } from "@/components/ui/toast";
 
-const CATEGORIES = ["Website", "UI/UX", "Assignment", "Android"];
+const CATEGORIES = ["Website", "UI/UX", "Assignment", "App Script", "Others"];
 const TECH_COLORS = [
   "bg-blue-50 text-blue-700", "bg-emerald-50 text-emerald-700",
   "bg-violet-50 text-violet-700", "bg-amber-50 text-amber-700", "bg-rose-50 text-rose-700",

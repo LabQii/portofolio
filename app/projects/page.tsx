@@ -30,7 +30,7 @@ export default async function ProjectsPage({
   const customTechLogos = await prisma.techStack.findMany();
   const profile = await getProfile();
 
-  const allCategories = ["Website", "UI/UX", "Assignment", "Android"];
+  const allCategories = ["Website", "UI/UX", "Assignment", "App Script", "Others"];
 
   return (
     <div className="min-h-screen pb-24 bg-page-gradient">
