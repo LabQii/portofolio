@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="	https://iqbalfir.vercel.app/_next/image?url=%2Fimages%2Flogo-q.png&w=64&q=75" width="64" height="64" alt="Labqii Logo" />
-
 # Labqii Tech
 
 **Portfolio of Muhammad Iqbal Firmansyah**
