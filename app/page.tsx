@@ -24,7 +24,7 @@ export default async function Home() {
   const cv = await prisma.cV.findFirst({
     where: { isActive: true },
   });
-  
+
   // Robust raw SQL: Prioritize Active, then most recent created
   const rawImages = await prisma.$queryRaw<any[]>`
     SELECT url FROM "ProfileImage" 

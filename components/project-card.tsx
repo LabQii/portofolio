@@ -164,7 +164,7 @@ export default function ProjectCard({
 
           {/* Row of Category + Tech Stack */}
           <div ref={containerRef} className="flex flex-nowrap items-center gap-3 mb-6 overflow-hidden w-full">
-            <Badge variant="secondary" className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-600 border-transparent font-medium rounded-xl px-4 py-1.5 text-[14px] shrink-0">
+            <Badge variant="secondary" className="bg-navy text-white hover:bg-navy/90 dark:bg-slate-100 dark:text-navy dark:hover:bg-white border-transparent font-semibold rounded-xl px-4 py-1.5 text-[14px] shrink-0 transition-all duration-300">
               {project.category}
             </Badge>
 

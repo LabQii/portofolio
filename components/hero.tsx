@@ -98,7 +98,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
               transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
               className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
             >
-              <Button size="lg" asChild className="bg-navy hover:bg-navy/90 dark:bg-transparent dark:border dark:border-slate-500 dark:text-white dark:hover:bg-slate-700/50 text-white rounded-xl px-8 py-6 text-lg font-semibold shadow-md hover:shadow-lg transition-all">
+              <Button size="lg" asChild className="bg-navy hover:bg-navy/90 dark:bg-slate-100 dark:text-navy dark:hover:bg-white text-white rounded-xl px-8 py-6 text-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300">
                 <a
                   href={cvId ? `/api/cv/download/${cvId}` : (cvUrl || "#")}
                   target="_blank"
@@ -107,7 +107,7 @@ export default function Hero({ name, description, cvUrl, cvFileName, cvId, profi
                   View CV
                 </a>
               </Button>
-              <Button size="lg" variant="ghost" asChild className="text-primary hover:bg-slate-100/70 dark:border dark:border-slate-500 dark:text-white dark:hover:bg-slate-700/50 hover:text-accent dark:hover:text-white rounded-xl px-8 py-6 text-lg font-semibold transition-all duration-300">
+              <Button size="lg" variant="ghost" asChild className="text-primary hover:bg-slate-100/70 dark:text-white dark:hover:bg-slate-800/50 hover:text-accent dark:hover:text-white rounded-xl px-8 py-6 text-lg font-semibold transition-all duration-300">
                 <a
                   href="https://wa.me/6285177440699"
                   target="_blank"

@@ -8,6 +8,7 @@ import BackToTop from "@/components/back-to-top";
 import Providers from "@/components/providers";
 import PageLoader from "@/components/page-loader";
 import { MusicPlayerButton } from "@/components/music-player-button";
+import MusicHintAlert from "@/components/music-hint-alert";
 import { getProfile } from "@/app/actions/profile";
 
 const font = Poppins({
@@ -33,8 +34,8 @@ export default async function RootLayout({
         <PageLoader />
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <Providers>
@@ -43,6 +44,7 @@ export default async function RootLayout({
               <main className="flex-grow">{children}</main>
               <Footer />
               <BackToTop />
+              <MusicHintAlert />
               <MusicPlayerButton />
             </div>
           </Providers>

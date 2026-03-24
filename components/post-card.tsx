@@ -37,10 +37,14 @@ export default function PostCard({ post, index = 0 }: { post: any; index?: numbe
           <h3 className="text-xl md:text-[26px] font-bold text-primary mb-4 line-clamp-2 leading-[1.3] group-hover:text-accent transition-colors">
             {post.title}
           </h3>
-          <div className="flex items-center gap-4 text-[15px] text-muted mb-5 font-medium">
+          <div className="flex items-center gap-3 text-[14px] text-muted mb-5 font-medium">
             <span>{formatDate(post.createdAt)}</span>
-            <span className="w-px h-4 bg-slate-300 dark:bg-slate-700"></span>
-            <span>{post.category}</span>
+            <span className="w-px h-3.5 bg-slate-400 dark:bg-slate-500"></span>
+            {post.category && (
+              <span className="bg-navy/10 text-navy dark:bg-white dark:text-navy font-bold text-[10px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                {post.category}
+              </span>
+            )}
           </div>
           <p className="text-muted text-[16px] leading-[1.7] line-clamp-3">
             {post.description}

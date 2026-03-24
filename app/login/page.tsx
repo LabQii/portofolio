@@ -102,7 +102,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-[56px] bg-[#5b677a] hover:bg-[#4a5463] text-white rounded-xl text-base font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full h-[56px] bg-navy hover:bg-navy/90 dark:bg-slate-100 dark:text-navy dark:hover:bg-white text-white rounded-xl text-base font-bold transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <><Loader2 className="w-5 h-5 animate-spin" /> Signing in...</>

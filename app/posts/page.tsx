@@ -11,7 +11,7 @@ export default async function PostsPage() {
   const profile = await getProfile();
   return (
     <div className="min-h-screen pb-24 bg-page-gradient">
-      <div className="border-b border-slate-100/60 py-16 relative overflow-hidden bg-hero-gradient">
+      <div className="py-16 relative overflow-hidden bg-hero-gradient">
         <div 
           className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-white" 
           aria-hidden="true"

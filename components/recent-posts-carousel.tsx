@@ -148,7 +148,7 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
             <div className="flex justify-between items-start mb-2 relative z-10">
               <span className="uppercase tracking-widest text-sm text-slate-400 font-semibold">{formatDate(activePost.createdAt)}</span>
               {activePost.category && (
-                <span className="bg-slate-100 text-slate-700 font-semibold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                <span className="bg-navy/10 text-navy dark:bg-white dark:text-navy font-bold text-[11px] px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
                   {activePost.category}
                 </span>
               )}
@@ -176,7 +176,7 @@ export default function RecentPostsCarousel({ posts: initialPosts }: { posts: an
       {/* Mobile: Link shown under carousel since detail panel is hidden */}
       <div className="flex md:hidden justify-center mt-2 w-full">
         <Link href={`/posts/${activePost.slug}`} className="w-full block">
-          <button className="w-full flex items-center justify-center bg-surface dark:bg-background border border-slate-200 dark:border-slate-800 shadow-sm rounded-lg py-3 text-sm font-bold text-navy dark:text-accent">
+          <button className="w-full flex items-center justify-center bg-navy hover:bg-navy/90 dark:bg-slate-100 dark:text-navy dark:hover:bg-white shadow-sm rounded-lg py-3 text-sm font-bold text-white transition-all duration-300">
             Read Full Post <ArrowRight className="w-4 h-4 ml-2" />
           </button>
         </Link>

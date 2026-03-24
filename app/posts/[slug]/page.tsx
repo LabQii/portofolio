@@ -41,9 +41,9 @@ export default async function PostDetailPage({ params }: Props) {
           </Button>
 
           <div className="flex flex-wrap gap-2 mb-4">
-            <Badge variant="secondary" className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-600 border-transparent">
+            <span className="bg-navy/10 text-navy dark:bg-white dark:text-navy font-bold text-[11px] px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
               {post.category}
-            </Badge>
+            </span>
           </div>
           <h1 className="text-4xl font-bold tracking-tight mb-4 leading-tight text-primary">{post.title}</h1>
           <p className="text-xl text-muted leading-relaxed mb-6">{post.description}</p>

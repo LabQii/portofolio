@@ -108,7 +108,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-slate-200 relative overflow-hidden bg-hero-gradient" id="contact">
+    <footer className="relative overflow-hidden bg-hero-gradient" id="contact">
 
       <div
         className="absolute inset-0 pointer-events-none batik-overlay opacity-[0.02] bg-navy dark:bg-slate-800"
@@ -178,7 +178,7 @@ export default function Footer() {
               <Button
                 type="submit"
                 disabled={isPending}
-                className="bg-navy hover:bg-navy/90 dark:bg-transparent dark:border dark:border-slate-500 dark:text-white dark:hover:bg-slate-700/40 text-white min-w-[140px] rounded-xl h-11 text-base font-semibold flex items-center justify-center gap-2"
+                className="bg-navy hover:bg-navy/90 dark:bg-slate-100 dark:text-navy dark:hover:bg-white text-white min-w-[140px] rounded-xl h-11 text-base font-semibold flex items-center justify-center gap-2 transition-all duration-300"
               >
                 {isPending ? (
                   <>
