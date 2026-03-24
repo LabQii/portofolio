@@ -4,10 +4,14 @@ import { useMusic } from "@/contexts/MusicContext";
 import { Pause, Music2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export function MusicPlayerButton() {
     const { isPlaying, toggle, isReady } = useMusic();
     const [showLabel, setShowLabel] = useState(false);
+    const pathname = usePathname();
+
+    if (pathname?.startsWith("/admin")) return null;
 
     return (
         <div className="fixed bottom-6 right-4 md:bottom-8 md:right-8 z-40 flex flex-col items-end gap-2">

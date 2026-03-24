@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function MusicHintAlert() {
   const [visible, setVisible] = useState(false);
@@ -40,7 +41,9 @@ export default function MusicHintAlert() {
     return () => clearTimeout(showTimer);
   }, []);
 
-  if (!visible) return null;
+  const pathname = usePathname();
+
+  if (!visible || pathname?.startsWith("/admin")) return null;
 
   return (
     <div
