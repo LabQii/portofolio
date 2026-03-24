@@ -18,7 +18,7 @@ export function MusicPlayerButton() {
                         initial={{ opacity: 0, x: 10 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 10 }}
-                        className="bg-white border border-slate-200 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap backdrop-blur-sm"
+                        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-xs font-medium px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap backdrop-blur-sm"
                     >
                         {isPlaying ? "Pause music" : "Play music"}
                     </motion.div>
@@ -35,8 +35,8 @@ export function MusicPlayerButton() {
                 disabled={!isReady}
                 className={`relative h-11 w-11 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 border
                     ${isPlaying
-                        ? "bg-slate-900 text-white border-slate-700 shadow-slate-900/25"
-                        : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                        ? "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-700 dark:border-slate-300 shadow-slate-900/25"
+                        : "bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 border-slate-300 dark:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-600"
                     } backdrop-blur-sm disabled:opacity-40`}
             >
                 {/* Pulse rings when playing */}
